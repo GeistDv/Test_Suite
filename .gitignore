@@ -1,0 +1,6 @@
+node_modules
+privatekeys.csv
+data.csv
+logs
+jmeter.log
+testresults.jtl

@@ -1,0 +1,8 @@
+{
+    "test_type" : "transfer",
+    "rpc":"http://127.0.0.1:9650",
+    "rpc_keystore" : "http://127.0.0.1:9650/static",
+    "private_key_with_funds": "PrivateKey-ewoqjP7PxY4yr3iLTpLisriqt94hdyDFNgchSxGGztUrTXtNN",
+    "enable_kubectl_measurements" : false,
+    "enable_gdocs_insertion" : false
+}

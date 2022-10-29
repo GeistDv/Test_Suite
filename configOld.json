@@ -1,0 +1,8 @@
+{
+    "test_type" : "transfer",
+    "rpc":"https://kopernikus.camino.foundation/santi",
+    "rpc_keystore" : "https://kopernikus.camino.foundation/santi/static",
+    "private_key_with_funds": "PrivateKey-46xbWB8QeWwnPVX5uX72EFG11qNzhZfS7Ytzz4Lgo7n6UQvoT",
+    "enable_kubectl_measurements" : false,
+    "enable_gdocs_insertion" : false
+}
