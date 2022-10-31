@@ -19,7 +19,7 @@ class Utils {
     constructor(configTypeForCompleteTest : ConfigurationType, dataFlow : DataFlow) {
 
         this.Configuration = configTypeForCompleteTest;
-        this.web3 = new Web3(this.Configuration.rpc + '/ext/bc/C/rpc');;
+        this.web3 = new Web3(this.Configuration.rpc_keystore + '/ext/bc/C/rpc');;
         this.dataFlow = dataFlow;
     }
     
