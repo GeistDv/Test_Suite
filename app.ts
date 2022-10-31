@@ -22,6 +22,7 @@ import dotenv from 'dotenv';
 
 import NetworkRunner from './network-runner/NetworkRunner';
 import TestCase from "./types/testcase";
+import utilsX from './utils/utilsX';
 
 dotenv.config();
 // Needed for self signed certs.
@@ -122,6 +123,12 @@ app.post("/network-runner", async (req, res) => {
     return res.status(200).send("Network Runner executed");
 
 });
+
+app.post("/test-transactions-xchain", async (req, res) => {
+    utilsX.createUserAccount();
+    
+    
+})
 
 // single endpoint to test (cloud)
 app.post('/', async (req, res) => {

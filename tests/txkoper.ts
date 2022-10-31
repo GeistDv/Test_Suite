@@ -19,12 +19,12 @@ import {
 
 //process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-const ip: string = "kopernikus.camino.foundation"
-const port: number = 443
-const protocol: string = "https"
-const networkID: number = 1002
+const ip: string = "127.0.0.1"
+const port: number = 45454
+const protocol: string = "http"
+const networkID: number = 1337
 const xBlockchainID: string = "X"
-const avaxAssetID: string = "UGuaWQ3oMmqViCTJFhMiM3ys5cHhQqQ9ZWv9uLVpU6wVP4FVS"
+const avaxAssetID: string = "BUuypiq2wyuLMvyhzFXcPyxPMCgSp7eeDohhQRqTChoBjKziC"
 const avalanche: Avalanche = new Avalanche(
   ip,
   port,
@@ -35,7 +35,7 @@ const avalanche: Avalanche = new Avalanche(
 const xchain: AVMAPI = avalanche.XChain()
 const xKeychain: KeyChain = xchain.keyChain()
 
-const privKey: string = "PrivateKey-2ZPF5n3eENXJ3gthpmUtA2Q8pnc5q5CtnNw3HWgpDA7r5oHnmJ";
+const privKey: string = "PrivateKey-ewoqjP7PxY4yr3iLTpLisriqt94hdyDFNgchSxGGztUrTXtNN";
 xKeychain.importKey(privKey)
 const xAddressStrings: string[] = xchain.keyChain().getAddressStrings()
 const asOf: BN = UnixNow()
@@ -46,6 +46,13 @@ const fee: BN = new BN(1000000);
 console.log("fee : " , fee.toString());
 
 const main = async (): Promise<any> => {
+  transactionAvax();
+  transactionAvax2();
+  transactionAvax3();
+}
+
+async function transactionAvax () 
+{
   const getBalanceResponse: GetBalanceResponse = await xchain.getBalance(
     xAddressStrings[0],
     avaxAssetID
@@ -74,7 +81,61 @@ const main = async (): Promise<any> => {
 
   const tx: Tx = unsignedTx.sign(xKeychain)
   const txid: string = await xchain.issueTx(tx)
-  console.log(`Success! TXID: ${txid}`)
+  console.log(`Success! TXID 1: ${txid}`);
+}
+
+async function transactionAvax2 () 
+{
+  let arrXAdress : string[] = ["X-custom1fsgp3afcqhv2z9uhfft93xk4jzch6muluunwtc"];
+
+  const avmUTXOResponse: GetUTXOsResponse = await xchain.getUTXOs(xAddressStrings[0])
+
+  const utxoSet: UTXOSet = avmUTXOResponse.utxos
+  const amount: BN = new BN(fee);
+
+  const unsignedTx: UnsignedTx = await xchain.buildBaseTx(
+    utxoSet,
+    amount,
+    avaxAssetID,
+    arrXAdress,
+    xAddressStrings,
+    arrXAdress,
+    memo,
+    asOf,
+    locktime,
+    threshold
+  )
+
+  const tx: Tx = unsignedTx.sign(xKeychain)
+  const txid: string = await xchain.issueTx(tx)
+  console.log(`Success! TXID 2: ${txid}`);
+}
+
+async function transactionAvax3 () 
+{
+  let arrXAdress : string[] = ["X-custom1p240d26cdc3eaph86vwgrheaqvn3qs03gd0wsn"];
+
+  const avmUTXOResponse: GetUTXOsResponse = await xchain.getUTXOs(xAddressStrings[0])
+
+  const utxoSet: UTXOSet = avmUTXOResponse.utxos
+  const amount: BN = new BN(fee);
+
+  const unsignedTx: UnsignedTx = await xchain.buildBaseTx(
+    utxoSet,
+    amount,
+    avaxAssetID,
+    arrXAdress,
+    xAddressStrings,
+    xAddressStrings,
+    memo,
+    asOf,
+    locktime,
+    threshold
+  )
+
+  const tx: Tx = unsignedTx.sign(xKeychain)
+  const txid: string = await xchain.issueTx(tx)
+  console.log(`Success! TXID 3: ${txid}`);
 }
 
 main();
