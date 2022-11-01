@@ -24,6 +24,7 @@ import NetworkRunner from './network-runner/NetworkRunner';
 import TestCase from "./types/testcase";
 import utilsX from './utils/utilsX';
 import XchainBuilder from './builders/XchainBuilder';
+import { getXKeyChain } from './utils/configAvalanche';
 
 dotenv.config();
 // Needed for self signed certs.
@@ -144,23 +145,36 @@ app.post("/network-runner/x-chain", async (req, res) => {
     let accountAVM = await utilsX.ImportKeyAVM(networkRunner.configuration.private_key_with_funds, networkRunner.configuration);
 
     let assetID = await utilsX.getStakingAssetID(networkRunner.configuration);
-    let networkID = await utilsX.getNetworkID(networkRunner.configuration);
+    let networkID = parseInt(await utilsX.getNetworkID(networkRunner.configuration));
 
     let accounts = await utilsX.generateAccounts(networkRunner.configuration, networkRunner.testCase);
 
     let url = new URL(networkRunner.configuration.rpc);
     let port = "443";
+    let protocolRPC = url.protocol.replace(":","");
 
     if(url.port != "")
     {
         port = url.port;
     }
+
+    console.log("accountAVM",accountAVM);
+    let xChainAvalanche = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC,networkID, networkRunner.configuration.private_key_with_funds, assetID);
     
     for(let i = 0; i < networkRunner.testCase.Threads; i++)
     {
-        let sendTo = [accounts[i]];
-        XchainBuilder.buildAndSendTransaction([accountAVM], sendTo,assetID, url.protocol.replace(":",""), url.hostname,parseInt(url.port),parseInt(networkID), networkRunner.configuration.private_key_with_funds);
+        let txid = await XchainBuilder.buildAndSendTransaction([accountAVM], [accounts[i]], xChainAvalanche);
+        console.log("Tx ID:",txid);
     }
+    
+    console.log("--------------------STARTING TRANSACTIONS------------------------------");
+    console.log("Address Father", accountAVM);
+    console.log("Address Childs", accounts);
+
+    /*
+    let txid1 = await XchainBuilder.buildAndSendTransaction([accounts[0]], [accounts[1]], xChainAvalanche);
+    console.log(txid1)
+    */
     
     return res.status(200).send("Testing");
 })

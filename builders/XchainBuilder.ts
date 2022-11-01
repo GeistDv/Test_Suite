@@ -23,8 +23,7 @@ import {
     DefaultLocalGenesisPrivateKey,
     UnixNow
 } from "avalanche/dist/utils";
-
-
+import AvalancheXChain from '../types/AvalancheXChain';
 
 class xChainBuilder {
 
@@ -47,81 +46,59 @@ class xChainBuilder {
     }
 
     public static async buildAndSendTransaction(
-        fromTo: string [],
-        sendTo: string [],
-        avaxAssetIDData: string,
-        protocolData: string,
-        ipData: string,
-        portData: number,
-        networkIDData: number,
-        privateKey: string
+        fromAddress: string [],
+        sendAddress: string [],
+        avalancheXChain: AvalancheXChain
         ): Promise<string> {
         return new Promise(async (resolve, reject) => {
-
-            const ip: string = ipData
-            const port: number = portData
-            const protocol: string = protocolData
-            const networkID: number = networkIDData
-            const xBlockchainID: string = "X"
-            const avaxAssetID: string = avaxAssetIDData
-            const avalanche: Avalanche = new Avalanche(
-                ip,
-                port,
-                protocol,
-                networkID,
-                xBlockchainID
-            )
-
-            let sendToA = [sendTo]
-
-            const xchain: AVMAPI = avalanche.XChain()
-            const xKeychain: KeyChain = xchain.keyChain();
-
-            //Import Private Key
-            const privKey: string = privateKey;
-            xKeychain.importKey(privKey)
-
-            console.log("privKey", privKey);
-            
             
             const asOf: BN = UnixNow()
             const threshold: number = 1
             const locktime: BN = new BN(0)
             const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send AVAX");
             const fee: BN = new BN(1000000);
-            console.log("fee : ", fee.toString());
 
-            const getBalanceResponse: GetBalanceResponse = await xchain.getBalance(
-                fromTo[0],
-                avaxAssetID
-            )
-
-            const balance: BN = new BN(getBalanceResponse.balance)
-            console.log(balance.toString());
-
-            const avmUTXOResponse: GetUTXOsResponse = await xchain.getUTXOs(fromTo)
-
+            const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs(fromAddress)
             const utxoSet: UTXOSet = avmUTXOResponse.utxos
-            const amount: BN = new BN(fee);
+            const amount: BN = new BN(1);
 
-            const unsignedTx: UnsignedTx = await xchain.buildBaseTx(
+            let balanceFrom = await this.getBalanceAddress(fromAddress[0], avalancheXChain);
+            console.log("Balance From", balanceFrom);
+
+            const unsignedTx: UnsignedTx = await avalancheXChain.xchain.buildBaseTx(
                 utxoSet,
                 amount,
-                avaxAssetID,
-                sendTo,
-                fromTo,
-                sendTo,
+                avalancheXChain.avaxAssetID,
+                sendAddress,
+                fromAddress,
+                sendAddress,
                 memo,
                 asOf,
                 locktime,
                 threshold
             )
 
-            const tx: Tx = unsignedTx.sign(xKeychain)
-            const txid: string = await xchain.issueTx(tx)
-            console.log(`Success! TXID: ${txid}`)
+            const tx: Tx = unsignedTx.sign(avalancheXChain.xKeyChain)
+            const txid: string = await avalancheXChain.xchain.issueTx(tx);
+
+            let balanceTo = await this.getBalanceAddress(sendAddress[0], avalancheXChain);
+            console.log("Balance To", balanceTo);
+            
+            resolve(txid);
         });
     }
+
+    private static async getBalanceAddress (address: string, avalancheXChain: AvalancheXChain) 
+    {
+        const getBalanceResponse: GetBalanceResponse = await avalancheXChain.xchain.getBalance(
+            address,
+            avalancheXChain.avaxAssetID
+        );
+
+        const balance: BN = new BN(getBalanceResponse.balance);
+        return balance;
+    }
+
 }
 
 export default xChainBuilder;

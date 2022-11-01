@@ -178,3 +178,151 @@
   id: 1
 }
 [2022-11-01T11:55:56.057] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-01T14:44:53.540] [INFO] default - Server running on port 3000
+[2022-11-01T14:46:40.815] [INFO] default - Server running on port 3000
+[2022-11-01T14:46:58.390] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-01T14:46:58.390] [INFO] default - Importing key..
+[2022-11-01T14:46:58.432] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-01T14:46:58.432] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-01T14:47:16.050] [INFO] default - Server running on port 3000
+[2022-11-01T14:48:05.206] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-01T14:48:05.207] [INFO] default - Importing key..
+[2022-11-01T14:48:05.250] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-01T14:48:05.250] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-01T14:49:25.743] [INFO] default - Server running on port 3000
+[2022-11-01T14:49:40.038] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-01T14:49:40.038] [INFO] default - Importing key..
+[2022-11-01T14:49:40.083] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-01T14:49:40.083] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-01T14:51:03.310] [INFO] default - Server running on port 3000
+[2022-11-01T14:51:21.830] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-01T14:51:21.836] [INFO] default - Importing key..
+[2022-11-01T14:51:21.886] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-01T14:51:21.886] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-01T14:52:49.884] [INFO] default - Server running on port 3000
+[2022-11-01T14:53:19.839] [INFO] default - Server running on port 3000
+[2022-11-01T14:54:03.500] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-01T14:54:03.501] [INFO] default - Importing key..
+[2022-11-01T14:54:03.545] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-01T14:54:03.545] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-01T14:55:40.971] [INFO] default - Server running on port 3000
+[2022-11-01T14:56:01.859] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-01T14:56:01.860] [INFO] default - Importing key..
+[2022-11-01T14:56:01.905] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-01T14:56:01.905] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-01T15:05:30.479] [INFO] default - Server running on port 3000
+[2022-11-01T15:05:54.876] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-01T15:05:54.876] [INFO] default - Importing key..
+[2022-11-01T15:05:54.920] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-01T15:05:54.920] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-01T15:06:21.736] [INFO] default - Server running on port 3000
+[2022-11-01T15:06:37.298] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-01T15:06:37.298] [INFO] default - Importing key..
+[2022-11-01T15:06:37.347] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-01T15:06:37.348] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-01T15:07:25.499] [INFO] default - Server running on port 3000
+[2022-11-01T15:07:42.687] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-01T15:07:42.688] [INFO] default - Importing key..
+[2022-11-01T15:07:42.731] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-01T15:07:42.732] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-01T15:12:59.687] [INFO] default - Server running on port 3000
+[2022-11-01T15:13:20.378] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-01T15:13:20.378] [INFO] default - Importing key..
+[2022-11-01T15:13:20.431] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-01T15:13:20.432] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-01T15:16:29.326] [INFO] default - Server running on port 3000
+[2022-11-01T15:16:55.876] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-01T15:16:55.877] [INFO] default - Importing key..
+[2022-11-01T15:16:55.920] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-01T15:16:55.921] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-01T15:20:19.766] [INFO] default - Server running on port 3000
+[2022-11-01T15:20:40.492] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-01T15:20:40.493] [INFO] default - Importing key..
+[2022-11-01T15:20:40.543] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-01T15:20:40.543] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-01T15:22:32.285] [INFO] default - Server running on port 3000
+[2022-11-01T15:23:08.108] [INFO] default - Server running on port 3000
+[2022-11-01T15:23:35.886] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-01T15:23:35.886] [INFO] default - Importing key..
+[2022-11-01T15:23:35.930] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-01T15:23:35.930] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-01T15:30:40.624] [INFO] default - Server running on port 3000
+[2022-11-01T15:30:45.330] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-01T15:30:45.331] [INFO] default - Importing key..
+[2022-11-01T15:30:45.374] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-01T15:30:45.375] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-01T15:31:13.988] [INFO] default - Server running on port 3000
+[2022-11-01T15:31:28.325] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-01T15:31:28.325] [INFO] default - Importing key..
+[2022-11-01T15:31:28.368] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-01T15:31:28.368] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-01T15:49:45.321] [INFO] default - Server running on port 3000
+[2022-11-01T15:50:31.905] [INFO] default - Server running on port 3000
+[2022-11-01T15:50:52.050] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-01T15:50:52.050] [INFO] default - Importing key..
+[2022-11-01T15:50:52.094] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-01T15:50:52.094] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
