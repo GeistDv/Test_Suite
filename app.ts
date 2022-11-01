@@ -23,6 +23,7 @@ import dotenv from 'dotenv';
 import NetworkRunner from './network-runner/NetworkRunner';
 import TestCase from "./types/testcase";
 import utilsX from './utils/utilsX';
+import XchainBuilder from './builders/XchainBuilder';
 
 dotenv.config();
 // Needed for self signed certs.
@@ -85,15 +86,15 @@ app.post("/start", async (req, res) => {
 
         let testCase = testCases[i];
         let prevTestCase: TestCase;
-        if ( i > 0){
-            prevTestCase = testCases[i-1]
+        if (i > 0) {
+            prevTestCase = testCases[i - 1]
         }
-        else{
+        else {
             prevTestCase = testCases[i]
         }
-        
+
         console.log("Running case .. " + i);
-        await initNetwork(testCase,prevTestCase, networkName, configType);
+        await initNetwork(testCase, prevTestCase, networkName, configType);
         var dataFlow = await initApp(configType);
         await initPrivateKeys(dataFlow, testCase);
         await startTestsAndGatherMetrics(testCase, configType);
@@ -124,10 +125,44 @@ app.post("/network-runner", async (req, res) => {
 
 });
 
-app.post("/test-transactions-xchain", async (req, res) => {
-    utilsX.createUserAccount();
+app.post("/network-runner/x-chain", async (req, res) => {
+
+    let testCase: TestCase = {
+        StakingAmount: req.body.StakingAmount,
+        ValidatorNodes: req.body.ValidatorNodes,
+        ApiNodes: req.body.ApiNodes,
+        Threads: req.body.Threads,
+        Loops: req.body.Loops,
+        Chain: "X",
+        TestType: req.body.TestType,
+        Position: 0
+    }
+
+    networkRunner = await getConfigTypeWithNetworkRunner(req, testCase);
+
+    await utilsX.createUserAccount(networkRunner.configuration);
+    let accountAVM = await utilsX.ImportKeyAVM(networkRunner.configuration.private_key_with_funds, networkRunner.configuration);
+
+    let assetID = await utilsX.getStakingAssetID(networkRunner.configuration);
+    let networkID = await utilsX.getNetworkID(networkRunner.configuration);
+
+    let accounts = await utilsX.generateAccounts(networkRunner.configuration, networkRunner.testCase);
+
+    let url = new URL(networkRunner.configuration.rpc);
+    let port = "443";
+
+    if(url.port != "")
+    {
+        port = url.port;
+    }
     
+    for(let i = 0; i < networkRunner.testCase.Threads; i++)
+    {
+        let sendTo = [accounts[i]];
+        XchainBuilder.buildAndSendTransaction([accountAVM], sendTo,assetID, url.protocol.replace(":",""), url.hostname,parseInt(url.port),parseInt(networkID), networkRunner.configuration.private_key_with_funds);
+    }
     
+    return res.status(200).send("Testing");
 })
 
 // single endpoint to test (cloud)
@@ -266,6 +301,7 @@ async function initBuilder(configurationType: ConfigurationType, dataFlow: DataF
             // mint
             break;
         default:
+            break;
     }
 }
 
@@ -275,11 +311,11 @@ async function initNetwork(testCase: TestCase,
     networkname: string | undefined,
     configType: ConfigurationType): Promise<Boolean> {
     //TODO: change or for and in validation 
-    if( Utils.validateIfCurrentApiNodesExists(testCase,prevTestCase) && await Utils.validateIfCurrentValidatorsExists(configType, testCase)){
+    if (Utils.validateIfCurrentApiNodesExists(testCase, prevTestCase) && await Utils.validateIfCurrentValidatorsExists(configType, testCase)) {
         console.log("Network already has the same number of validators and api nodes");
         return true
     }
-    
+
     var processKubectl = child.exec("go run main.go k8s destroy " + networkname, { cwd: pathGrungni });
 
     console.log("Destroying network ...");
@@ -292,7 +328,7 @@ async function initNetwork(testCase: TestCase,
     }
 
     console.log(testCase.ValidatorNodes);
-    var processKubectl = child.exec("go run main.go k8s create " + networkname + " --validators " + testCase.ValidatorNodes + " --api-nodes "+ testCase.ApiNodes, { cwd: pathGrungni });
+    var processKubectl = child.exec("go run main.go k8s create " + networkname + " --validators " + testCase.ValidatorNodes + " --api-nodes " + testCase.ApiNodes, { cwd: pathGrungni });
 
     console.log("Creating network with " + testCase.ValidatorNodes + " validators ...");
     var response = await promiseFromChildProcess(processKubectl);

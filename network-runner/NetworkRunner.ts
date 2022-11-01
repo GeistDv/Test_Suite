@@ -37,9 +37,9 @@ class NetworkRunner {
     constructor(config: ConfigurationType, testCase: TestCase) {
 
         //Configuration Type
-        this.configuration.enable_gdocs_insertion = config.enable_gdocs_insertion;
+        this.configuration.enable_gdocs_insertion = config.enable_gdocs_insertion != undefined ? config.enable_gdocs_insertion : false;
         this.configuration.test_type = config.test_type;
-        this.configuration.sheet_name = config.sheet_name;
+        this.configuration.sheet_name = config.sheet_name != undefined ? config.sheet_name : "";
 
         //Test Case
         this.testCase = testCase;

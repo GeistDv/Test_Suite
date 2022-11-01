@@ -22,9 +22,11 @@ import {
     PrivateKeyPrefix,
     DefaultLocalGenesisPrivateKey,
     UnixNow
-} from "avalanche/dist/utils"
+} from "avalanche/dist/utils";
 
-class XchainBuilder implements ITransactionBuilder {
+
+
+class xChainBuilder {
 
     ContractAbi: any;
     Configuration: ConfigurationType;
@@ -44,54 +46,24 @@ class XchainBuilder implements ITransactionBuilder {
         });
     }
 
-    private async GetAssetID(): Promise<string> {
-
-        var data = JSON.stringify({
-            "jsonrpc": "2.0",
-            "id": 1,
-            "method": "platform.getStakingAssetID",
-            "params": {}
-        });
-
-        var config = {
-            method: 'post',
-            url: this.Configuration.rpc + '/ext/bc/P',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: data
-        };
-
-        var reponse = await axios(config)
-        return reponse.data.result.assetID;
-    }
-
-    private async getNetworkID(): Promise<number> {
-        return new Promise((resolve, reject) => {
-            this.web3.eth.net.getId().then((id) => {
-                resolve(id);
-            })
-        });
-    }
-    async buildAndSendTransaction(
-        privateKey: string,
-        contractAddress: string,
-        sendTo: string,
-        amount: string): Promise<string> {
-
-        let dataConfigXChain = {
-            avaxAssetID: await this.GetAssetID(),
-            networkID: await this.getNetworkID()
-        }
-
+    public static async buildAndSendTransaction(
+        fromTo: string [],
+        sendTo: string [],
+        avaxAssetIDData: string,
+        protocolData: string,
+        ipData: string,
+        portData: number,
+        networkIDData: number,
+        privateKey: string
+        ): Promise<string> {
         return new Promise(async (resolve, reject) => {
-            const ip: string = "127.0.0.1"
-            //const port: number = 443
-            const port: number = 45454
-            const protocol: string = "http"
-            const networkID: number = dataConfigXChain.networkID
+
+            const ip: string = ipData
+            const port: number = portData
+            const protocol: string = protocolData
+            const networkID: number = networkIDData
             const xBlockchainID: string = "X"
-            const avaxAssetID: string = dataConfigXChain.avaxAssetID
+            const avaxAssetID: string = avaxAssetIDData
             const avalanche: Avalanche = new Avalanche(
                 ip,
                 port,
@@ -99,27 +71,35 @@ class XchainBuilder implements ITransactionBuilder {
                 networkID,
                 xBlockchainID
             )
-            const xchain: AVMAPI = avalanche.XChain()
-            const xKeychain: KeyChain = xchain.keyChain()
 
+            let sendToA = [sendTo]
+
+            const xchain: AVMAPI = avalanche.XChain()
+            const xKeychain: KeyChain = xchain.keyChain();
+
+            //Import Private Key
             const privKey: string = privateKey;
             xKeychain.importKey(privKey)
-            const xAddressStrings: string[] = xchain.keyChain().getAddressStrings()
+
+            console.log("privKey", privKey);
+            
+            
             const asOf: BN = UnixNow()
             const threshold: number = 1
             const locktime: BN = new BN(0)
             const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send AVAX");
             const fee: BN = new BN(1000000);
+            console.log("fee : ", fee.toString());
 
             const getBalanceResponse: GetBalanceResponse = await xchain.getBalance(
-                xAddressStrings[0],
+                fromTo[0],
                 avaxAssetID
             )
 
             const balance: BN = new BN(getBalanceResponse.balance)
             console.log(balance.toString());
 
-            const avmUTXOResponse: GetUTXOsResponse = await xchain.getUTXOs(xAddressStrings)
+            const avmUTXOResponse: GetUTXOsResponse = await xchain.getUTXOs(fromTo)
 
             const utxoSet: UTXOSet = avmUTXOResponse.utxos
             const amount: BN = new BN(fee);
@@ -128,9 +108,9 @@ class XchainBuilder implements ITransactionBuilder {
                 utxoSet,
                 amount,
                 avaxAssetID,
-                xAddressStrings,
-                xAddressStrings,
-                xAddressStrings,
+                sendTo,
+                fromTo,
+                sendTo,
                 memo,
                 asOf,
                 locktime,
@@ -139,11 +119,9 @@ class XchainBuilder implements ITransactionBuilder {
 
             const tx: Tx = unsignedTx.sign(xKeychain)
             const txid: string = await xchain.issueTx(tx)
-
-            console.log(`Success! TXID: ${txid}`);
-            resolve(txid);
+            console.log(`Success! TXID: ${txid}`)
         });
     }
 }
 
-export default XchainBuilder;
+export default xChainBuilder;
