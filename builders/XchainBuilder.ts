@@ -25,6 +25,8 @@ import {
 } from "avalanche/dist/utils";
 import AvalancheXChain from '../types/AvalancheXChain';
 
+import { InitialStates, SECPTransferOutput } from "avalanche/dist/apis/avm"
+
 class xChainBuilder {
 
     ContractAbi: any;
@@ -46,24 +48,32 @@ class xChainBuilder {
     }
 
     public static async buildAndSendTransaction(
-        fromAddress: string [],
-        sendAddress: string [],
-        avalancheXChain: AvalancheXChain
-        ): Promise<string> {
+        fromAddress: any[],
+        sendAddress: string[],
+        avalancheXChain: AvalancheXChain,
+        amountToSend: number
+    ): Promise<string> {
         return new Promise(async (resolve, reject) => {
-            
-            const asOf: BN = UnixNow()
-            const threshold: number = 1
-            const locktime: BN = new BN(0)
+
+            const asOf: BN = UnixNow();
+            const threshold: number = 1;
+            const locktime: BN = new BN(0);
             const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send AVAX");
-            const fee: BN = new BN(1000000);
 
-            const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs(fromAddress)
-            const utxoSet: UTXOSet = avmUTXOResponse.utxos
-            const amount: BN = new BN(1);
+            const bufferAddress = Buffer.from(fromAddress[0]);
 
-            let balanceFrom = await this.getBalanceAddress(fromAddress[0], avalancheXChain);
-            console.log("Balance From", balanceFrom);
+            //Prepare UTXOs
+            const secpOutput = new SECPTransferOutput(new BN(amountToSend), [bufferAddress], locktime, threshold);
+            const initialState = new InitialStates()
+            initialState.addOutput(secpOutput)
+
+            const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs(fromAddress);
+
+            const utxoSet: UTXOSet = avmUTXOResponse.utxos;
+
+            const balance = utxoSet.getBalance(fromAddress[0], avalancheXChain.avaxAssetID);
+
+            const amount: BN = new BN(amountToSend);
 
             const unsignedTx: UnsignedTx = await avalancheXChain.xchain.buildBaseTx(
                 utxoSet,
@@ -71,7 +81,7 @@ class xChainBuilder {
                 avalancheXChain.avaxAssetID,
                 sendAddress,
                 fromAddress,
-                sendAddress,
+                fromAddress,
                 memo,
                 asOf,
                 locktime,
@@ -81,15 +91,18 @@ class xChainBuilder {
             const tx: Tx = unsignedTx.sign(avalancheXChain.xKeyChain)
             const txid: string = await avalancheXChain.xchain.issueTx(tx);
 
-            let balanceTo = await this.getBalanceAddress(sendAddress[0], avalancheXChain);
-            console.log("Balance To", balanceTo);
-            
+            let status: string = "";
+
+            //Temporal Solution
+            while (status.toUpperCase() != "ACCEPTED") {
+                status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
+            }
+
             resolve(txid);
         });
     }
 
-    private static async getBalanceAddress (address: string, avalancheXChain: AvalancheXChain) 
-    {
+    private static async getBalanceAddress(address: string, avalancheXChain: AvalancheXChain) {
         const getBalanceResponse: GetBalanceResponse = await avalancheXChain.xchain.getBalance(
             address,
             avalancheXChain.avaxAssetID

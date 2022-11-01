@@ -25,6 +25,7 @@ import TestCase from "./types/testcase";
 import utilsX from './utils/utilsX';
 import XchainBuilder from './builders/XchainBuilder';
 import { getXKeyChain } from './utils/configAvalanche';
+import { basename } from "path";
 
 dotenv.config();
 // Needed for self signed certs.
@@ -158,12 +159,18 @@ app.post("/network-runner/x-chain", async (req, res) => {
         port = url.port;
     }
 
+    console.log("URL",url);
+
     console.log("accountAVM",accountAVM);
     let xChainAvalanche = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC,networkID, networkRunner.configuration.private_key_with_funds, assetID);
     
+    let baseAmount : number = 2000000;
+
     for(let i = 0; i < networkRunner.testCase.Threads; i++)
     {
-        let txid = await XchainBuilder.buildAndSendTransaction([accountAVM], [accounts[i]], xChainAvalanche);
+        let amountSend = baseAmount + i;
+        //Found Accounts
+        let txid = await XchainBuilder.buildAndSendTransaction([accountAVM], [accounts[i]], xChainAvalanche, amountSend);
         console.log("Tx ID:",txid);
     }
     
@@ -171,10 +178,9 @@ app.post("/network-runner/x-chain", async (req, res) => {
     console.log("Address Father", accountAVM);
     console.log("Address Childs", accounts);
 
-    /*
-    let txid1 = await XchainBuilder.buildAndSendTransaction([accounts[0]], [accounts[1]], xChainAvalanche);
+    //Transactions
+    let txid1 = await XchainBuilder.buildAndSendTransaction([accounts[0]], [accounts[1]], xChainAvalanche, 1);
     console.log(txid1)
-    */
     
     return res.status(200).send("Testing");
 })
