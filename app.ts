@@ -13,7 +13,7 @@ import fs from "fs";
 import SendXChainBuilder from "./builders/SendXChainBuilder";
 import DataFlow from "./types/dataflowtype";
 import * as child from 'child_process';
-import { logger } from "./utils/logger";
+import { logger,errorLogger } from "./utils/logger";
 import { startTestsAndGatherMetrics } from './automation/starterJmeter';
 import { Constants } from "./constants";
 import { getConfigTypeWithNetworkRunner } from './network-runner/scripterNR';
@@ -204,7 +204,7 @@ app.post('/', async (req, res) => {
         .then(data => {
             res.send(data);
         }).catch(err => {
-            logger.error(err);
+            errorLogger.error(err);
             res.status(500).send(err);
         });
 });
@@ -231,7 +231,7 @@ app.post('/pingpong', async (req, res) => {
 
         res.send({ 'txIDA': txIDA, 'txIDB': txIDB });
     } catch (err) {
-        logger.error(err);
+        errorLogger.error(err);
     }
 
 });

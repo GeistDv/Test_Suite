@@ -5,7 +5,7 @@ import { BinTools, Buffer } from "avalanche";
 import axios from "axios";
 import { ConfigurationType } from "../types/configurationtype";
 import DataFlow from "../types/dataflowtype";
-import { logger } from "./logger";
+import { logger,errorLogger } from "./logger";
 import { Constants } from "../constants";
 import NetworkRunner from "../network-runner/NetworkRunner";
 import KubectlChecker from '../automation/KubectlChecker';
@@ -53,15 +53,15 @@ class Utils {
             };
 
             axios(request)
-                .then(function (response) {
-                    logger.info(JSON.stringify(response.data));
-                    resolve(true);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    reject(false)
-                    logger.error(error);
-                });
+            .then(function (response) {
+                logger.info(JSON.stringify(response.data));
+                resolve(true);
+            })
+            .catch(function (error) {
+                console.log(error);
+                reject(false)
+                errorLogger.error(error);
+            });
         });
     }
 
@@ -90,14 +90,14 @@ class Utils {
             };
 
             axios(request)
-                .then(function (response) {
-                    resolve(true);
-                    logger.info(JSON.stringify(response.data));
-                })
-                .catch(function (error) {
-                    reject(false)
-                    logger.error(error);
-                });
+            .then(function (response) {
+                resolve(true);
+                logger.info(JSON.stringify(response.data));
+            })
+            .catch(function (error) {
+                reject(false)
+                errorLogger.error(error);
+            });
         });
     }
 
@@ -132,10 +132,10 @@ class Utils {
                 resolve(response.data.result.address);
                 logger.info(JSON.stringify(response.data));
             })
-                .catch(function (error) {
-                    reject(false);
-                    logger.error(error);
-                });
+            .catch(function (error) {
+                reject(false);
+                errorLogger.error(error);
+            });
 
         });
     }
