@@ -1,31 +1,34 @@
 import Web3 from "web3";
 //import config from "../config.json";
 import fs, { constants, promises } from "fs";
-import {BinTools, Buffer} from "avalanche";
+import { BinTools, Buffer } from "avalanche";
 import axios from "axios";
-import { ConfigurationType }  from "../types/configurationtype";
+import { ConfigurationType } from "../types/configurationtype";
 import DataFlow from "../types/dataflowtype";
 import { logger } from "./logger";
 import { Constants } from "../constants";
 import NetworkRunner from "../network-runner/NetworkRunner";
 import KubectlChecker from '../automation/KubectlChecker';
 import TestCase from "../types/testcase";
+import { getXKeyChain } from './configAvalanche';
+import XchainBuilder from "../builders/XchainBuilder";
+import XChainTestWallet from "./XChainTestWallet";
 
 class Utils {
 
-    Configuration : ConfigurationType;
-    dataFlow : DataFlow;
-    web3 : Web3;
-    constructor(configTypeForCompleteTest : ConfigurationType, dataFlow : DataFlow) {
+    Configuration: ConfigurationType;
+    dataFlow: DataFlow;
+    web3: Web3;
+    constructor(configTypeForCompleteTest: ConfigurationType, dataFlow: DataFlow) {
 
         this.Configuration = configTypeForCompleteTest;
         this.web3 = new Web3(this.Configuration.rpc_keystore + '/ext/bc/C/rpc');;
         this.dataFlow = dataFlow;
     }
-    
-    
-    public static async createUserAccount(config: ConfigurationType) : Promise <boolean> {
-        
+
+
+    public static async createUserAccount(config: ConfigurationType): Promise<boolean> {
+
         console.log("Creating user account...");
         return new Promise(async (resolve, reject) => {
             var data = JSON.stringify(
@@ -39,7 +42,7 @@ class Utils {
                     }
                 }
             );
-    
+
             var request = {
                 method: 'post',
                 url: config.rpc_keystore + '/ext/keystore',
@@ -48,22 +51,22 @@ class Utils {
                 },
                 data: data
             };
-    
+
             axios(request)
-            .then(function (response) {
-                logger.info(JSON.stringify(response.data));
-                resolve(true);
-            })
-            .catch(function (error) {
-                console.log(error);
-                reject(false)
-                logger.error(error);
-            });
+                .then(function (response) {
+                    logger.info(JSON.stringify(response.data));
+                    resolve(true);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    reject(false)
+                    logger.error(error);
+                });
         });
     }
 
 
-    public static async ImportKeyEVM(cb58PrivateKey : string, config: ConfigurationType): Promise <boolean> {
+    public static async ImportKeyEVM(cb58PrivateKey: string, config: ConfigurationType): Promise<boolean> {
 
         return new Promise(async (resolve, reject) => {
             var data = JSON.stringify({
@@ -76,29 +79,29 @@ class Utils {
                 "jsonrpc": "2.0",
                 "id": 1
             });
-            
+
             var request = {
                 method: 'post',
-                url:  config.rpc_keystore + '/ext/bc/C/avax',
-                headers: { 
+                url: config.rpc_keystore + '/ext/bc/C/avax',
+                headers: {
                     'Content-Type': 'application/json'
                 },
-                data : data
+                data: data
             };
 
             axios(request)
-            .then(function (response) {
-                resolve(true);
-                logger.info(JSON.stringify(response.data));
-            })
-            .catch(function (error) {
-                reject(false)
-                logger.error(error);
-            });
+                .then(function (response) {
+                    resolve(true);
+                    logger.info(JSON.stringify(response.data));
+                })
+                .catch(function (error) {
+                    reject(false)
+                    logger.error(error);
+                });
         });
     }
 
-    public static async ImportKeyAVM(cb58PrivateKey : string, config: ConfigurationType): Promise <string> {
+    public static async ImportKeyAVM(cb58PrivateKey: string, config: ConfigurationType): Promise<string> {
 
         return new Promise(async (resolve, reject) => {
             logger.info("Importing key..");
@@ -124,23 +127,23 @@ class Utils {
                 data: data
             };
 
-            axios(request) .then(function (response) {
+            axios(request).then(function (response) {
                 logger.info(response.data);
                 resolve(response.data.result.address);
                 logger.info(JSON.stringify(response.data));
             })
-            .catch(function (error) {
-                reject(false);
-                logger.error(error);
-            });
+                .catch(function (error) {
+                    reject(false);
+                    logger.error(error);
+                });
 
         });
     }
 
-    public async generateAccounts(testCase : TestCase) {
+    public async generateAccounts(testCase: TestCase) {
 
         var numberOFAccountsToCreate: number = testCase.Threads;
-        console.log("Accounts to create : ",numberOFAccountsToCreate)
+        console.log("Accounts to create : ", numberOFAccountsToCreate)
         let currentAccounts = [];
 
         if (fs.existsSync(Constants.PRIVATE_KEYS_FILE)) {
@@ -153,10 +156,10 @@ class Utils {
             }
         }
 
-        if (currentAccounts.length<numberOFAccountsToCreate){
-          numberOFAccountsToCreate =  numberOFAccountsToCreate - currentAccounts.length;
+        if (currentAccounts.length < numberOFAccountsToCreate) {
+            numberOFAccountsToCreate = numberOFAccountsToCreate - currentAccounts.length;
         }
-        else if(currentAccounts.length >= numberOFAccountsToCreate) {
+        else if (currentAccounts.length >= numberOFAccountsToCreate) {
             numberOFAccountsToCreate = 0;
             logger.info("Accounts already generated");
             return [];
@@ -174,7 +177,7 @@ class Utils {
     }
 
     // create function to get transaction details and read the status using getTxStatus
-    public async getTransactionDetails(txHash : string, config: ConfigurationType): Promise < any > {
+    public async getTransactionDetails(txHash: string, config: ConfigurationType): Promise<any> {
         var data = JSON.stringify(
             {
                 "jsonrpc": "2.0",
@@ -202,133 +205,132 @@ class Utils {
     public async transferFunds() {
 
         console.log("transfering funds from X to C chain...");
-        var balance : number = await this.getBalance();
+        var balance: number = await this.getBalance();
         await this.exportFunds((balance / 2).toString())
         //TODO : improve, check the export tx is completed.
         await new Promise(r => setTimeout(r, 4000));
         await this.importFunds();
     }
 
-    public async importFunds() : Promise <boolean>
-    {
+    public async importFunds(): Promise<boolean> {
         return new Promise(async (resolve, reject) => {
-            var data : string = JSON.stringify({
-            "method": "avax.import",
-            "params": {
-                "username": Constants.KEYSTORE_USER,
-                "password": Constants.KEYSTORE_PASSWORD,
-                "sourceChain": "X",
-                "to": this.dataFlow.hex_cchain_address
-            },
-            "jsonrpc": "2.0",
-            "id": 1
+            var data: string = JSON.stringify({
+                "method": "avax.import",
+                "params": {
+                    "username": Constants.KEYSTORE_USER,
+                    "password": Constants.KEYSTORE_PASSWORD,
+                    "sourceChain": "X",
+                    "to": this.dataFlow.hex_cchain_address
+                },
+                "jsonrpc": "2.0",
+                "id": 1
             });
 
             var config = {
                 method: 'post',
                 url: this.Configuration.rpc_keystore + '/ext/bc/C/avax',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json'
                 },
-                data : data
+                data: data
             };
 
             axios(config)
-            .then(function (response) {
-                resolve(true);
-                console.log(JSON.stringify(response.data));
-            })
-            .catch(function (error) {
-                reject(false);
-                console.log(error);
-            });
+                .then(function (response) {
+                    resolve(true);
+                    console.log(JSON.stringify(response.data));
+                })
+                .catch(function (error) {
+                    reject(false);
+                    console.log(error);
+                });
         });
     }
 
-    public async exportFunds(balance : string) : Promise <boolean> {
+    public async exportFunds(balance: string): Promise<boolean> {
 
         return new Promise(async (resolve, reject) => {
             var data = JSON.stringify({
-            "jsonrpc": "2.0",
-            "id": 1,
-            "method": "avm.export",
-            "params": {
-                "from": [
-                    this.dataFlow.bech32_xchain_address
-                ],
-                "to": this.dataFlow.bech32_cchain_address,
-                "amount": balance,
-                "assetID": "AVAX",
-                "changeAddr": this.dataFlow.bech32_xchain_address,
-                "username": Constants.KEYSTORE_USER,
-                "password": Constants.KEYSTORE_PASSWORD
-            }
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "avm.export",
+                "params": {
+                    "from": [
+                        this.dataFlow.bech32_xchain_address
+                    ],
+                    "to": this.dataFlow.bech32_cchain_address,
+                    "amount": balance,
+                    "assetID": "AVAX",
+                    "changeAddr": this.dataFlow.bech32_xchain_address,
+                    "username": Constants.KEYSTORE_USER,
+                    "password": Constants.KEYSTORE_PASSWORD
+                }
             });
 
             var config = {
                 method: 'post',
                 url: this.Configuration.rpc_keystore + '/ext/bc/X',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json'
                 },
-                data : data
+                data: data
             };
 
             axios(config)
-            .then(function (response) {
-                resolve(true);
-                console.log(JSON.stringify(response.data));
-            })
-            .catch(function (error) {
-                reject(false);
-                console.log(error);
-            });
+                .then(function (response) {
+                    resolve(true);
+                    console.log(JSON.stringify(response.data));
+                })
+                .catch(function (error) {
+                    reject(false);
+                    console.log(error);
+                });
         });
     }
 
-    public async getBalance(): Promise <number> {
+    public async getBalance(): Promise<number> {
 
         return new Promise((resolve, reject) => {
-        var data = JSON.stringify({
-            "jsonrpc": "2.0",
-            "id": 1,
-            "method": "avm.getAllBalances",
-            "params": {
-                "address": this.dataFlow.bech32_xchain_address
-            }
+            var data = JSON.stringify({
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "avm.getAllBalances",
+                "params": {
+                    "address": this.dataFlow.bech32_xchain_address
+                }
+            });
+
+            var config = {
+                method: 'post',
+                url: this.Configuration.rpc + '/ext/bc/X',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+
+            axios(config)
+                .then(function (response) {
+
+                    if (response.data.result.balances.length > 0) {
+                        resolve(response.data.result.balances[0].balance);
+                    }
+                    else {
+                        console.log('Private key doesnt have any balance');
+                        reject('Private key doesnt have any balance');
+                    }
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    reject(error);
+                });
         });
-
-        var config = {
-        method: 'post',
-        url: this.Configuration.rpc + '/ext/bc/X',
-        headers: { 
-            'Content-Type': 'application/json'
-        },
-        data : data
-        };
-
-        axios(config)
-        .then(function (response) {
-
-            if(response.data.result.balances.length > 0){
-                resolve(response.data.result.balances[0].balance);
-            }
-            else{
-                console.log('Private key doesnt have any balance');
-                reject('Private key doesnt have any balance');
-            }
-           
-        })
-        .catch(function (error) {
-            console.log(error);
-            reject(error);
-        });
-    });
 
     }
 
 
-    public async generateAndFundWallets(testCase : TestCase) {
+    public async generateAndFundWallets(testCase: TestCase) {
         let accounts = await this.generateAccounts(testCase)
         let nonce = await this.web3.eth.getTransactionCount(this.dataFlow.hex_cchain_address);
         var chunks = this.splitListIntoChunksOfLen(accounts, 50);
@@ -359,7 +361,7 @@ class Utils {
         return chunks;
     }
 
-    public async sendFunds(privatekey: string, nonce : number) {
+    public async sendFunds(privatekey: string, nonce: number) {
 
         let sendTo = await this.web3.eth.accounts.privateKeyToAccount(privatekey);
 
@@ -376,7 +378,7 @@ class Utils {
         }
 
         var signed = await this.web3.eth.accounts.signTransaction(txData, "0x" + this.dataFlow.hexPrivateKey);
-        console.log("Sending funds transaction... " , signed.transactionHash);
+        console.log("Sending funds transaction... ", signed.transactionHash);
         var data = await this.web3.eth.sendSignedTransaction(signed.rawTransaction!);
         var stringToWrite: string = (fs.existsSync('privatekeys.csv') ? '\n' : '') + privatekey;
         fs.appendFileSync('privatekeys.csv', stringToWrite);
@@ -386,14 +388,13 @@ class Utils {
     public static convertHexPkToCB58(hexPrivKey: string): string {
         let bintools: BinTools = BinTools.getInstance()
         let buf: Buffer = Buffer.from(hexPrivKey, 'hex')
-        let encoded: string = `PrivateKey-${
-            bintools.cb58Encode(buf)
-        }`
+        let encoded: string = `PrivateKey-${bintools.cb58Encode(buf)
+            }`
         return encoded;
     }
 
-    public static GetPendingValidators(config: ConfigurationType) : Promise <any> {
-        
+    public static GetPendingValidators(config: ConfigurationType): Promise<any> {
+
         return new Promise((resolve, reject) => {
             var data = JSON.stringify({
                 "jsonrpc": "2.0",
@@ -402,27 +403,27 @@ class Utils {
                 "params": {}
             });
 
-            var request = 
+            var request =
             {
                 method: 'post',
                 url: config.rpc + '/ext/bc/P',
-                headers: { 
-                'Content-Type': 'application/json'
+                headers: {
+                    'Content-Type': 'application/json'
                 },
-                data : data
+                data: data
             };
 
             axios(request)
-            .then(function (response) {
-                resolve(response.data.result.validators);
-            })
-            .catch(function (error) {
-                reject(error);
-                console.log(error);
-            });
+                .then(function (response) {
+                    resolve(response.data.result.validators);
+                })
+                .catch(function (error) {
+                    reject(error);
+                    console.log(error);
+                });
         });
     }
-    
+
     public static translateCb58PKToHex(cb58PrivateKey: string): string {
         const bintools: BinTools = BinTools.getInstance()
         const privKey: string = cb58PrivateKey;
@@ -430,13 +431,13 @@ class Utils {
         return hex.toString('hex');
     }
 
-    public static async getBlockDetails(web3 : Web3, blockNumberFrom : number) {
+    public static async getBlockDetails(web3: Web3, blockNumberFrom: number) {
 
         var currentBlockNumber = await web3.eth.getBlockNumber();
-        var blockTimestamps : string[] = [];
-        var blockTimes : number[] = [];
-        var blocks : number[] = [];
-    
+        var blockTimestamps: string[] = [];
+        var blockTimes: number[] = [];
+        var blocks: number[] = [];
+
         var totalBlocks = currentBlockNumber - blockNumberFrom;
         //get all block from a given block number
         for (var i = 0; i < totalBlocks; i++) {
@@ -444,107 +445,173 @@ class Utils {
             blocks.push(block.number);
             blockTimestamps.push(block.timestamp.toString());
         }
-    
+
         //read all timestamps and calculate the average time between blocks
         var total = 0;
         for (var i = 0; i < blockTimestamps.length - 1; i++) {
             blockTimes.push(parseInt(blockTimestamps[i + 1]) - parseInt(blockTimestamps[i]));
         }
-    
+
         //sum all block times
         for (var i = 0; i < blockTimes.length; i++) {
             total += blockTimes[i];
         }
-    
+
         //get index of the longest block time
         var max = Math.max.apply(Math, blockTimes);
         var maxIndex = blockTimes.indexOf(max);
-       
+
         logger.info('blockNumber with max', blocks[maxIndex], max);
         logger.info("Average time between blocks: " + total / blockTimes.length);
-    
+
         //get the maximum block time and the minimum block time
         var max = Math.max.apply(Math, blockTimes);
         var min = Math.min.apply(Math, blockTimes);
         logger.info("Max block time: " + max);
         logger.info("Min block time: " + min);
-    
+
         let dataResponse = {
             blockNumberWithMax: blocks[maxIndex],
             averageTimeBetweenBlocks: total / blockTimes.length,
             maxBlockTime: max,
             minBlockTime: min
         }
-    
+
         return dataResponse;
     }
-    
-    public static validateIfCurrentApiNodesExists(testcase : TestCase, prevtestcase : TestCase)
-    {
-        return(testcase.ApiNodes == prevtestcase.ApiNodes)
+
+    public static validateIfCurrentApiNodesExists(testcase: TestCase, prevtestcase: TestCase) {
+        return (testcase.ApiNodes == prevtestcase.ApiNodes)
     }
     //method to validate if service is up
-    public static async validateIfCurrentValidatorsExists(config: ConfigurationType, testCase : TestCase) : Promise <boolean> {
+    public static async validateIfCurrentValidatorsExists(config: ConfigurationType, testCase: TestCase): Promise<boolean> {
         return new Promise((resolve, reject) => {
             var data = JSON.stringify({
                 "jsonrpc": "2.0",
                 "method": "platform.getCurrentValidators",
                 "params": {
-                  "subnetID": null,
-                  "nodeIDs": []
+                    "subnetID": null,
+                    "nodeIDs": []
                 },
                 "id": 1
-              });
+            });
 
             var request = {
                 method: 'post',
                 url: config.rpc + '/ext/bc/P',
-                headers: { 
-                  'Content-Type': 'application/json'
+                headers: {
+                    'Content-Type': 'application/json'
                 },
-                data : data
-              };
+                data: data
+            };
 
             axios(request)
-            .then(function (response) {
-                resolve(testCase.ValidatorNodes == response.data.result.validators.length);
-            })
-            .catch(function (error) {
-                console.log("Validator are not ready");
-                resolve(false);
-            });
+                .then(function (response) {
+                    resolve(testCase.ValidatorNodes == response.data.result.validators.length);
+                })
+                .catch(function (error) {
+                    console.log("Validator are not ready");
+                    resolve(false);
+                });
         });
     }
 
-    public static async isBootstraped(config: ConfigurationType) : Promise <boolean> {
+    public static async isBootstraped(config: ConfigurationType): Promise<boolean> {
         return new Promise((resolve, reject) => {
             var data = JSON.stringify({
                 "jsonrpc": "2.0",
                 "id": 1,
                 "method": "info.isBootstrapped",
                 "params": {
-                  "chain": "C"
+                    "chain": "C"
                 }
-              });
-              
-              var request = {
+            });
+
+            var request = {
                 method: 'post',
                 url: config.rpc + '/ext/info',
-                headers: { 
-                  'Content-Type': 'application/json'
+                headers: {
+                    'Content-Type': 'application/json'
                 },
-                data : data
-              };
-              
-              axios(request)
-              .then(function (response) {
-                resolve(response.data.result.isBootstrapped == true);
-              })
-              .catch(function (error) {
-                reject(false);
-                console.log(error);
-              });              
+                data: data
+            };
+
+            axios(request)
+                .then(function (response) {
+                    resolve(response.data.result.isBootstrapped == true);
+                })
+                .catch(function (error) {
+                    reject(false);
+                    console.log(error);
+                });
         });
+    }
+
+    public static async getStakingAssetID(config: ConfigurationType): Promise<string> {
+        return new Promise((resolve, reject) => {
+            var data = JSON.stringify({
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "platform.getStakingAssetID",
+                "params": {}
+            });
+
+            var request = {
+                method: 'post',
+                url: config.rpc + '/ext/bc/P',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+
+            axios(request).then(function (response) {
+                resolve(response.data.result.assetID);
+            }).catch(function (error) {
+                reject(null);
+            });
+        });
+    }
+
+    public static async getNetworkID(config: ConfigurationType): Promise<string> {
+        return new Promise((resolve, reject) => {
+            var data = JSON.stringify({
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "info.getNetworkID",
+                "params": {
+                }
+            });
+
+            var request = {
+                method: 'post',
+                url: config.rpc + '/ext/info',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+
+            axios(request).then(function (response) {
+                resolve(response.data.result.networkID);
+            }).catch(function (error) {
+                reject(null);
+            });
+        });
+    }
+
+    public static async sendTransactionXChain(addressFrom: XChainTestWallet, addressTo: XChainTestWallet, url: any, assetID: any, networkID: any, protocolRPC: any) {
+        let xChain1 = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC, networkID, addressFrom.privateKey, assetID);
+        let idTxChild = await XchainBuilder.buildAndSendTransaction([addressFrom.xChainAddress], [addressTo.xChainAddress], xChain1, 1);
+        return idTxChild;
+    }
+
+    private splitListIntoChunksOfLenXChain (list: string[], len: number) {
+        let chunks = [], i = 0, n = list.length;
+        while (i < n) {
+            chunks.push(list.slice(i, i += len));
+        }
+        return chunks;
     }
 
 }

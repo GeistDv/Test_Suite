@@ -22,10 +22,11 @@ import dotenv from 'dotenv';
 
 import NetworkRunner from './network-runner/NetworkRunner';
 import TestCase from "./types/testcase";
-import utilsX from './utils/utilsX';
 import XchainBuilder from './builders/XchainBuilder';
 import { getXKeyChain } from './utils/configAvalanche';
 import { basename } from "path";
+
+import XChainTestWallet from './utils/XChainTestWallet';
 
 dotenv.config();
 // Needed for self signed certs.
@@ -124,11 +125,9 @@ app.post("/network-runner", async (req, res) => {
     }
 
     return res.status(200).send("Network Runner executed");
-
 });
 
-app.post("/network-runner/x-chain", async (req, res) => {
-
+app.post("/network-runner/x-chain-test", async (req, res) => {
     let testCase: TestCase = {
         StakingAmount: req.body.StakingAmount,
         ValidatorNodes: req.body.ValidatorNodes,
@@ -142,48 +141,52 @@ app.post("/network-runner/x-chain", async (req, res) => {
 
     networkRunner = await getConfigTypeWithNetworkRunner(req, testCase);
 
-    await utilsX.createUserAccount(networkRunner.configuration);
-    let accountAVM = await utilsX.ImportKeyAVM(networkRunner.configuration.private_key_with_funds, networkRunner.configuration);
+    web3 = new Web3(networkRunner.configuration.rpc + '/ext/bc/C/rpc');
 
-    let assetID = await utilsX.getStakingAssetID(networkRunner.configuration);
-    let networkID = parseInt(await utilsX.getNetworkID(networkRunner.configuration));
+    await Utils.createUserAccount(networkRunner.configuration);
 
-    let accounts = await utilsX.generateAccounts(networkRunner.configuration, networkRunner.testCase);
-
+    let assetID = await Utils.getStakingAssetID(networkRunner.configuration);
+    let networkID = parseInt(await Utils.getNetworkID(networkRunner.configuration));
     let url = new URL(networkRunner.configuration.rpc);
     let port = "443";
-    let protocolRPC = url.protocol.replace(":","");
+    let protocolRPC = url.protocol.replace(":", "");
 
-    if(url.port != "")
-    {
+    if (url.port != "") {
         port = url.port;
     }
 
-    console.log("URL",url);
+    let accountAVM = await Utils.ImportKeyAVM(networkRunner.configuration.private_key_with_funds, networkRunner.configuration);
+    let xChainAvalanche = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC, networkID, networkRunner.configuration.private_key_with_funds, assetID);
+    let baseAmount: number = 2000000;
+    let accountsXChain: XChainTestWallet[] = [];
 
-    console.log("accountAVM",accountAVM);
-    let xChainAvalanche = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC,networkID, networkRunner.configuration.private_key_with_funds, assetID);
-    
-    let baseAmount : number = 2000000;
-
-    for(let i = 0; i < networkRunner.testCase.Threads; i++)
-    {
-        let amountSend = baseAmount + i;
-        //Found Accounts
-        let txid = await XchainBuilder.buildAndSendTransaction([accountAVM], [accounts[i]], xChainAvalanche, amountSend);
-        console.log("Tx ID:",txid);
+    //Generate and Found Accounts
+    for (let x = 0; x < networkRunner.testCase.Threads; x++) {
+        let xChainTestWallet = new XChainTestWallet(web3, networkRunner.configuration);
+        await xChainTestWallet.generateAccount();
+        let amountSend = baseAmount + x;
+        let txid = await XchainBuilder.buildAndSendTransaction([accountAVM], [xChainTestWallet.xChainAddress], xChainAvalanche, amountSend);
+        console.log("Found ID:", txid);
+        accountsXChain.push(xChainTestWallet);
     }
-    
-    console.log("--------------------STARTING TRANSACTIONS------------------------------");
-    console.log("Address Father", accountAVM);
-    console.log("Address Childs", accounts);
 
-    //Transactions
-    let txid1 = await XchainBuilder.buildAndSendTransaction([accounts[0]], [accounts[1]], xChainAvalanche, 1);
-    console.log(txid1)
-    
+    console.log("Starting Transactions....");
+
+    //Repeat Cicle for start transactions
+    for (let k = 0; k < accountsXChain.length; k++) {
+        let txId : any = null; 
+        if (k <= accountsXChain.length - 2) { //Other Transactions
+            txId = await Utils.sendTransactionXChain(accountsXChain[k], accountsXChain[k + 1], url, assetID, networkID, protocolRPC);
+        }
+        else if(k == accountsXChain.length - 1) //Ultimate Transaction
+        {
+            txId = await Utils.sendTransactionXChain(accountsXChain[k], accountsXChain[0], url, assetID, networkID, protocolRPC);
+        }
+        console.log(txId);
+    }
+
     return res.status(200).send("Testing");
-})
+});
 
 // single endpoint to test (cloud)
 app.post('/', async (req, res) => {

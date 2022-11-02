@@ -55,6 +55,8 @@ class xChainBuilder {
     ): Promise<string> {
         return new Promise(async (resolve, reject) => {
 
+            console.log("sendAddress",sendAddress);
+
             const asOf: BN = UnixNow();
             const threshold: number = 1;
             const locktime: BN = new BN(0);
@@ -70,7 +72,7 @@ class xChainBuilder {
             const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs(fromAddress);
 
             const utxoSet: UTXOSet = avmUTXOResponse.utxos;
-
+            
             const balance = utxoSet.getBalance(fromAddress[0], avalancheXChain.avaxAssetID);
 
             const amount: BN = new BN(amountToSend);
@@ -86,7 +88,7 @@ class xChainBuilder {
                 asOf,
                 locktime,
                 threshold
-            )
+            );
 
             const tx: Tx = unsignedTx.sign(avalancheXChain.xKeyChain)
             const txid: string = await avalancheXChain.xchain.issueTx(tx);
@@ -102,12 +104,12 @@ class xChainBuilder {
         });
     }
 
-    private static async getBalanceAddress(address: string, avalancheXChain: AvalancheXChain) {
+    public static async getBalanceAddress(address: string, avalancheXChain: AvalancheXChain) {
         const getBalanceResponse: GetBalanceResponse = await avalancheXChain.xchain.getBalance(
             address,
             avalancheXChain.avaxAssetID
         );
-
+        
         const balance: BN = new BN(getBalanceResponse.balance);
         return balance;
     }
