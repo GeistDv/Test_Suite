@@ -166,26 +166,28 @@ app.post("/network-runner/x-chain-test", async (req, res) => {
         await xChainTestWallet.generateAccount();
         let amountSend = baseAmount + x;
         let txid = await XchainBuilder.buildAndSendTransaction([accountAVM], [xChainTestWallet.xChainAddress], xChainAvalanche, amountSend);
-        console.log("Found ID:", txid);
         accountsXChain.push(xChainTestWallet);
+    }
+
+
+    let promiseTransactions = [];
+
+    //Repeat Cicle for start transactions
+    for (let k = 0; k < accountsXChain.length; k++) {
+        let txId: any = null;
+        if (k <= accountsXChain.length - 2) { //Other Transactions
+            promiseTransactions.push(Utils.sendTransactionXChain(accountsXChain[k], accountsXChain[k + 1], url, assetID, networkID, protocolRPC));
+        }
+        else if (k == accountsXChain.length - 1) //Ultimate Transaction
+        {
+            promiseTransactions.push(Utils.sendTransactionXChain(accountsXChain[k], accountsXChain[0], url, assetID, networkID, protocolRPC));
+        }
     }
 
     console.log("Starting Transactions....");
 
-    //Repeat Cicle for start transactions
-    for (let k = 0; k < accountsXChain.length; k++) {
-        let txId : any = null; 
-        if (k <= accountsXChain.length - 2) { //Other Transactions
-            txId = await Utils.sendTransactionXChain(accountsXChain[k], accountsXChain[k + 1], url, assetID, networkID, protocolRPC);
-        }
-        else if(k == accountsXChain.length - 1) //Ultimate Transaction
-        {
-            txId = await Utils.sendTransactionXChain(accountsXChain[k], accountsXChain[0], url, assetID, networkID, protocolRPC);
-        }
-        console.log(txId);
-    }
+    await Promise.race(promiseTransactions);
 
-    return res.status(200).send("Testing");
 });
 
 // single endpoint to test (cloud)

@@ -603,6 +603,7 @@ class Utils {
     public static async sendTransactionXChain(addressFrom: XChainTestWallet, addressTo: XChainTestWallet, url: any, assetID: any, networkID: any, protocolRPC: any) {
         let xChain1 = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC, networkID, addressFrom.privateKey, assetID);
         let idTxChild = await XchainBuilder.buildAndSendTransaction([addressFrom.xChainAddress], [addressTo.xChainAddress], xChain1, 1);
+        console.log("Tx ID -> ",idTxChild);
         return idTxChild;
     }
 
