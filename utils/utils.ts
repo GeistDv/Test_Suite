@@ -5,7 +5,7 @@ import {BinTools, Buffer} from "avalanche";
 import axios from "axios";
 import { ConfigurationType }  from "../types/configurationtype";
 import DataFlow from "../types/dataflowtype";
-import { logger } from "./logger";
+import { logger,errorLogger } from "./logger";
 import { Constants } from "../constants";
 import NetworkRunner from "../network-runner/NetworkRunner";
 import KubectlChecker from '../automation/KubectlChecker';
@@ -57,7 +57,7 @@ class Utils {
             .catch(function (error) {
                 console.log(error);
                 reject(false)
-                logger.error(error);
+                errorLogger.error(error);
             });
         });
     }
@@ -93,7 +93,7 @@ class Utils {
             })
             .catch(function (error) {
                 reject(false)
-                logger.error(error);
+                errorLogger.error(error);
             });
         });
     }
@@ -131,7 +131,7 @@ class Utils {
             })
             .catch(function (error) {
                 reject(false);
-                logger.error(error);
+                errorLogger.error(error);
             });
 
         });
