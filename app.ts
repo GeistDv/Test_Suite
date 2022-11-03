@@ -27,6 +27,7 @@ import { getXKeyChain } from './utils/configAvalanche';
 import { basename } from "path";
 
 import XChainTestWallet from './utils/XChainTestWallet';
+import xChainBuilder from "./builders/XchainBuilder";
 
 dotenv.config();
 // Needed for self signed certs.
@@ -157,24 +158,26 @@ app.post("/network-runner/x-chain-test", async (req, res) => {
 
     let accountAVM = await Utils.ImportKeyAVM(networkRunner.configuration.private_key_with_funds, networkRunner.configuration);
     let xChainAvalanche = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC, networkID, networkRunner.configuration.private_key_with_funds, assetID);
-    let baseAmount: number = 2000000;
+
     let accountsXChain: XChainTestWallet[] = [];
+    let promisesXChainWallet = [];
 
     //Generate and Found Accounts
     for (let x = 0; x < networkRunner.testCase.Threads; x++) {
-        let xChainTestWallet = new XChainTestWallet(web3, networkRunner.configuration);
-        await xChainTestWallet.generateAccount();
-        let amountSend = baseAmount + x;
-        let txid = await XchainBuilder.buildAndSendTransaction([accountAVM], [xChainTestWallet.xChainAddress], xChainAvalanche, amountSend);
-        accountsXChain.push(xChainTestWallet);
+        promisesXChainWallet.push(XChainTestWallet.importKeyAndFoundAccount(web3, networkRunner));
     }
+    accountsXChain = await Promise.all(promisesXChainWallet);
 
+    let baseAmount: number = 2000000;
+    for(let x2 = 0; x2 < accountsXChain.length; x2++)
+    {
+        await xChainBuilder.buildAndSendTransaction([accountAVM], [accountsXChain[x2].xChainAddress], xChainAvalanche, baseAmount);
+    }
 
     let promiseTransactions = [];
 
     //Repeat Cicle for start transactions
     for (let k = 0; k < accountsXChain.length; k++) {
-        let txId: any = null;
         if (k <= accountsXChain.length - 2) { //Other Transactions
             promiseTransactions.push(Utils.sendTransactionXChain(accountsXChain[k], accountsXChain[k + 1], url, assetID, networkID, protocolRPC));
         }
@@ -187,6 +190,8 @@ app.post("/network-runner/x-chain-test", async (req, res) => {
     console.log("Starting Transactions....");
 
     await Promise.race(promiseTransactions);
+
+    return res.status(200).send("Execution Test Finished");
 
 });
 

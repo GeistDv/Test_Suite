@@ -28,17 +28,10 @@ import AvalancheXChain from '../types/AvalancheXChain';
 import { InitialStates, SECPTransferOutput } from "avalanche/dist/apis/avm"
 
 class xChainBuilder {
+    
 
-    ContractAbi: any;
-    Configuration: ConfigurationType;
-    DataFlow: DataFlow;
-    web3: Web3;
+    constructor() {
 
-    constructor(config: ConfigurationType, web3: Web3, dataFlow: DataFlow) {
-        this.ContractAbi = {}
-        this.Configuration = config;
-        this.web3 = web3;
-        this.DataFlow = dataFlow;
     }
 
     deployContract(privateKey: string, web3: Web3): Promise<string> {
@@ -54,8 +47,6 @@ class xChainBuilder {
         amountToSend: number
     ): Promise<string> {
         return new Promise(async (resolve, reject) => {
-
-            console.log("sendAddress",sendAddress);
 
             const asOf: BN = UnixNow();
             const threshold: number = 1;
@@ -99,6 +90,8 @@ class xChainBuilder {
             while (status.toUpperCase() != "ACCEPTED") {
                 status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
             }
+
+            console.log("txId -> ",txid);
 
             resolve(txid);
         });
