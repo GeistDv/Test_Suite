@@ -7,6 +7,7 @@ import { ConfigurationType } from "../types/configurationtype";
 import xChainBuilder from "../builders/XchainBuilder";
 import NetworkRunner from "../network-runner/NetworkRunner";
 import AvalancheXChain from "../types/AvalancheXChain";
+import Utils from "./utils";
 
 class XChainTestWallet {
 
@@ -17,7 +18,7 @@ class XChainTestWallet {
 
     }
 
-    public static async importKeyAndFoundAccount(
+    public static async importKeyAndCreateWallet(
         web3: Web3,
         networkRunner: NetworkRunner
     ) {

@@ -40,32 +40,21 @@ class xChainBuilder {
         });
     }
 
-    public static async buildAndSendTransaction(
+    public static async prepareAndSignTransaction(
         fromAddress: any[],
         sendAddress: string[],
         avalancheXChain: AvalancheXChain,
         amountToSend: number
-    ): Promise<string> {
+    ): Promise<Tx> {
         return new Promise(async (resolve, reject) => {
 
+            const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs(fromAddress);
+            
+            const utxoSet: UTXOSet = avmUTXOResponse.utxos;
             const asOf: BN = UnixNow();
             const threshold: number = 1;
             const locktime: BN = new BN(0);
             const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send AVAX");
-
-            const bufferAddress = Buffer.from(fromAddress[0]);
-
-            //Prepare UTXOs
-            const secpOutput = new SECPTransferOutput(new BN(amountToSend), [bufferAddress], locktime, threshold);
-            const initialState = new InitialStates()
-            initialState.addOutput(secpOutput)
-
-            const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs(fromAddress);
-
-            const utxoSet: UTXOSet = avmUTXOResponse.utxos;
-            
-            const balance = utxoSet.getBalance(fromAddress[0], avalancheXChain.avaxAssetID);
-
             const amount: BN = new BN(amountToSend);
 
             const unsignedTx: UnsignedTx = await avalancheXChain.xchain.buildBaseTx(
@@ -82,19 +71,21 @@ class xChainBuilder {
             );
 
             const tx: Tx = unsignedTx.sign(avalancheXChain.xKeyChain)
-            const txid: string = await avalancheXChain.xchain.issueTx(tx);
-
-            let status: string = "";
-
-            //Temporal Solution
-            while (status.toUpperCase() != "ACCEPTED") {
-                status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
-            }
-
-            console.log("txId -> ",txid);
-
-            resolve(txid);
+            resolve(tx);
         });
+    }
+
+    public static async confirmTransaction (tx: Tx, avalancheXChain: AvalancheXChain) 
+    {
+        const txid: string = await avalancheXChain.xchain.issueTx(tx);
+        let status: string = "";
+
+        //Temporal Solution
+        while (status.toUpperCase() != "ACCEPTED") {
+            status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
+        }
+
+        return txid;
     }
 
     public static async getBalanceAddress(address: string, avalancheXChain: AvalancheXChain) {

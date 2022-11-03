@@ -157,21 +157,24 @@ app.post("/network-runner/x-chain-test", async (req, res) => {
     }
 
     let accountAVM = await Utils.ImportKeyAVM(networkRunner.configuration.private_key_with_funds, networkRunner.configuration);
+    //let accountEVM = await Utils.ImportKeyEVM(networkRunner.configuration.private_key_with_funds, networkRunner.configuration);
     let xChainAvalanche = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC, networkID, networkRunner.configuration.private_key_with_funds, assetID);
 
     let accountsXChain: XChainTestWallet[] = [];
     let promisesXChainWallet = [];
 
-    //Generate and Found Accounts
+    //Create Private Keys and Wallets
     for (let x = 0; x < networkRunner.testCase.Threads; x++) {
-        promisesXChainWallet.push(XChainTestWallet.importKeyAndFoundAccount(web3, networkRunner));
+        promisesXChainWallet.push(XChainTestWallet.importKeyAndCreateWallet(web3, networkRunner));
     }
     accountsXChain = await Promise.all(promisesXChainWallet);
 
+    //Founds Wallets
     let baseAmount: number = 2000000;
     for(let x2 = 0; x2 < accountsXChain.length; x2++)
     {
-        await xChainBuilder.buildAndSendTransaction([accountAVM], [accountsXChain[x2].xChainAddress], xChainAvalanche, baseAmount);
+       let txIdXChain = await Utils.sendFoundTransactionXChain(accountAVM, accountsXChain[x2], xChainAvalanche, baseAmount);
+       console.log("txIdXChain -> ",txIdXChain);
     }
 
     let promiseTransactions = [];

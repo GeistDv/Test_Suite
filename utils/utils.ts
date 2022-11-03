@@ -13,6 +13,7 @@ import TestCase from "../types/testcase";
 import { getXKeyChain } from './configAvalanche';
 import XchainBuilder from "../builders/XchainBuilder";
 import XChainTestWallet from "./XChainTestWallet";
+import AvalancheXChain from "../types/AvalancheXChain";
 
 class Utils {
 
@@ -600,11 +601,20 @@ class Utils {
         });
     }
 
+    public static async sendFoundTransactionXChain(accountAVM: string, accountXChain: XChainTestWallet, xChainAvalanche: AvalancheXChain, baseAmount: number)
+    {
+        let txIdSigned = await XchainBuilder.prepareAndSignTransaction([accountAVM], [accountXChain.xChainAddress], xChainAvalanche, baseAmount);
+        let txConfirmed = await XchainBuilder.confirmTransaction(txIdSigned, xChainAvalanche)
+        return txConfirmed;
+    }
+
     public static async sendTransactionXChain(addressFrom: XChainTestWallet, addressTo: XChainTestWallet, url: any, assetID: any, networkID: any, protocolRPC: any) {
         let xChain1 = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC, networkID, addressFrom.privateKey, assetID);
-        let idTxChild = await XchainBuilder.buildAndSendTransaction([addressFrom.xChainAddress], [addressTo.xChainAddress], xChain1, 1);
-        console.log("Tx ID -> ",idTxChild);
-        return idTxChild;
+        let txId = await XchainBuilder.prepareAndSignTransaction([addressFrom.xChainAddress], [addressTo.xChainAddress], xChain1, 1);
+        let txIdConfirmed = await XchainBuilder.confirmTransaction(txId, xChain1);
+
+        console.log("Tx ID -> ",txIdConfirmed);
+        return txIdConfirmed;
     }
 
     private splitListIntoChunksOfLenXChain (list: string[], len: number) {
