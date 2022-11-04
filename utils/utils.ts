@@ -607,8 +607,11 @@ class Utils {
         return txIdSigned;
     }
 
-    public static async sendTransactionXChain(addressFrom: XChainTestWallet, addressTo: XChainTestWallet, url: any, assetID: any, networkID: any, protocolRPC: any, amount: number, xChainFlow: AvalancheXChain) {
+    public static async sendTransactionXChain(addressFrom: XChainTestWallet, addressTo: XChainTestWallet, amount: number, xChainFlow: AvalancheXChain) {
         let txId = await XchainBuilder.prepareAndSignTransaction([addressFrom.xChainAddress], [addressTo.xChainAddress], xChainFlow, amount, true);
+        
+        console.log("Address ->", addressTo.xChainAddress);
+        console.log("New Balance ->", await addressTo.avalancheXChain.xchain.getBalance(addressTo.xChainAddress, addressTo.avalancheXChain.avaxAssetID));
         console.log("Tx ID -> ",txId);
         return txId;
     }

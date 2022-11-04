@@ -80,7 +80,7 @@ class xChainBuilder {
             while (status.toUpperCase() != "ACCEPTED") {
                 status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
             }
-
+            
             resolve(txid);
         });
     }

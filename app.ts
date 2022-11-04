@@ -28,6 +28,7 @@ import { basename } from "path";
 
 import XChainTestWallet from './utils/XChainTestWallet';
 import xChainBuilder from "./builders/XchainBuilder";
+import testbuilderErc20 from './builders/testbuilderErc20';
 
 dotenv.config();
 // Needed for self signed certs.
@@ -146,23 +147,26 @@ app.post("/network-runner/x-chain-test", async (req, res) => {
 
     await Utils.createUserAccount(networkRunner.configuration);
 
-
+    //Information Data, asset and protocol
     let assetID = await Utils.getStakingAssetID(networkRunner.configuration);
     let networkID = parseInt(await Utils.getNetworkID(networkRunner.configuration));
     let url = new URL(networkRunner.configuration.rpc);
     let port = "443";
     let protocolRPC = url.protocol.replace(":", "");
-
     if (url.port != "") {
         port = url.port;
     }
 
-    let accountAVM = await Utils.ImportKeyAVM(networkRunner.configuration.private_key_with_funds, networkRunner.configuration);
-    //let accountEVM = await Utils.ImportKeyEVM(networkRunner.configuration.private_key_with_funds, networkRunner.configuration);
-    let xChainAvalanche = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC, networkID, networkRunner.configuration.private_key_with_funds, assetID);
+    console.log("URL -> ", url);
 
+
+    let accountAVM = await Utils.ImportKeyAVM(networkRunner.configuration.private_key_with_funds, networkRunner.configuration);
+    let xChainAvalanche = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC, networkID, networkRunner.configuration.private_key_with_funds, assetID);
     let accountsXChain: XChainTestWallet[] = [];
     let promisesXChainWallet = [];
+    let principalAccount = new XChainTestWallet(accountAVM, networkRunner.configuration.private_key_with_funds, xChainAvalanche);
+
+
 
     //Create Private Keys and Wallets
     for (let x = 0; x < networkRunner.testCase.Threads; x++) {
@@ -170,64 +174,92 @@ app.post("/network-runner/x-chain-test", async (req, res) => {
     }
     accountsXChain = await Promise.all(promisesXChainWallet);
 
-    //Founds Wallets
-    let baseAmount: number = 100000000000000;
-    let baseSend : number = 4000000;
-    let allFunded = false;
-    let firstFunded = true;
-    let count = 0;
 
-    let repeatsFund = networkRunner.testCase.Threads / 10;
-    let fundedAccounts : XChainTestWallet[] = [];
-    
-    while (!allFunded) {
 
-        if(firstFunded)
+    //Funds Wallets
+    let baseAmount: number = 400000000000000;
+    let baseSend: number = 400000000;
+    let promiseFund = [];
+
+    let c = 0;
+    while (c <= networkRunner.testCase.Threads) {
+        if (c < 10) //First 10 Transactions
         {
-            for (let x2 = 0; x2 < 10; x2++) {
-                let txIdXChain = await Utils.sendFoundTransactionXChain(accountAVM, accountsXChain[x2], xChainAvalanche, baseAmount);
-                console.log("txIdXChain -> ", txIdXChain);
-                fundedAccounts.push(accountsXChain[x2]);
-            }
-
-            firstFunded = false;
+            console.log("First Transactions -> ", c)
+            await Utils.sendTransactionXChain(principalAccount, accountsXChain[c], baseAmount, principalAccount.avalancheXChain);
         }
-        else
-        {
-            for (let u = 0; u < repeatsFund - 1; u++) {
-                
-                let promiseAllTxFund = [];
-                let fundSend = baseSend;
+        else {
+            if (c % 10 == 0 && promiseFund.length > 0) {
+                console.log("Iteration --->", (c / 10));
+                await Promise.all(promiseFund);
+                promiseFund = [];
+                baseSend = baseSend - 2000000;
 
-                for(let c = 0; c < 10; c++)
-                {
-                    promiseAllTxFund.push(Utils.sendTransactionXChain(accountsXChain[c], accountsXChain[u + 10], url, assetID, networkID, protocolRPC, fundSend, accountsXChain[c].avalancheXChain));
-                    fundedAccounts.push(accountsXChain[u + 10]);
+                if (c >= networkRunner.testCase.Threads) {
+                    console.log("BREAKING");
+                    break;
                 }
-
-                await Promise.all(promiseAllTxFund);
             }
-            allFunded = true;
+            promiseFund.push(Utils.sendTransactionXChain(accountsXChain[c - 10], accountsXChain[c], baseSend, accountsXChain[c - 10].avalancheXChain));
         }
-        count = count + 10;
+        c++;
     }
-    
+
+    console.log("Finished Do Funds");
+
     let promiseTransactions = [];
 
     //Repeat Cicle for start transactions
-    for (let k = 0; k < accountsXChain.length; k++) {
-        console.log(k);
-        await Utils.sendTransactionXChain(accountsXChain[k], accountsXChain[accountsXChain.length - k - 1], url, assetID, networkID, protocolRPC, 1, accountsXChain[k].avalancheXChain);
+    for (let k = 0; k < accountsXChain.length - 1; k++) {
+        promiseTransactions.push(Utils.sendTransactionXChain(accountsXChain[k], accountsXChain[k + 1], 1, accountsXChain[k].avalancheXChain));
     }
 
     console.log("Starting Transactions....");
 
-    //await Promise.all(promiseTransactions);
-
+    await Promise.all(promiseTransactions);
     await networkRunner.killGnomeTerminal();
-    
-
     return res.status(200).send("Execution Test Finished");
+
+});
+
+app.post("/erc20tx", async (req, res) => {
+    let completeTestConfiguration: ConfigurationTypeForCompleteTest = req.body;
+    let testCases = await DataTests.readDataTest(completeTestConfiguration.sheet_name);
+    var networkName = completeTestConfiguration.rpc.split("/").pop();
+
+    //read json file
+    var jsonData: any = JSON.parse(fs.readFileSync(pathGrungni + "/" + networkName + ".json", "utf8"));
+    var privateKeyFirstStaker = jsonData.Stakers[0].PrivateKey;
+
+    let configType: ConfigurationType = completeTestConfiguration as ConfigurationType;
+    configType.private_key_with_funds = privateKeyFirstStaker;
+    for (let i = 0; i < testCases.length; i++) {
+
+        var testCase = testCases[i];
+        let prevTestCase: TestCase;
+        if (i > 0) {
+            prevTestCase = testCases[i - 1]
+        }
+        else {
+            prevTestCase = testCases[i]
+        }
+        utils.generateAccounts(testCase);
+    }
+
+    var dataFlow = await initApp(configType);
+    var testbuilderErc20x = new testbuilderErc20(configType, web3, dataFlow);
+
+    privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
+    let contractAddress = await testbuilderErc20x.deployContract(privateKeyFirstStaker, web3);
+
+    for (let i = 0; i < privateKeys.length; i++) {
+        testbuilderErc20x.mint(privateKeyFirstStaker, web3, contractAddress, privateKeys[i])
+    }
+    var promisetransactions = [];
+
+    for (let i = 0; i < privateKeys.length - 1; i++) {
+        promisetransactions.push(testbuilderErc20x.buildAndSendTransaction(privateKeys[i], contractAddress, privateKeys[i + 1], '1'))
+    }
 
 });
 
@@ -365,6 +397,8 @@ async function initBuilder(configurationType: ConfigurationType, dataFlow: DataF
     switch (configurationType.test_type) {
         case "transfer": txBuilder = new SimpleTXBuilder(configurationType, web3, dataFlow);
             // mint
+            break;
+        case "erc20tx": txBuilder = new testbuilderErc20(configurationType, web3, dataFlow);
             break;
         default:
             break;
