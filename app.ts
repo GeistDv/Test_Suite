@@ -200,6 +200,9 @@ app.post("/network-runner/x-chain-test", async (req, res) => {
                     break;
                 }
             }
+
+            baseSend = baseSend + c;
+
             promiseFund.push(Utils.sendTransactionXChain(accountsXChain[c - 10], accountsXChain[c], baseSend, accountsXChain[c - 10].avalancheXChain));
         }
         c++;
@@ -211,12 +214,18 @@ app.post("/network-runner/x-chain-test", async (req, res) => {
 
     //Repeat Cicle for start transactions
     for (let k = 0; k < accountsXChain.length - 1; k++) {
-        promiseTransactions.push(Utils.sendTransactionXChain(accountsXChain[k], accountsXChain[k + 1], 1, accountsXChain[k].avalancheXChain));
+        let oldBalance = await accountsXChain[k].avalancheXChain.xchain.getBalance(accountsXChain[k].xChainAddress, accountsXChain[k].avalancheXChain.avaxAssetID);
+        console.log("Old Balance ->",oldBalance);
+        console.log("K Position ->",k);
+        console.log("Address From->", accountsXChain[k].xChainAddress);
+        console.log("Address To->", accountsXChain[k + 1].xChainAddress);
+        console.log(accountsXChain[k].avalancheXChain.xKeyChain.getAddressStrings());
+        await Utils.sendTransactionXChain(accountsXChain[k], accountsXChain[k + 1], 2000000, accountsXChain[k].avalancheXChain);
     }
 
     console.log("Starting Transactions....");
 
-    await Promise.all(promiseTransactions);
+    //await Promise.all(promiseTransactions);
     await networkRunner.killGnomeTerminal();
     return res.status(200).send("Execution Test Finished");
 
@@ -233,6 +242,7 @@ app.post("/erc20tx", async (req, res) => {
 
     let configType: ConfigurationType = completeTestConfiguration as ConfigurationType;
     configType.private_key_with_funds = privateKeyFirstStaker;
+    var dataFlow = await initApp(configType);
     for (let i = 0; i < testCases.length; i++) {
 
         var testCase = testCases[i];
