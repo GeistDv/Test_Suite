@@ -8,26 +8,33 @@ import xChainBuilder from "../builders/XchainBuilder";
 import NetworkRunner from "../network-runner/NetworkRunner";
 import AvalancheXChain from "../types/AvalancheXChain";
 import Utils from "./utils";
+import { AVMAPI, KeyChain } from "avalanche/dist/apis/avm";
+import { getXKeyChain } from './configAvalanche';
 
 class XChainTestWallet {
 
     xChainAddress: string = "";
     privateKey: string = "";
+    avalancheXChain : AvalancheXChain;
 
-    constructor() {
-
+    constructor(xChainAddress: string, privateKey: string, avalancheXChain : AvalancheXChain) {
+        this.xChainAddress = xChainAddress;
+        this.privateKey = privateKey;
+        this.avalancheXChain = avalancheXChain;
     }
 
     public static async importKeyAndCreateWallet(
         web3: Web3,
-        networkRunner: NetworkRunner
+        networkRunner: NetworkRunner,
+        url: URL,
+        protocolRPC: string,
+        networkID: number,
+        assetID: string
     ) {
         let privateKey = this.generatePrivateKey(web3);
-        console.log(privateKey);
         let xAddress: string = await this.ImportKeyAVM(privateKey, networkRunner.configuration);
-        let xChain = new XChainTestWallet();
-        xChain.privateKey = privateKey;
-        xChain.xChainAddress = xAddress;
+        let avalancheXChain = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC, networkID, privateKey, assetID);
+        let xChain = new XChainTestWallet(xAddress, privateKey, avalancheXChain);
         return xChain;
     }
 

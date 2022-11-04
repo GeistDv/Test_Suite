@@ -13,7 +13,7 @@ import fs from "fs";
 import SendXChainBuilder from "./builders/SendXChainBuilder";
 import DataFlow from "./types/dataflowtype";
 import * as child from 'child_process';
-import { logger,errorLogger } from "./utils/logger";
+import { logger, errorLogger } from "./utils/logger";
 import { startTestsAndGatherMetrics } from './automation/starterJmeter';
 import { Constants } from "./constants";
 import { getConfigTypeWithNetworkRunner } from './network-runner/scripterNR';
@@ -146,6 +146,7 @@ app.post("/network-runner/x-chain-test", async (req, res) => {
 
     await Utils.createUserAccount(networkRunner.configuration);
 
+
     let assetID = await Utils.getStakingAssetID(networkRunner.configuration);
     let networkID = parseInt(await Utils.getNetworkID(networkRunner.configuration));
     let url = new URL(networkRunner.configuration.rpc);
@@ -165,34 +166,66 @@ app.post("/network-runner/x-chain-test", async (req, res) => {
 
     //Create Private Keys and Wallets
     for (let x = 0; x < networkRunner.testCase.Threads; x++) {
-        promisesXChainWallet.push(XChainTestWallet.importKeyAndCreateWallet(web3, networkRunner));
+        promisesXChainWallet.push(XChainTestWallet.importKeyAndCreateWallet(web3, networkRunner, url, protocolRPC, networkID, assetID));
     }
     accountsXChain = await Promise.all(promisesXChainWallet);
 
     //Founds Wallets
-    let baseAmount: number = 2000000;
-    for(let x2 = 0; x2 < accountsXChain.length; x2++)
-    {
-       let txIdXChain = await Utils.sendFoundTransactionXChain(accountAVM, accountsXChain[x2], xChainAvalanche, baseAmount);
-       console.log("txIdXChain -> ",txIdXChain);
-    }
+    let baseAmount: number = 100000000000000;
+    let baseSend : number = 4000000;
+    let allFunded = false;
+    let firstFunded = true;
+    let count = 0;
 
+    let repeatsFund = networkRunner.testCase.Threads / 10;
+    let fundedAccounts : XChainTestWallet[] = [];
+    
+    while (!allFunded) {
+
+        if(firstFunded)
+        {
+            for (let x2 = 0; x2 < 10; x2++) {
+                let txIdXChain = await Utils.sendFoundTransactionXChain(accountAVM, accountsXChain[x2], xChainAvalanche, baseAmount);
+                console.log("txIdXChain -> ", txIdXChain);
+                fundedAccounts.push(accountsXChain[x2]);
+            }
+
+            firstFunded = false;
+        }
+        else
+        {
+            for (let u = 0; u < repeatsFund - 1; u++) {
+                
+                let promiseAllTxFund = [];
+                let fundSend = baseSend;
+
+                for(let c = 0; c < 10; c++)
+                {
+                    promiseAllTxFund.push(Utils.sendTransactionXChain(accountsXChain[c], accountsXChain[u + 10], url, assetID, networkID, protocolRPC, fundSend, accountsXChain[c].avalancheXChain));
+                    fundedAccounts.push(accountsXChain[u + 10]);
+                }
+
+                await Promise.all(promiseAllTxFund);
+            }
+            allFunded = true;
+        }
+        count = count + 10;
+    }
+    
     let promiseTransactions = [];
 
     //Repeat Cicle for start transactions
     for (let k = 0; k < accountsXChain.length; k++) {
-        if (k <= accountsXChain.length - 2) { //Other Transactions
-            promiseTransactions.push(Utils.sendTransactionXChain(accountsXChain[k], accountsXChain[k + 1], url, assetID, networkID, protocolRPC));
-        }
-        else if (k == accountsXChain.length - 1) //Ultimate Transaction
-        {
-            promiseTransactions.push(Utils.sendTransactionXChain(accountsXChain[k], accountsXChain[0], url, assetID, networkID, protocolRPC));
-        }
+        console.log(k);
+        await Utils.sendTransactionXChain(accountsXChain[k], accountsXChain[accountsXChain.length - k - 1], url, assetID, networkID, protocolRPC, 1, accountsXChain[k].avalancheXChain);
     }
 
     console.log("Starting Transactions....");
 
-    await Promise.race(promiseTransactions);
+    //await Promise.all(promiseTransactions);
+
+    await networkRunner.killGnomeTerminal();
+    
 
     return res.status(200).send("Execution Test Finished");
 

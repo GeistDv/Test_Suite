@@ -603,18 +603,14 @@ class Utils {
 
     public static async sendFoundTransactionXChain(accountAVM: string, accountXChain: XChainTestWallet, xChainAvalanche: AvalancheXChain, baseAmount: number)
     {
-        let txIdSigned = await XchainBuilder.prepareAndSignTransaction([accountAVM], [accountXChain.xChainAddress], xChainAvalanche, baseAmount);
-        let txConfirmed = await XchainBuilder.confirmTransaction(txIdSigned, xChainAvalanche)
-        return txConfirmed;
+        let txIdSigned = await XchainBuilder.prepareAndSignTransaction([accountAVM], [accountXChain.xChainAddress], xChainAvalanche, baseAmount, false);
+        return txIdSigned;
     }
 
-    public static async sendTransactionXChain(addressFrom: XChainTestWallet, addressTo: XChainTestWallet, url: any, assetID: any, networkID: any, protocolRPC: any) {
-        let xChain1 = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC, networkID, addressFrom.privateKey, assetID);
-        let txId = await XchainBuilder.prepareAndSignTransaction([addressFrom.xChainAddress], [addressTo.xChainAddress], xChain1, 1);
-        let txIdConfirmed = await XchainBuilder.confirmTransaction(txId, xChain1);
-
-        console.log("Tx ID -> ",txIdConfirmed);
-        return txIdConfirmed;
+    public static async sendTransactionXChain(addressFrom: XChainTestWallet, addressTo: XChainTestWallet, url: any, assetID: any, networkID: any, protocolRPC: any, amount: number, xChainFlow: AvalancheXChain) {
+        let txId = await XchainBuilder.prepareAndSignTransaction([addressFrom.xChainAddress], [addressTo.xChainAddress], xChainFlow, amount, true);
+        console.log("Tx ID -> ",txId);
+        return txId;
     }
 
     private splitListIntoChunksOfLenXChain (list: string[], len: number) {

@@ -28,7 +28,7 @@ import AvalancheXChain from '../types/AvalancheXChain';
 import { InitialStates, SECPTransferOutput } from "avalanche/dist/apis/avm"
 
 class xChainBuilder {
-    
+
 
     constructor() {
 
@@ -44,12 +44,13 @@ class xChainBuilder {
         fromAddress: any[],
         sendAddress: string[],
         avalancheXChain: AvalancheXChain,
-        amountToSend: number
-    ): Promise<Tx> {
+        amountToSend: number,
+        validateBalance: boolean
+    ): Promise<string> {
         return new Promise(async (resolve, reject) => {
 
             const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs(fromAddress);
-            
+
             const utxoSet: UTXOSet = avmUTXOResponse.utxos;
             const asOf: BN = UnixNow();
             const threshold: number = 1;
@@ -70,22 +71,18 @@ class xChainBuilder {
                 threshold
             );
 
-            const tx: Tx = unsignedTx.sign(avalancheXChain.xKeyChain)
-            resolve(tx);
+            const tx: Tx = unsignedTx.sign(avalancheXChain.xKeyChain);
+
+            const txid: string = await avalancheXChain.xchain.issueTx(tx);
+            let status: string = "";
+
+            //Temporal Solution
+            while (status.toUpperCase() != "ACCEPTED") {
+                status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
+            }
+
+            resolve(txid);
         });
-    }
-
-    public static async confirmTransaction (tx: Tx, avalancheXChain: AvalancheXChain) 
-    {
-        const txid: string = await avalancheXChain.xchain.issueTx(tx);
-        let status: string = "";
-
-        //Temporal Solution
-        while (status.toUpperCase() != "ACCEPTED") {
-            status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
-        }
-
-        return txid;
     }
 
     public static async getBalanceAddress(address: string, avalancheXChain: AvalancheXChain) {
@@ -93,7 +90,7 @@ class xChainBuilder {
             address,
             avalancheXChain.avaxAssetID
         );
-        
+
         const balance: BN = new BN(getBalanceResponse.balance);
         return balance;
     }
