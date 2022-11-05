@@ -4,7 +4,6 @@ import ITransactionBuilder from "./builders/ItransactionBuilder";
 import { ConfigurationType, ConfigurationTypeForCompleteTest, SimpleConfigurationType } from "./types/configurationtype";
 import SimpleFunds from "./builders/SendXChainBuilder";
 import SimpleTXBuilder from "./builders/SimpleTXBuilder";
-import ERC20TXBuilder from "./builders/ERC20TXBuilder";
 import ERC1155TXBuilder from "./builders/ERC1155TXBuilder";
 import STRGTXBuilder from "./builders/STRGTXBuilder";
 import Utils from "./utils/utils";
@@ -256,7 +255,6 @@ app.post("/erc20tx", async (req, res) => {
         utils.generateAccounts(testCase);
     }
 
-    var dataFlow = await initApp(configType);
     var testbuilderErc20x = new testbuilderErc20(configType, web3, dataFlow);
 
     privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
