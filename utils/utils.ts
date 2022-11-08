@@ -350,16 +350,17 @@ class Utils {
                 let account = chunk[j];
                 if(testCase.TestType=="erc20tx")
                 {
-                    promisesMint.push(this.txBuilder.mint?.("0x"+this.dataFlow.hexPrivateKey,this.web3,account))
+                    promisesMint.push(await this.txBuilder.mint?.("0x"+this.dataFlow.hexPrivateKey,this.web3,account,nonce));
+                    nonce++;
                 }
                 promises.push(this.sendFunds(account, nonce));
-                nonce++
+                nonce++;
             }
 
             await Promise.all(promises);
             if(testCase.TestType == "erc20tx")
             {
-                await Promise.all(promisesMint)
+                await Promise.all(promisesMint);
             }
 
         }

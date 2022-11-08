@@ -280,13 +280,13 @@ app.post('/', async (req, res) => {
         sendTo = privateKeys[0];
     }
 
-    // txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, Constants.AMOUNT_TO_TRANSFER)
-    //     .then(data => {
-    //         res.send(data);
-    //     }).catch(err => {
-    //         errorLogger.error(err);
-    //         res.status(500).send(err);
-    //     });
+    txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, Constants.AMOUNT_TO_TRANSFER)
+        .then(data => {
+            res.send(data);
+        }).catch(err => {
+            errorLogger.error(err);
+            res.status(500).send(err);
+        });
 });
 
 app.post('/pingpong', async (req, res) => {
@@ -334,7 +334,8 @@ async function initApp(configType: ConfigurationType): Promise<DataFlow> {
 
     let dataFlow = await initDataFlowAccount(configType);
     utils = new Utils(configType, dataFlow);
-    initBuilder(configType, dataFlow);
+    await initBuilder(configType, dataFlow);
+    utils.txBuilder = txBuilder;
     return dataFlow;
 }
 
@@ -405,7 +406,8 @@ async function initBuilder(configurationType: ConfigurationType, dataFlow: DataF
             // mint
             break;
         case "erc20tx": txBuilder = new testbuilderErc20(configurationType, web3, dataFlow);
-                        contractAddress = await txBuilder.deployContract("0x"+dataFlow.hexPrivateKey, web3);
+            contractAddress = await txBuilder.deployContract("0x"+dataFlow.hexPrivateKey, web3);
+            txBuilder.contractAddress = contractAddress;
             break;
         default:
             break;

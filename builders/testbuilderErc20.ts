@@ -27,7 +27,6 @@ class testbuilderErc20 implements ITransactionBuilder {
         return new Promise(async (resolve, reject) => {
             console.log('privateKey principal deploy contract :', privateKey);
             let account = web3.eth.accounts.privateKeyToAccount(privateKey);
-            web3.eth.accounts.wallet.clear();
             web3.eth.accounts.wallet.add(privateKey);
             console.log("Deploying contract...");
             let contract = new web3.eth.Contract(this.ContractAbi.abi);
@@ -43,7 +42,6 @@ class testbuilderErc20 implements ITransactionBuilder {
                 })
                 .then((newContractInstance) => {
                     console.log("Contract deployed at address: " + newContractInstance.options.address);
-                    this.contractAddress = newContractInstance.options.address;
                     resolve(newContractInstance.options.address);
                 }).catch(err => {
                     console.log(err);
@@ -53,22 +51,19 @@ class testbuilderErc20 implements ITransactionBuilder {
     }
 
 
-    public async mint(privateKey: string, web3: Web3, addressTomint: string): Promise<string> {
+    public async mint(privateKey: string, web3: Web3, addressTomint: string, nonce: number): Promise<string> {
         return new Promise(async (resolve, reject) => {
-            console.log('privateKey principal mint :', privateKey);
-            console.log('privatekey dinamica :', addressTomint);
             var addressSendTo = web3.eth.accounts.privateKeyToAccount(addressTomint);
             var address = web3.eth.accounts.privateKeyToAccount(privateKey);
             var contract = new web3.eth.Contract(this.ContractAbi.abi, this.contractAddress);
-            var nonce = await web3.eth.getTransactionCount(address.address);
-
-            const data = contract.methods.mint(addressSendTo, 100000000).encodeABI();
+            console.log ("contract address before make mint transaction",this.contractAddress)
+            const data = contract.methods.mint(addressSendTo.address, "100000000").encodeABI();
             var txData = {
                 nonce: nonce,
                 maxFeePerGas: web3.utils.toHex(Constants.MAXFEEPERGAS),
                 maxPriorityFeePerGas: web3.utils.toHex(Constants.MAXPRIORITYFEEPERGAS),
-                gas: web3.utils.toHex(1000000),
                 from: address.address,
+                gasLimit : web3.utils.toHex(535960),
                 to: this.contractAddress,
                 value: web3.utils.toHex(0),
                 data: data
