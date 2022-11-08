@@ -25,10 +25,10 @@ import {
 } from "avalanche/dist/utils";
 import AvalancheXChain from '../types/AvalancheXChain';
 
+
 import { InitialStates, SECPTransferOutput } from "avalanche/dist/apis/avm"
 
 class xChainBuilder {
-
 
     constructor() {
 
@@ -77,7 +77,7 @@ class xChainBuilder {
             let status: string = "";
 
             //Temporal Solution
-            while (status.toUpperCase() != "ACCEPTED") {
+            while (status.toUpperCase() != "ACCEPTED" && status.toUpperCase() != "REJECTED") {
                 status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
             }
             

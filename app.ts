@@ -160,6 +160,8 @@ app.post("/network-runner/x-chain-test", async (req, res) => {
 
 
     let accountAVM = await Utils.ImportKeyAVM(networkRunner.configuration.private_key_with_funds, networkRunner.configuration);
+    console.log("Address Father ->", accountAVM);
+
     let xChainAvalanche = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC, networkID, networkRunner.configuration.private_key_with_funds, assetID);
     let accountsXChain: XChainTestWallet[] = [];
     let promisesXChainWallet = [];
@@ -192,7 +194,7 @@ app.post("/network-runner/x-chain-test", async (req, res) => {
                 console.log("Iteration --->", (c / 10));
                 await Promise.all(promiseFund);
                 promiseFund = [];
-                baseSend = baseSend - 2000000;
+                baseSend = baseSend - 4000000;
 
                 if (c >= networkRunner.testCase.Threads) {
                     console.log("BREAKING");
@@ -216,16 +218,18 @@ app.post("/network-runner/x-chain-test", async (req, res) => {
         let oldBalance = await accountsXChain[k].avalancheXChain.xchain.getBalance(accountsXChain[k].xChainAddress, accountsXChain[k].avalancheXChain.avaxAssetID);
         console.log("Old Balance ->",oldBalance);
         console.log("K Position ->",k);
+        console.log("Private Key ->",accountsXChain[k].privateKey);
+        console.log("Avax Asset ID ->", accountsXChain[k].avalancheXChain.avaxAssetID);
         console.log("Address From->", accountsXChain[k].xChainAddress);
         console.log("Address To->", accountsXChain[k + 1].xChainAddress);
         console.log(accountsXChain[k].avalancheXChain.xKeyChain.getAddressStrings());
-        await Utils.sendTransactionXChain(accountsXChain[k], accountsXChain[k + 1], 2000000, accountsXChain[k].avalancheXChain);
+        promiseTransactions.push(Utils.sendTransactionXChain(accountsXChain[k], accountsXChain[k + 1], 1000000, accountsXChain[k].avalancheXChain));
     }
 
-    console.log("Starting Transactions....");
+    console.log("------------------------------------------Starting Transactions---------------------------------");
 
-    //await Promise.all(promiseTransactions);
-    await networkRunner.killGnomeTerminal();
+    await Promise.all(promiseTransactions);
+    //await networkRunner.killGnomeTerminal();
     return res.status(200).send("Execution Test Finished");
 
 });

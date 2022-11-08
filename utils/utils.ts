@@ -616,13 +616,37 @@ class Utils {
         return txId;
     }
 
-    private splitListIntoChunksOfLenXChain (list: string[], len: number) {
-        let chunks = [], i = 0, n = list.length;
-        while (i < n) {
-            chunks.push(list.slice(i, i += len));
-        }
-        return chunks;
+    //Test get balance and utxos in Txkoper
+    public static async getBalanceAndUtxosID (address: string, avaxAssetID: string) : Promise<any>
+    {
+        return new Promise((resolve, reject) => {
+            var data = JSON.stringify({
+                "jsonrpc":"2.0",
+                "id"     : 1,
+                "method" :"avm.getBalance",
+                "params" :{
+                    "address":address,
+                    "assetID": avaxAssetID
+                }
+              });
+
+            var request = {
+                method: 'post',
+                url: 'http://127.0.0.1:16815/ext/bc/X',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+
+            axios(request).then(function (response) {
+                resolve(response.data.result.utxoIDs);
+            }).catch(function (error) {
+                reject(null);
+            });
+        });
     }
+    
 
 }
 
