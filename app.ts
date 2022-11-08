@@ -229,46 +229,6 @@ app.post("/network-runner/x-chain-test", async (req, res) => {
 
 });
 
-// app.post("/erc20tx", async (req, res) => {
-//     let completeTestConfiguration: ConfigurationTypeForCompleteTest = req.body;
-//     let testCases = await DataTests.readDataTest(completeTestConfiguration.sheet_name);
-//     var networkName = completeTestConfiguration.rpc.split("/").pop();
-
-//     //read json file
-//     var jsonData: any = JSON.parse(fs.readFileSync(pathGrungni + "/" + networkName + ".json", "utf8"));
-//     var privateKeyFirstStaker = jsonData.Stakers[0].PrivateKey;
-
-//     let configType: ConfigurationType = completeTestConfiguration as ConfigurationType;
-//     configType.private_key_with_funds = privateKeyFirstStaker;
-//     var dataFlow = await initApp(configType);
-//     for (let i = 0; i < testCases.length; i++) {
-
-//         var testCase = testCases[i];
-//         let prevTestCase: TestCase;
-//         if (i > 0) {
-//             prevTestCase = testCases[i - 1]
-//         }
-//         else {
-//             prevTestCase = testCases[i]
-//         }
-//         utils.generateAccounts(testCase);
-//     }
-
-//     var testbuilderErc20x = new testbuilderErc20(configType, web3, dataFlow);
-
-//     privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
-//     let contractAddress = await testbuilderErc20x.deployContract(privateKeyFirstStaker, web3);
-
-//     for (let i = 0; i < privateKeys.length; i++) {
-//         testbuilderErc20x.mint(privateKeyFirstStaker, web3, privateKeys[i])
-//     }
-//     var promisetransactions = [];
-
-//     for (let i = 0; i < privateKeys.length - 1; i++) {
-//         promisetransactions.push(testbuilderErc20x.buildAndSendTransaction(privateKeys[i], contractAddress, privateKeys[i + 1], '1'))
-//     }
-
-// });
 
 // single endpoint to test (cloud)
 app.post('/', async (req, res) => {
