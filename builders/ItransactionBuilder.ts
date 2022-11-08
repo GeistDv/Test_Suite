@@ -7,7 +7,8 @@ interface ITransactionBuilder {
     ContractAbi : any;
     Configuration : ConfigurationType;
     buildAndSendTransaction(privateKey : string, contractAddress : string, sendTo : string, amount : string): Promise<string>
-    deployContract(privateKey : string, web3 : Web3) : Promise<string>
+    deployContract(privateKey : string, web3 : Web3) : Promise<string>,
+    mint?(privateKey: string, web3: Web3, addressTomint: string): Promise<string>
 }
 
 //export the interface

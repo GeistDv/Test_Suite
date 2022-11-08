@@ -9,6 +9,7 @@ class testbuilderErc20 implements ITransactionBuilder {
 
     ContractAbi: any;
     Configuration: ConfigurationType;
+    contractAddress: string;
     DataFlow: DataFlow;
     web3: Web3;
     PathprivateKeys: any;
@@ -19,10 +20,12 @@ class testbuilderErc20 implements ITransactionBuilder {
         this.web3 = web3;
         this.DataFlow = dataFlow;
         this.PathprivateKeys = this.PathprivateKeys;
+        this.contractAddress = "";
     }
 
     public async deployContract(privateKey: string, web3: Web3): Promise<string> {
         return new Promise(async (resolve, reject) => {
+            console.log('privateKey principal deploy contract :', privateKey);
             let account = web3.eth.accounts.privateKeyToAccount(privateKey);
             web3.eth.accounts.wallet.clear();
             web3.eth.accounts.wallet.add(privateKey);
@@ -35,11 +38,12 @@ class testbuilderErc20 implements ITransactionBuilder {
             })
                 .send({
                     from: account.address,
-                    gasPrice: Constants.MAXPRIORITYFEEPERGAS.toString(),
-                    gas: Constants.MAXFEEPERGAS
+                    gasPrice: "50000000000",
+                    gas: 8000000
                 })
                 .then((newContractInstance) => {
                     console.log("Contract deployed at address: " + newContractInstance.options.address);
+                    this.contractAddress = newContractInstance.options.address;
                     resolve(newContractInstance.options.address);
                 }).catch(err => {
                     console.log(err);
@@ -49,22 +53,23 @@ class testbuilderErc20 implements ITransactionBuilder {
     }
 
 
-    public async mint(privateKey: string, web3: Web3, contractAddress: string, addressTomint: string): Promise<string> {
+    public async mint(privateKey: string, web3: Web3, addressTomint: string): Promise<string> {
         return new Promise(async (resolve, reject) => {
-
+            console.log('privateKey principal mint :', privateKey);
+            console.log('privatekey dinamica :', addressTomint);
             var addressSendTo = web3.eth.accounts.privateKeyToAccount(addressTomint);
             var address = web3.eth.accounts.privateKeyToAccount(privateKey);
-            var contract = new web3.eth.Contract(this.ContractAbi.abi, contractAddress);
+            var contract = new web3.eth.Contract(this.ContractAbi.abi, this.contractAddress);
             var nonce = await web3.eth.getTransactionCount(address.address);
 
-            const data = contract.methods.mint(addressSendTo, 100).encodeABI();
+            const data = contract.methods.mint(addressSendTo, 100000000).encodeABI();
             var txData = {
                 nonce: nonce,
                 maxFeePerGas: web3.utils.toHex(Constants.MAXFEEPERGAS),
                 maxPriorityFeePerGas: web3.utils.toHex(Constants.MAXPRIORITYFEEPERGAS),
                 gas: web3.utils.toHex(1000000),
                 from: address.address,
-                to: contractAddress,
+                to: this.contractAddress,
                 value: web3.utils.toHex(0),
                 data: data
             };
@@ -83,11 +88,11 @@ class testbuilderErc20 implements ITransactionBuilder {
 
     async buildAndSendTransaction(privateKey: string, contractAddress: string, sendTo: string, amount: string): Promise<string> {
         return new Promise(async (resolve, reject) => {
-
+            
             var nonce = await this.web3.eth.getTransactionCount(this.DataFlow.hex_cchain_address);
             var contract = new this.web3.eth.Contract(this.ContractAbi.abi, contractAddress);
             const data = contract.methods.transfer(sendTo, amount).encodeABI();
-
+            
             var txData = {
                 nonce: nonce,
                 maxFeePerGas: this.web3.utils.toHex(Constants.MAXFEEPERGAS),

@@ -76,8 +76,7 @@ app.post("/start", async (req, res) => {
 
     //read json file
     var jsonData: any = JSON.parse(fs.readFileSync(pathGrungni + "/" + networkName + ".json", "utf8"));
-    var privateKeyFirstStaker = jsonData.Stakers[0].PrivateKey;
-
+    var privateKeyFirstStaker = jsonData.Stakers[0].PrivateKey;    
     //cast into configurationtype
     let configType: ConfigurationType = completeTestConfiguration as ConfigurationType;
     configType.private_key_with_funds = privateKeyFirstStaker;
@@ -230,46 +229,46 @@ app.post("/network-runner/x-chain-test", async (req, res) => {
 
 });
 
-app.post("/erc20tx", async (req, res) => {
-    let completeTestConfiguration: ConfigurationTypeForCompleteTest = req.body;
-    let testCases = await DataTests.readDataTest(completeTestConfiguration.sheet_name);
-    var networkName = completeTestConfiguration.rpc.split("/").pop();
+// app.post("/erc20tx", async (req, res) => {
+//     let completeTestConfiguration: ConfigurationTypeForCompleteTest = req.body;
+//     let testCases = await DataTests.readDataTest(completeTestConfiguration.sheet_name);
+//     var networkName = completeTestConfiguration.rpc.split("/").pop();
 
-    //read json file
-    var jsonData: any = JSON.parse(fs.readFileSync(pathGrungni + "/" + networkName + ".json", "utf8"));
-    var privateKeyFirstStaker = jsonData.Stakers[0].PrivateKey;
+//     //read json file
+//     var jsonData: any = JSON.parse(fs.readFileSync(pathGrungni + "/" + networkName + ".json", "utf8"));
+//     var privateKeyFirstStaker = jsonData.Stakers[0].PrivateKey;
 
-    let configType: ConfigurationType = completeTestConfiguration as ConfigurationType;
-    configType.private_key_with_funds = privateKeyFirstStaker;
-    var dataFlow = await initApp(configType);
-    for (let i = 0; i < testCases.length; i++) {
+//     let configType: ConfigurationType = completeTestConfiguration as ConfigurationType;
+//     configType.private_key_with_funds = privateKeyFirstStaker;
+//     var dataFlow = await initApp(configType);
+//     for (let i = 0; i < testCases.length; i++) {
 
-        var testCase = testCases[i];
-        let prevTestCase: TestCase;
-        if (i > 0) {
-            prevTestCase = testCases[i - 1]
-        }
-        else {
-            prevTestCase = testCases[i]
-        }
-        utils.generateAccounts(testCase);
-    }
+//         var testCase = testCases[i];
+//         let prevTestCase: TestCase;
+//         if (i > 0) {
+//             prevTestCase = testCases[i - 1]
+//         }
+//         else {
+//             prevTestCase = testCases[i]
+//         }
+//         utils.generateAccounts(testCase);
+//     }
 
-    var testbuilderErc20x = new testbuilderErc20(configType, web3, dataFlow);
+//     var testbuilderErc20x = new testbuilderErc20(configType, web3, dataFlow);
 
-    privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
-    let contractAddress = await testbuilderErc20x.deployContract(privateKeyFirstStaker, web3);
+//     privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
+//     let contractAddress = await testbuilderErc20x.deployContract(privateKeyFirstStaker, web3);
 
-    for (let i = 0; i < privateKeys.length; i++) {
-        testbuilderErc20x.mint(privateKeyFirstStaker, web3, contractAddress, privateKeys[i])
-    }
-    var promisetransactions = [];
+//     for (let i = 0; i < privateKeys.length; i++) {
+//         testbuilderErc20x.mint(privateKeyFirstStaker, web3, privateKeys[i])
+//     }
+//     var promisetransactions = [];
 
-    for (let i = 0; i < privateKeys.length - 1; i++) {
-        promisetransactions.push(testbuilderErc20x.buildAndSendTransaction(privateKeys[i], contractAddress, privateKeys[i + 1], '1'))
-    }
+//     for (let i = 0; i < privateKeys.length - 1; i++) {
+//         promisetransactions.push(testbuilderErc20x.buildAndSendTransaction(privateKeys[i], contractAddress, privateKeys[i + 1], '1'))
+//     }
 
-});
+// });
 
 // single endpoint to test (cloud)
 app.post('/', async (req, res) => {
@@ -281,13 +280,13 @@ app.post('/', async (req, res) => {
         sendTo = privateKeys[0];
     }
 
-    txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, Constants.AMOUNT_TO_TRANSFER)
-        .then(data => {
-            res.send(data);
-        }).catch(err => {
-            errorLogger.error(err);
-            res.status(500).send(err);
-        });
+    // txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, Constants.AMOUNT_TO_TRANSFER)
+    //     .then(data => {
+    //         res.send(data);
+    //     }).catch(err => {
+    //         errorLogger.error(err);
+    //         res.status(500).send(err);
+    //     });
 });
 
 app.post('/pingpong', async (req, res) => {
@@ -380,8 +379,7 @@ async function initPrivateKeys(dataflow: DataFlow, testCase: TestCase): Promise<
             //delete file privatekeys.csv
             fs.unlinkSync(Constants.PRIVATE_KEYS_FILE);
         }
-    }
-
+    } 
     if (balance == "0") {
         //import and export
         await utils.transferFunds();
@@ -392,7 +390,6 @@ async function initPrivateKeys(dataflow: DataFlow, testCase: TestCase): Promise<
     // initialize accounts
     console.log("Generating accounts ... ");
     await utils.generateAndFundWallets(testCase);
-
     // read file private keys using fs
     privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
 
@@ -401,12 +398,14 @@ async function initPrivateKeys(dataflow: DataFlow, testCase: TestCase): Promise<
 }
 
 async function initBuilder(configurationType: ConfigurationType, dataFlow: DataFlow) {
+    
     // initialize transaction builder
     switch (configurationType.test_type) {
         case "transfer": txBuilder = new SimpleTXBuilder(configurationType, web3, dataFlow);
             // mint
             break;
         case "erc20tx": txBuilder = new testbuilderErc20(configurationType, web3, dataFlow);
+                        contractAddress = await txBuilder.deployContract("0x"+dataFlow.hexPrivateKey, web3);
             break;
         default:
             break;

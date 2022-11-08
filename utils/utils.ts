@@ -14,17 +14,21 @@ import { getXKeyChain } from './configAvalanche';
 import XchainBuilder from "../builders/XchainBuilder";
 import XChainTestWallet from "./XChainTestWallet";
 import AvalancheXChain from "../types/AvalancheXChain";
+import testbuilderErc20 from '../builders/testbuilderErc20';
+import ITransactionBuilder from "../builders/ItransactionBuilder";
 
 class Utils {
 
     Configuration: ConfigurationType;
     dataFlow: DataFlow;
     web3: Web3;
+    txBuilder: ITransactionBuilder;
     constructor(configTypeForCompleteTest: ConfigurationType, dataFlow: DataFlow) {
 
         this.Configuration = configTypeForCompleteTest;
         this.web3 = new Web3(this.Configuration.rpc_keystore + '/ext/bc/C/rpc');;
         this.dataFlow = dataFlow;
+        this.txBuilder = new testbuilderErc20(this.Configuration, this.web3, this.dataFlow);
     }
 
 
@@ -340,14 +344,23 @@ class Utils {
 
             let chunk = chunks[i];
             let promises = [];
+            let promisesMint = [];
 
             for (let j = 0; j < chunk.length; j++) {
                 let account = chunk[j];
+                if(testCase.TestType=="erc20tx")
+                {
+                    promisesMint.push(this.txBuilder.mint?.("0x"+this.dataFlow.hexPrivateKey,this.web3,account))
+                }
                 promises.push(this.sendFunds(account, nonce));
                 nonce++
             }
 
             await Promise.all(promises);
+            if(testCase.TestType == "erc20tx")
+            {
+                await Promise.all(promisesMint)
+            }
 
         }
 
