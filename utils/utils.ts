@@ -14,7 +14,7 @@ import { getXKeyChain } from './configAvalanche';
 import XchainBuilder from "../builders/XchainBuilder";
 import XChainTestWallet from "./XChainTestWallet";
 import AvalancheXChain from "../types/AvalancheXChain";
-import testbuilderErc20 from '../builders/testbuilderErc20';
+import testbuilderErc20 from '../builders/ERC20txBuilder';
 import ITransactionBuilder from "../builders/ItransactionBuilder";
 
 class Utils {
@@ -348,7 +348,7 @@ class Utils {
 
             for (let j = 0; j < chunk.length; j++) {
                 let account = chunk[j];
-                if(testCase.TestType=="erc20tx")
+                if(testCase.TestType=="erc20tx" || testCase.TestType == "erc1155tx")
                 {
                     promisesMint.push(await this.txBuilder.mint?.("0x"+this.dataFlow.hexPrivateKey,this.web3,account,nonce));
                     nonce++;

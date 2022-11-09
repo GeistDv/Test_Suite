@@ -25,7 +25,6 @@ class testbuilderErc20 implements ITransactionBuilder {
 
     public async deployContract(privateKey: string, web3: Web3): Promise<string> {
         return new Promise(async (resolve, reject) => {
-            console.log('privateKey principal deploy contract :', privateKey);
             let account = web3.eth.accounts.privateKeyToAccount(privateKey);
             web3.eth.accounts.wallet.add(privateKey);
             console.log("Deploying contract...");

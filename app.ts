@@ -27,7 +27,7 @@ import { basename } from "path";
 
 import XChainTestWallet from './utils/XChainTestWallet';
 import xChainBuilder from "./builders/XchainBuilder";
-import testbuilderErc20 from './builders/testbuilderErc20';
+import testbuilderErc20 from './builders/ERC20txBuilder';
 
 dotenv.config();
 // Needed for self signed certs.
@@ -366,6 +366,10 @@ async function initBuilder(configurationType: ConfigurationType, dataFlow: DataF
             // mint
             break;
         case "erc20tx": txBuilder = new testbuilderErc20(configurationType, web3, dataFlow);
+            contractAddress = await txBuilder.deployContract("0x"+dataFlow.hexPrivateKey, web3);
+            txBuilder.contractAddress = contractAddress;
+            break;
+        case "erc1155tx": txBuilder = new ERC1155TXBuilder(configurationType, web3, dataFlow);
             contractAddress = await txBuilder.deployContract("0x"+dataFlow.hexPrivateKey, web3);
             txBuilder.contractAddress = contractAddress;
             break;

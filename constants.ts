@@ -5,7 +5,7 @@ export abstract class Constants {
     static readonly MAXPRIORITYFEEPERGAS : number = 1000000000;
     static readonly GAS : number = 2000000;
     static readonly NFTID : number = 7;
-    static readonly NFTAMOUNT : number = 100;
+    static readonly NFTAMOUNT : number = 1000;
     static readonly INITIAL_FUNDS : string = "20";
     static readonly KEYSTORE_USER : string = "netacticateam";
     static readonly KEYSTORE_PASSWORD : string = "felipantiago45";
