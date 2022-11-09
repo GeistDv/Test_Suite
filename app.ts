@@ -195,12 +195,15 @@ app.post('/', async (req, res) => {
         sendTo = privateKeys[0];
     }
     if(chainType == "X")
-    {
+    {   console.log("______________________________________________");
+        console.log("ID", req.body.ID);
+        console.log("Address From:", privateKey.xChainAddress);
+        console.log("Address to:", sendTo.xChainAddress);
+        let ammount = parseFloat(Constants.AMOUNT_TO_TRANSFER) * 10;
         let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, configDataFlow.networkID, privateKey.privateKey, configDataFlow.assetID);
-        txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, Constants.AMOUNT_TO_TRANSFER,xChainAvalanche)
+        txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo,ammount ,xChainAvalanche)
         .then(data => {
             res.send(data);
-            logger.info(data);
         }).catch(err => {
             errorLogger.error(err);
             res.status(500).send(err);
@@ -263,8 +266,8 @@ async function initApp(configType: ConfigurationType): Promise<DataFlow> {
     console.log("Block number: ", blockNumber);
 
     let dataFlow = await initDataFlowAccount(configType);
-    utils = new Utils(configType, dataFlow);
     await initBuilder(configType, dataFlow);
+    utils = new Utils(configType, dataFlow);
     utils.urlRpc = urlRpcDetails;
     utils.protocolRPC = protocolRPC;
     return dataFlow;
@@ -336,7 +339,7 @@ async function initPrivateKeys(dataflow: DataFlow, testCase: TestCase): Promise<
     {
         // initialize accounts
         console.log("Generating accounts ... ");
-        await utils.generateAndFundWallets(testCase);
+        await utils.generateAndFundWallets(testCase,txBuilder);
         privateKeys = utils.privateKeys;
     }
     

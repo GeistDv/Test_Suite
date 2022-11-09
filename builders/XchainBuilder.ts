@@ -29,7 +29,7 @@ import AvalancheXChain from '../types/AvalancheXChain';
 
 import { InitialStates, SECPTransferOutput } from "avalanche/dist/apis/avm"
 
-class xChainBuilder implements ITransactionBuilder {
+class xChainBuilder implements ITransactionBuilder{
 
     ContractAbi: any;
     Configuration: ConfigurationType;
@@ -49,20 +49,15 @@ class xChainBuilder implements ITransactionBuilder {
         });
     }
 
-    public async buildAndSendTransaction()
-    {
-        return "";
-    }
 
-    public static async buildAndSendTransactionXChain(
+    public async buildAndSendTransaction(
         privateKey: XChainTestWallet,
         contractAddress: string,
         sendTo: XChainTestWallet,
-        amountToSend: string,
+        amountToSend: number,
         avalancheXChain: AvalancheXChain
     ): Promise<string> {
         return new Promise(async (resolve, reject) => {
-
             const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs([privateKey.xChainAddress]);
 
             const utxoSet: UTXOSet = avmUTXOResponse.utxos;
@@ -71,6 +66,10 @@ class xChainBuilder implements ITransactionBuilder {
             const locktime: BN = new BN(0);
             const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send AVAX");
             const amount: BN = new BN(amountToSend);
+
+            const balance = await privateKey.avalancheXChain.xchain.getBalance(privateKey.xChainAddress, privateKey.avalancheXChain.avaxAssetID);
+            //console.log("Balance -> ", balance);
+            //console.log("Address -> ", privateKey.xChainAddress);
 
             const unsignedTx: UnsignedTx = await avalancheXChain.xchain.buildBaseTx(
                 utxoSet,
@@ -94,8 +93,13 @@ class xChainBuilder implements ITransactionBuilder {
             while (status.toUpperCase() != "ACCEPTED" && status.toUpperCase() != "REJECTED") {
                 status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
             }
-            
-            resolve(txid);
+
+            if (status.toUpperCase() != "REJECTED") {
+                resolve(txid);
+            }
+            else {
+                reject("Rejected Transaction");
+            }
         });
     }
 

@@ -15,6 +15,8 @@ import XchainBuilder from "../builders/XchainBuilder";
 import XChainTestWallet from "./XChainTestWallet";
 import AvalancheXChain from "../types/AvalancheXChain";
 import {KeyChain} from "avalanche/dist/apis/avm"
+import ITransactionBuilder from "../builders/ItransactionBuilder";
+import xChainBuilder from "../builders/XchainBuilder";
 
 class Utils {
 
@@ -30,6 +32,7 @@ class Utils {
     
     //optional variable private keys
     privateKeys!: any[]; 
+    
     constructor(configTypeForCompleteTest: ConfigurationType, dataFlow: DataFlow) {
 
         this.Configuration = configTypeForCompleteTest;
@@ -356,7 +359,7 @@ class Utils {
     }
 
 
-    public async generateAndFundWallets(testCase: TestCase) {   
+    public async generateAndFundWallets(testCase: TestCase,xChainbuilder? : ITransactionBuilder) {   
         if (testCase.Chain == "C")
         {
             let accounts = await this.generateAccounts(testCase);
@@ -388,7 +391,7 @@ class Utils {
                 if (c < 10) //First 10 Transactions
                 {
                     console.log("First Transactions -> ", c)
-                    await Utils.sendTransactionXChain(this.principalAccount, accounts[c], baseAmount.toString(), this.xChainAvalanche);
+                    await Utils.sendTransactionXChain(this.principalAccount, accounts[c], baseAmount.toString(), this.xChainAvalanche,xChainbuilder);
                 }
                 else {
                     if (c % 10 == 0 && promiseFund.length > 0) {
@@ -405,7 +408,7 @@ class Utils {
 
                     baseSend = baseSend + c;
 
-                    promiseFund.push(Utils.sendTransactionXChain(accounts[c - 10], accounts[c], baseSend.toString(), accounts[c - 10].avalancheXChain));
+                    promiseFund.push(Utils.sendTransactionXChain(accounts[c - 10], accounts[c], baseSend.toString(), accounts[c - 10].avalancheXChain,xChainbuilder));
                 }
                 c++;
             }
@@ -666,8 +669,8 @@ class Utils {
         });
     }
 
-    public static async sendTransactionXChain(addressFrom: XChainTestWallet, addressTo: XChainTestWallet, amount: string, xChainFlow: AvalancheXChain) {
-        let txId = await XchainBuilder.buildAndSendTransactionXChain(addressFrom, "",addressTo, amount,xChainFlow);
+    public static async sendTransactionXChain(addressFrom: XChainTestWallet, addressTo: XChainTestWallet, amount: string, xChainFlow: AvalancheXChain, xchainBuilder?: ITransactionBuilder) {
+        let txId = await xchainBuilder?.buildAndSendTransaction(addressFrom, "",addressTo, amount,xChainFlow);
 
         console.log("Address ->", addressTo.xChainAddress);
         console.log("New Balance ->", await addressTo.avalancheXChain.xchain.getBalance(addressTo.xChainAddress, addressTo.avalancheXChain.avaxAssetID));
