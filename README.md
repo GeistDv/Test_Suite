@@ -20,7 +20,7 @@ For example transactions in the C and X chain. We continue working to include mo
 
 - Linux (Ubuntu).
 
-- Grungni.
+- K8S Testnet Creator.
   Before installing the other requirements it is necessary to clone the `path-k8s-testnet-creator` repository `https://github.com/chain4travel/camino-k8s-testnet-creator.git`  and follow the instructions in the README.md file, including the installation of the tools specified in the `c4t specific tools` section:
 
   [kubectl]: https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
