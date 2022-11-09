@@ -14,7 +14,7 @@ import { getXKeyChain } from './configAvalanche';
 import XchainBuilder from "../builders/XchainBuilder";
 import XChainTestWallet from "./XChainTestWallet";
 import AvalancheXChain from "../types/AvalancheXChain";
-import testbuilderErc20 from '../builders/ERC20txBuilder';
+import testbuilderErc20 from '../builders/ERC20TXBuilder';
 import ITransactionBuilder from "../builders/ItransactionBuilder";
 
 class Utils {

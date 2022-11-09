@@ -27,7 +27,7 @@ import { basename } from "path";
 
 import XChainTestWallet from './utils/XChainTestWallet';
 import xChainBuilder from "./builders/XchainBuilder";
-import testbuilderErc20 from './builders/ERC20txBuilder';
+import testbuilderErc20 from './builders/ERC20TXBuilder';
 
 dotenv.config();
 // Needed for self signed certs.
