@@ -5,7 +5,7 @@ import { BinTools, Buffer } from "avalanche";
 import axios from "axios";
 import { ConfigurationType } from "../types/configurationtype";
 import DataFlow from "../types/dataflowtype";
-import { logger,errorLogger } from "./logger";
+import { logger, errorLogger } from "./logger";
 import { Constants } from "../constants";
 import NetworkRunner from "../network-runner/NetworkRunner";
 import KubectlChecker from '../automation/KubectlChecker';
@@ -14,17 +14,27 @@ import { getXKeyChain } from './configAvalanche';
 import XchainBuilder from "../builders/XchainBuilder";
 import XChainTestWallet from "./XChainTestWallet";
 import AvalancheXChain from "../types/AvalancheXChain";
+import {KeyChain} from "avalanche/dist/apis/avm"
 
 class Utils {
 
     Configuration: ConfigurationType;
     dataFlow: DataFlow;
     web3: Web3;
+
+    //xchain transaction optional variables
+    urlRpc! : URL;
+    xChainAvalanche!: AvalancheXChain;
+    protocolRPC! : string;
+    principalAccount!: XChainTestWallet;
+    
+    //optional variable private keys
+    privateKeys!: any[]; 
     constructor(configTypeForCompleteTest: ConfigurationType, dataFlow: DataFlow) {
 
         this.Configuration = configTypeForCompleteTest;
         this.web3 = new Web3(this.Configuration.rpc_keystore + '/ext/bc/C/rpc');;
-        this.dataFlow = dataFlow;
+        this.dataFlow = dataFlow;   
     }
 
 
@@ -54,15 +64,15 @@ class Utils {
             };
 
             axios(request)
-            .then(function (response) {
-                logger.info(JSON.stringify(response.data));
-                resolve(true);
-            })
-            .catch(function (error) {
-                console.log(error);
-                reject(false)
-                errorLogger.error(error);
-            });
+                .then(function (response) {
+                    logger.info(JSON.stringify(response.data));
+                    resolve(true);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    reject(false)
+                    errorLogger.error(error);
+                });
         });
     }
 
@@ -91,14 +101,14 @@ class Utils {
             };
 
             axios(request)
-            .then(function (response) {
-                resolve(true);
-                logger.info(JSON.stringify(response.data));
-            })
-            .catch(function (error) {
-                reject(false)
-                errorLogger.error(error);
-            });
+                .then(function (response) {
+                    resolve(true);
+                    logger.info(JSON.stringify(response.data));
+                })
+                .catch(function (error) {
+                    reject(false)
+                    errorLogger.error(error);
+                });
         });
     }
 
@@ -133,10 +143,10 @@ class Utils {
                 resolve(response.data.result.address);
                 logger.info(JSON.stringify(response.data));
             })
-            .catch(function (error) {
-                reject(false);
-                errorLogger.error(error);
-            });
+                .catch(function (error) {
+                    reject(false);
+                    errorLogger.error(error);
+                });
 
         });
     }
@@ -170,10 +180,25 @@ class Utils {
         let privateKeys: string[] = [];
 
         for (let i = 0; i < numberOFAccountsToCreate; i++) {
-            let account = await this.web3.eth.accounts.create(this.web3.utils.randomHex(32))
+            let account = await this.web3.eth.accounts.create(this.web3.utils.randomHex(32));
             privateKeys.push(account.privateKey)
         }
 
+        return privateKeys;
+    }
+
+    public async generateAccountsXchain(testCase: TestCase){
+
+        //TODO: "Change parameters in funtion NetworkID, AssetID, Protocol rpc,private key, KeyChain... "
+        let promisesXChainWallet = [];
+        let privateKeys : XChainTestWallet[];
+        let principalAccount = new XChainTestWallet(this.dataFlow.bech32_xchain_address, this.Configuration.private_key_with_funds, this.xChainAvalanche);
+
+        //Create Private Keys and Wallets
+        for (let x = 0; x <  testCase.Threads; x++) {
+            promisesXChainWallet.push(XChainTestWallet.importKeyAndCreateWallet(this.web3, this.Configuration, this.urlRpc, this.protocolRPC, this.dataFlow.networkID, this.dataFlow.assetID));
+        }
+        privateKeys = await Promise.all(promisesXChainWallet);
         return privateKeys;
     }
 
@@ -331,26 +356,60 @@ class Utils {
     }
 
 
-    public async generateAndFundWallets(testCase: TestCase) {
-        let accounts = await this.generateAccounts(testCase)
-        let nonce = await this.web3.eth.getTransactionCount(this.dataFlow.hex_cchain_address);
-        var chunks = this.splitListIntoChunksOfLen(accounts, 50);
+    public async generateAndFundWallets(testCase: TestCase) {   
+        if (testCase.Chain == "C")
+        {
+            let accounts = await this.generateAccounts(testCase);
+            var chunks = this.splitListIntoChunksOfLen(accounts, 50);
+            let nonce = await this.web3.eth.getTransactionCount(this.dataFlow.hex_cchain_address);
+            for (let i = 0; i < chunks.length; i++) {
 
-        for (let i = 0; i < chunks.length; i++) {
+                let chunk = chunks[i];
+                let promises = [];
 
-            let chunk = chunks[i];
-            let promises = [];
-
-            for (let j = 0; j < chunk.length; j++) {
-                let account = chunk[j];
-                promises.push(this.sendFunds(account, nonce));
-                nonce++
+                for (let j = 0; j < chunk.length; j++) {
+                    let account = chunk[j];
+                    promises.push(this.sendFunds(account, nonce));
+                    nonce++
+                }
+                await Promise.all(promises);
             }
-
-            await Promise.all(promises);
-
         }
+        else
+        {
+            let accounts = await this.generateAccountsXchain(testCase);
+            this.privateKeys = accounts;
+            let baseAmount: number = 400000000000000;
+            let baseSend: number = 400000000;
+            let promiseFund = [];
 
+            let c = 0;
+            while (c <= testCase.Threads) {
+                if (c < 10) //First 10 Transactions
+                {
+                    console.log("First Transactions -> ", c)
+                    await Utils.sendTransactionXChain(this.principalAccount, accounts[c], baseAmount.toString(), this.xChainAvalanche);
+                }
+                else {
+                    if (c % 10 == 0 && promiseFund.length > 0) {
+                        console.log("Iteration --->", (c / 10));
+                        await Promise.all(promiseFund);
+                        promiseFund = [];
+                        baseSend = baseSend - 4000000;
+
+                        if (c >= testCase.Threads) {
+                            console.log("BREAKING");
+                            break;
+                        }
+                    }
+
+                    baseSend = baseSend + c;
+
+                    promiseFund.push(Utils.sendTransactionXChain(accounts[c - 10], accounts[c], baseSend.toString(), accounts[c - 10].avalancheXChain));
+                }
+                c++;
+            }
+        }
         logger.info("Done!");
     }
 
@@ -384,6 +443,12 @@ class Utils {
         var stringToWrite: string = (fs.existsSync('privatekeys.csv') ? '\n' : '') + privatekey;
         fs.appendFileSync('privatekeys.csv', stringToWrite);
         console.log('Transaction succcesfull', data.transactionHash);
+    }
+
+    public async sendFundsXChain (privatekey: string)
+    {
+        console.log("PRivate key ->", privatekey);
+        
     }
 
     public static convertHexPkToCB58(hexPrivKey: string): string {
@@ -601,52 +666,15 @@ class Utils {
         });
     }
 
-    public static async sendFoundTransactionXChain(accountAVM: string, accountXChain: XChainTestWallet, xChainAvalanche: AvalancheXChain, baseAmount: number)
-    {
-        let txIdSigned = await XchainBuilder.prepareAndSignTransaction([accountAVM], [accountXChain.xChainAddress], xChainAvalanche, baseAmount, false);
-        return txIdSigned;
-    }
+    public static async sendTransactionXChain(addressFrom: XChainTestWallet, addressTo: XChainTestWallet, amount: string, xChainFlow: AvalancheXChain) {
+        let txId = await XchainBuilder.buildAndSendTransactionXChain(addressFrom, "",addressTo, amount,xChainFlow);
 
-    public static async sendTransactionXChain(addressFrom: XChainTestWallet, addressTo: XChainTestWallet, amount: number, xChainFlow: AvalancheXChain) {
-        let txId = await XchainBuilder.prepareAndSignTransaction([addressFrom.xChainAddress], [addressTo.xChainAddress], xChainFlow, amount, true);
-        
         console.log("Address ->", addressTo.xChainAddress);
         console.log("New Balance ->", await addressTo.avalancheXChain.xchain.getBalance(addressTo.xChainAddress, addressTo.avalancheXChain.avaxAssetID));
-        console.log("Tx ID -> ",txId);
+        console.log("Tx ID -> ", txId);
         return txId;
     }
 
-    //Test get balance and utxos in Txkoper
-    public static async getBalanceAndUtxosID (address: string, avaxAssetID: string) : Promise<any>
-    {
-        return new Promise((resolve, reject) => {
-            var data = JSON.stringify({
-                "jsonrpc":"2.0",
-                "id"     : 1,
-                "method" :"avm.getBalance",
-                "params" :{
-                    "address":address,
-                    "assetID": avaxAssetID
-                }
-              });
-
-            var request = {
-                method: 'post',
-                url: 'http://127.0.0.1:16815/ext/bc/X',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                data: data
-            };
-
-            axios(request).then(function (response) {
-                resolve(response.data.result.utxoIDs);
-            }).catch(function (error) {
-                reject(null);
-            });
-        });
-    }
-    
 
 }
 

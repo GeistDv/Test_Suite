@@ -2,6 +2,7 @@ import Web3 from 'web3';
 import ITransactionBuilder from './ItransactionBuilder';
 import { ConfigurationType } from '../types/configurationtype';
 import DataFlow from '../types/dataflowtype';
+import XChainTestWallet from '../utils/XChainTestWallet';
 import { logger } from "../utils/logger";
 import { Constants } from '../constants';
 import axios from 'axios';
@@ -28,10 +29,18 @@ import AvalancheXChain from '../types/AvalancheXChain';
 
 import { InitialStates, SECPTransferOutput } from "avalanche/dist/apis/avm"
 
-class xChainBuilder {
+class xChainBuilder implements ITransactionBuilder {
 
-    constructor() {
+    ContractAbi: any;
+    Configuration: ConfigurationType;
+    DataFlow: DataFlow;
+    web3: Web3;
+    PathprivateKeys: any;
 
+    constructor(Config: ConfigurationType, web3: Web3, dataFlow: DataFlow) {
+        this.Configuration = Config;
+        this.web3 = web3;
+        this.DataFlow = dataFlow;
     }
 
     deployContract(privateKey: string, web3: Web3): Promise<string> {
@@ -40,16 +49,21 @@ class xChainBuilder {
         });
     }
 
-    public static async prepareAndSignTransaction(
-        fromAddress: any[],
-        sendAddress: string[],
-        avalancheXChain: AvalancheXChain,
-        amountToSend: number,
-        validateBalance: boolean
+    public async buildAndSendTransaction()
+    {
+        return "";
+    }
+
+    public static async buildAndSendTransactionXChain(
+        privateKey: XChainTestWallet,
+        contractAddress: string,
+        sendTo: XChainTestWallet,
+        amountToSend: string,
+        avalancheXChain: AvalancheXChain
     ): Promise<string> {
         return new Promise(async (resolve, reject) => {
 
-            const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs(fromAddress);
+            const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs([privateKey.xChainAddress]);
 
             const utxoSet: UTXOSet = avmUTXOResponse.utxos;
             const asOf: BN = UnixNow();
@@ -62,9 +76,9 @@ class xChainBuilder {
                 utxoSet,
                 amount,
                 avalancheXChain.avaxAssetID,
-                sendAddress,
-                fromAddress,
-                fromAddress,
+                [sendTo.xChainAddress],
+                [privateKey.xChainAddress],
+                [privateKey.xChainAddress],
                 memo,
                 asOf,
                 locktime,
@@ -83,16 +97,6 @@ class xChainBuilder {
             
             resolve(txid);
         });
-    }
-
-    public static async getBalanceAddress(address: string, avalancheXChain: AvalancheXChain) {
-        const getBalanceResponse: GetBalanceResponse = await avalancheXChain.xchain.getBalance(
-            address,
-            avalancheXChain.avaxAssetID
-        );
-
-        const balance: BN = new BN(getBalanceResponse.balance);
-        return balance;
     }
 
 }

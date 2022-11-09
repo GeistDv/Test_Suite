@@ -35,7 +35,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 /*global variables*/
 var pathGrungni = process.env.GRUNGNI_PATH;
-let privateKeys: string[] = [];
+let privateKeys: any[] = [];
 let chainId: number = 0;
 let gasPrice: number;
 let balance: string;
@@ -56,6 +56,12 @@ let txBuilderB: ITransactionBuilder;
 let networkRunner: NetworkRunner;
 
 let web3: Web3;
+let urlRpcDetails: URL;
+let protocolRPC : string;
+let chainType : string;
+let configDataFlow : DataFlow;
+
+
 const app = express();
 app.use('/public', express.static('public'))
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -117,121 +123,25 @@ app.post("/network-runner", async (req, res) => {
     for (let i = 0; i < testCases.length; i++) {
         let testCase = testCases[i];
         networkRunner = await getConfigTypeWithNetworkRunner(req, testCase);
+        console.log(networkRunner);
+
         let configType = networkRunner.configuration;
         let dataFlow = await initApp(networkRunner.configuration);
+        if (testCase.Chain == "X"){
+            let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, dataFlow.networkID, networkRunner.configuration.private_key_with_funds, dataFlow.assetID);
+            let principalAccount = new XChainTestWallet(dataFlow.bech32_xchain_address, networkRunner.configuration.private_key_with_funds, xChainAvalanche);
+            utils.xChainAvalanche = xChainAvalanche;
+            utils.principalAccount = principalAccount;
+            chainType = testCase.Chain;
 
-        await initPrivateKeys(dataFlow, networkRunner.testCase);
-        await startTestsAndGatherMetrics(networkRunner.testCase, configType);
-        await networkRunner.killGnomeTerminal();
+        }
+        
+        await initPrivateKeys(dataFlow, testCase);
+        await startTestsAndGatherMetrics(testCase, configType);
+        //await networkRunner.killGnomeTerminal();
     }
 
     return res.status(200).send("Network Runner executed");
-});
-
-app.post("/network-runner/x-chain-test", async (req, res) => {
-    let testCase: TestCase = {
-        StakingAmount: req.body.StakingAmount,
-        ValidatorNodes: req.body.ValidatorNodes,
-        ApiNodes: req.body.ApiNodes,
-        Threads: req.body.Threads,
-        Loops: req.body.Loops,
-        Chain: "X",
-        TestType: req.body.TestType,
-        Position: 0
-    }
-
-    networkRunner = await getConfigTypeWithNetworkRunner(req, testCase);
-
-    web3 = new Web3(networkRunner.configuration.rpc + '/ext/bc/C/rpc');
-
-    await Utils.createUserAccount(networkRunner.configuration);
-
-    //Information Data, asset and protocol
-    let assetID = await Utils.getStakingAssetID(networkRunner.configuration);
-    let networkID = parseInt(await Utils.getNetworkID(networkRunner.configuration));
-    let url = new URL(networkRunner.configuration.rpc);
-    let port = "443";
-    let protocolRPC = url.protocol.replace(":", "");
-    if (url.port != "") {
-        port = url.port;
-    }
-
-    console.log("URL -> ", url);
-
-
-    let accountAVM = await Utils.ImportKeyAVM(networkRunner.configuration.private_key_with_funds, networkRunner.configuration);
-    console.log("Address Father ->", accountAVM);
-
-    let xChainAvalanche = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC, networkID, networkRunner.configuration.private_key_with_funds, assetID);
-    let accountsXChain: XChainTestWallet[] = [];
-    let promisesXChainWallet = [];
-    let principalAccount = new XChainTestWallet(accountAVM, networkRunner.configuration.private_key_with_funds, xChainAvalanche);
-
-
-
-    //Create Private Keys and Wallets
-    for (let x = 0; x < networkRunner.testCase.Threads; x++) {
-        promisesXChainWallet.push(XChainTestWallet.importKeyAndCreateWallet(web3, networkRunner, url, protocolRPC, networkID, assetID));
-    }
-    accountsXChain = await Promise.all(promisesXChainWallet);
-
-
-
-    //Funds Wallets
-    let baseAmount: number = 400000000000000;
-    let baseSend: number = 400000000;
-    let promiseFund = [];
-
-    let c = 0;
-    while (c <= networkRunner.testCase.Threads) {
-        if (c < 10) //First 10 Transactions
-        {
-            console.log("First Transactions -> ", c)
-            await Utils.sendTransactionXChain(principalAccount, accountsXChain[c], baseAmount, principalAccount.avalancheXChain);
-        }
-        else {
-            if (c % 10 == 0 && promiseFund.length > 0) {
-                console.log("Iteration --->", (c / 10));
-                await Promise.all(promiseFund);
-                promiseFund = [];
-                baseSend = baseSend - 4000000;
-
-                if (c >= networkRunner.testCase.Threads) {
-                    console.log("BREAKING");
-                    break;
-                }
-            }
-
-            baseSend = baseSend + c;
-
-            promiseFund.push(Utils.sendTransactionXChain(accountsXChain[c - 10], accountsXChain[c], baseSend, accountsXChain[c - 10].avalancheXChain));
-        }
-        c++;
-    }
-
-    console.log("Finished Do Funds");
-
-    let promiseTransactions = [];
-
-    //Repeat Cicle for start transactions
-    for (let k = 0; k < accountsXChain.length - 1; k++) {
-        let oldBalance = await accountsXChain[k].avalancheXChain.xchain.getBalance(accountsXChain[k].xChainAddress, accountsXChain[k].avalancheXChain.avaxAssetID);
-        console.log("Old Balance ->",oldBalance);
-        console.log("K Position ->",k);
-        console.log("Private Key ->",accountsXChain[k].privateKey);
-        console.log("Avax Asset ID ->", accountsXChain[k].avalancheXChain.avaxAssetID);
-        console.log("Address From->", accountsXChain[k].xChainAddress);
-        console.log("Address To->", accountsXChain[k + 1].xChainAddress);
-        console.log(accountsXChain[k].avalancheXChain.xKeyChain.getAddressStrings());
-        promiseTransactions.push(Utils.sendTransactionXChain(accountsXChain[k], accountsXChain[k + 1], 1000000, accountsXChain[k].avalancheXChain));
-    }
-
-    console.log("------------------------------------------Starting Transactions---------------------------------");
-
-    await Promise.all(promiseTransactions);
-    //await networkRunner.killGnomeTerminal();
-    return res.status(200).send("Execution Test Finished");
-
 });
 
 app.post("/erc20tx", async (req, res) => {
@@ -284,14 +194,29 @@ app.post('/', async (req, res) => {
     if (req.body.ID == privateKeys.length) {
         sendTo = privateKeys[0];
     }
+    if(chainType == "X")
+    {
+        let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, configDataFlow.networkID, privateKey.privateKey, configDataFlow.assetID);
+        txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, Constants.AMOUNT_TO_TRANSFER,xChainAvalanche)
+        .then(data => {
+            res.send(data);
+            logger.info(data);
+        }).catch(err => {
+            errorLogger.error(err);
+            res.status(500).send(err);
+        });
 
-    txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, Constants.AMOUNT_TO_TRANSFER)
+    }
+    else{
+        txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, Constants.AMOUNT_TO_TRANSFER)
         .then(data => {
             res.send(data);
         }).catch(err => {
             errorLogger.error(err);
             res.status(500).send(err);
         });
+    }
+    
 });
 
 app.post('/pingpong', async (req, res) => {
@@ -339,7 +264,9 @@ async function initApp(configType: ConfigurationType): Promise<DataFlow> {
 
     let dataFlow = await initDataFlowAccount(configType);
     utils = new Utils(configType, dataFlow);
-    initBuilder(configType, dataFlow);
+    await initBuilder(configType, dataFlow);
+    utils.urlRpc = urlRpcDetails;
+    utils.protocolRPC = protocolRPC;
     return dataFlow;
 }
 
@@ -351,6 +278,8 @@ async function initDataFlowAccount(configurationtype: ConfigurationType): Promis
 
     var hexPK = Utils.translateCb58PKToHex(configurationtype.private_key_with_funds);
     let account = web3.eth.accounts.privateKeyToAccount('0x' + hexPK);
+    let assetID = await Utils.getStakingAssetID(configurationtype);
+    let networkID = parseInt(await Utils.getNetworkID(configurationtype));
     balance = await web3.eth.getBalance(account.address);
 
     console.log("Account: ", account.address);
@@ -364,9 +293,11 @@ async function initDataFlowAccount(configurationtype: ConfigurationType): Promis
         bech32_cchain_address: bech32AddressXChain.replace("X", "C"),
         hex_cchain_address: account.address,
         gasPrice: gasPrice.toString(),
-        chainId: chainId
+        chainId: chainId,
+        assetID: assetID,
+        networkID: networkID
     }
-
+    configDataFlow = dataFlow;
     console.log("Data flow: ", dataFlow);
     return dataFlow;
 }
@@ -374,8 +305,8 @@ async function initDataFlowAccount(configurationtype: ConfigurationType): Promis
 
 // function to initialize the app
 async function initPrivateKeys(dataflow: DataFlow, testCase: TestCase): Promise<Boolean> {
-
-    //evaluate if file exists
+    if(testCase.Chain == "C"){
+        //evaluate if file exists
     if (fs.existsSync(Constants.PRIVATE_KEYS_FILE)) {
         privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
         let account = web3.eth.accounts.privateKeyToAccount(privateKeys[0]);
@@ -399,6 +330,16 @@ async function initPrivateKeys(dataflow: DataFlow, testCase: TestCase): Promise<
 
     // read file private keys using fs
     privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
+    }
+    //private keys create wallets and send funds in xchain 
+    else
+    {
+        // initialize accounts
+        console.log("Generating accounts ... ");
+        await utils.generateAndFundWallets(testCase);
+        privateKeys = utils.privateKeys;
+    }
+    
 
     return true;
 
@@ -412,11 +353,24 @@ async function initBuilder(configurationType: ConfigurationType, dataFlow: DataF
             break;
         case "erc20tx": txBuilder = new testbuilderErc20(configurationType, web3, dataFlow);
             break;
+        case "transfer-xchain":
+            txBuilder = new xChainBuilder(configurationType, web3, dataFlow);
+            urlRpcDetails = await getURLDetails(configurationType.rpc);
+            protocolRPC = urlRpcDetails.protocol.replace(":", "");
+            break;
         default:
             break;
     }
 }
 
+async function getURLDetails(rpc: string) {
+    let url = new URL(rpc);
+    let port = "443";
+    if (url.port != "") {
+        port = url.port;
+    }
+    return url;
+}
 
 async function initNetwork(testCase: TestCase,
     prevTestCase: TestCase,
