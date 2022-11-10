@@ -295,7 +295,6 @@ async function initApp(configType: ConfigurationType): Promise<DataFlow> {
     let dataFlow = await initDataFlowAccount(configType);
     utils = new Utils(configType, dataFlow);
     await initBuilder(configType, dataFlow);
-    utils.txBuilder = txBuilder;
     return dataFlow;
 }
 
@@ -347,7 +346,11 @@ async function initPrivateKeys(dataflow: DataFlow, testCase: TestCase): Promise<
         balance = await web3.eth.getBalance(dataflow.hex_cchain_address);
         console.log('New balance after import/export : ', balance);
     }
-
+    if (testCase.TestType== "erc20tx"){
+        contractAddress = await txBuilder.deployContract("0x"+dataflow.hexPrivateKey, web3);
+        txBuilder.contractAddress = contractAddress;
+        utils.txBuilder = txBuilder;
+    }
     // initialize accounts
     console.log("Generating accounts ... ");
     await utils.generateAndFundWallets(testCase);
@@ -366,8 +369,6 @@ async function initBuilder(configurationType: ConfigurationType, dataFlow: DataF
             // mint
             break;
         case "erc20tx": txBuilder = new testbuilderErc20(configurationType, web3, dataFlow);
-            contractAddress = await txBuilder.deployContract("0x"+dataFlow.hexPrivateKey, web3);
-            txBuilder.contractAddress = contractAddress;
             break;
         case "erc1155tx": txBuilder = new ERC1155TXBuilder(configurationType, web3, dataFlow);
             contractAddress = await txBuilder.deployContract("0x"+dataFlow.hexPrivateKey, web3);
