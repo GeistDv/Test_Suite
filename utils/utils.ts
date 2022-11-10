@@ -377,37 +377,54 @@ class Utils {
                 await Promise.all(promises);
             }
         }
-        else {
+        else { //X Chain
             let accountsWithoutFunds = await this.generateAccountsXchain(testCase);
             this.privateKeys = accountsWithoutFunds;
-            let baseAmount: number = 400000000000000;
+            let baseAmount: number = parseFloat(this.web3.utils.toWei(Constants.INITIAL_FUNDS, 'gwei')) * testCase.Threads;
             let initialAccountsWithFunds : XChainTestWallet[] = [];
 
             //First 10 Transactions
             for (let i = 0; i < 10; i++) {
-                console.log("First Transactions -> ", i);
                 await Utils.sendTransactionXChain(this.principalAccount, accountsWithoutFunds[i], baseAmount.toString(), this.xChainAvalanche, xChainbuilder);
                 initialAccountsWithFunds.push(accountsWithoutFunds[i]);
-                accountsWithoutFunds = accountsWithoutFunds.filter((account) => account != accountsWithoutFunds[i]);
+                accountsWithoutFunds = accountsWithoutFunds.filter((account) => account.xChainAddress != accountsWithoutFunds[i].xChainAddress);
             }
 
             if (testCase.Threads > 10) {
-                this.processFundsXChain(initialAccountsWithFunds, accountsWithoutFunds);
+                this.processFundsXChain(initialAccountsWithFunds, accountsWithoutFunds, xChainbuilder);
             }
         }
         logger.info("Done!");
     }
     
     //Process Fund
-    private async processFundsXChain(initialAccountsWithFunds: XChainTestWallet[], accountsWithoutFunds: XChainTestWallet[])
+    private async processFundsXChain(initialAccountsWithFunds: XChainTestWallet[], accountsWithoutFunds: XChainTestWallet[], xChainbuilder?: ITransactionBuilder)
     {
-        let queues : number[][] = this.splitListIntoChunksOfLen(accountsWithoutFunds, initialAccountsWithFunds.length);
-        console.log(queues);
+        let queues : any[][] = this.splitListIntoChunksOfLenXchain(accountsWithoutFunds, initialAccountsWithFunds.length);
+        console.log("queues",queues);
         for(let i = 0; i < queues.length; i++)
         {
-          //var txs :XChainTestWallet[][] = queues[i].map((value, index) => [initialAccountsWithFunds[i], value]);
-          //executeQueue(txs);
+          var txs :any[][] = queues[i].map((value, index) => [initialAccountsWithFunds[i], value]);
+          await this.executeQueue(txs, xChainbuilder);
         }
+    }
+
+    private async executeQueue(queue: any, xChainbuilder?: ITransactionBuilder)
+    {
+        for(let i = 0; i < queue.length; i++)
+        {
+            let amountTransfer = this.web3.utils.toWei(Constants.INITIAL_FUNDS, 'gwei');
+            await Utils.sendTransactionXChain(queue[i][0], queue[i][1], amountTransfer,queue[i][0].avalancheXChain, xChainbuilder);
+        }
+    }
+
+    private splitListIntoChunksOfLenXchain(list : any[], len : any) {
+        let chunks : any [][] = [];
+        let i = 0, n = list.length;
+        while (i < n) {
+            chunks.push(list.slice(i, i += len));
+        }
+        return chunks;
     }
 
     private splitListIntoChunksOfLen(list: any[], len: number) {
@@ -665,12 +682,12 @@ class Utils {
     public static async sendTransactionXChain(addressFrom: XChainTestWallet, addressTo: XChainTestWallet, amount: string, xChainFlow: AvalancheXChain, xchainBuilder?: ITransactionBuilder) {
         let txId = await xchainBuilder?.buildAndSendTransaction(addressFrom, "", addressTo, amount, xChainFlow);
 
+        console.log("Amount To Send -> ", amount);
         console.log("Address ->", addressTo.xChainAddress);
         console.log("New Balance ->", await addressTo.avalancheXChain.xchain.getBalance(addressTo.xChainAddress, addressTo.avalancheXChain.avaxAssetID));
         console.log("Tx ID -> ", txId);
         return txId;
     }
-
 
 }
 

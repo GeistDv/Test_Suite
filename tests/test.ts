@@ -1,6 +1,6 @@
 //implement algorithm that executes a queue of tasks
 //each task is a function that returns a promise
-
+ 
 function main()
 {
   //build dynamic array with a integer value
@@ -9,7 +9,7 @@ function main()
 
   //split array into chunks
   let queues : number[][] = splitListIntoChunksOfLen(privateKeysAccountsWithoutFunds, initialAccountsWithFunds.length);
-  console.log(queues);
+  console.log("queues",queues);
   for(let i = 0; i < queues.length; i++)
   {
     var txs :number[][] = queues[i].map((value, index) => [initialAccountsWithFunds[i], value]);
@@ -47,3 +47,4 @@ function splitListIntoChunksOfLen(list : number[], len : any) {
 }
 
 main();
+

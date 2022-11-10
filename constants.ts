@@ -11,4 +11,5 @@ export abstract class Constants {
     static readonly KEYSTORE_PASSWORD : string = "felipantiago45";
     static readonly PRIVATE_KEYS_FILE : string = "privatekeys.csv";
     static readonly AMOUNT_TO_TRANSFER : string = "0.1";
+    static readonly AMOUNT_TO_TRANSFER_X_CHAIN : string = "0.01";
 }

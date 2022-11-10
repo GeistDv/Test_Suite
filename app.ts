@@ -137,8 +137,13 @@ app.post("/network-runner", async (req, res) => {
         }
         
         await initPrivateKeys(dataFlow, testCase);
-        await startTestsAndGatherMetrics(testCase, configType);
-        //await networkRunner.killGnomeTerminal();
+
+        //Wait 20 Seconds
+        console.log("Waiting 20 Seconds.........................");
+        setTimeout(async () => {
+            await startTestsAndGatherMetrics(testCase, configType);
+            //await networkRunner.killGnomeTerminal();
+        },20000);
     }
 
     return res.status(200).send("Network Runner executed");
@@ -195,13 +200,22 @@ app.post('/', async (req, res) => {
         sendTo = privateKeys[0];
     }
     if(chainType == "X")
-    {   console.log("______________________________________________");
+    {   
+        
+        let xWallet : XChainTestWallet = privateKey;
+        let balance = await xWallet.avalancheXChain.xchain.getBalance(xWallet.xChainAddress, xWallet.avalancheXChain.avaxAssetID);
+
+        console.log("______________________________________________");
         console.log("ID", req.body.ID);
         console.log("Address From:", privateKey.xChainAddress);
         console.log("Address to:", sendTo.xChainAddress);
-        let ammount = parseFloat(Constants.AMOUNT_TO_TRANSFER) * 10;
+        console.log("Amount:", web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER_X_CHAIN, 'gwei'));
+        console.log("Balance:",balance);
+
+        //Temporal Amount
+        let ammountConversion = web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER_X_CHAIN, 'gwei');
         let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, configDataFlow.networkID, privateKey.privateKey, configDataFlow.assetID);
-        txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo,ammount ,xChainAvalanche)
+        txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo,ammountConversion ,xChainAvalanche)
         .then(data => {
             res.send(data);
         }).catch(err => {
