@@ -28,6 +28,7 @@ import { basename } from "path";
 import XChainTestWallet from './utils/XChainTestWallet';
 import xChainBuilder from "./builders/XchainBuilder";
 import testbuilderErc20 from './builders/ERC20TXBuilder';
+import { test } from "shelljs";
 
 dotenv.config();
 // Needed for self signed certs.
@@ -346,7 +347,7 @@ async function initPrivateKeys(dataflow: DataFlow, testCase: TestCase): Promise<
         balance = await web3.eth.getBalance(dataflow.hex_cchain_address);
         console.log('New balance after import/export : ', balance);
     }
-    if (testCase.TestType== "erc20tx"){
+    if (testCase.TestType== "erc20tx" || testCase.TestType == "erc1155tx"){
         contractAddress = await txBuilder.deployContract("0x"+dataflow.hexPrivateKey, web3);
         txBuilder.contractAddress = contractAddress;
         utils.txBuilder = txBuilder;
@@ -371,8 +372,6 @@ async function initBuilder(configurationType: ConfigurationType, dataFlow: DataF
         case "erc20tx": txBuilder = new testbuilderErc20(configurationType, web3, dataFlow);
             break;
         case "erc1155tx": txBuilder = new ERC1155TXBuilder(configurationType, web3, dataFlow);
-            contractAddress = await txBuilder.deployContract("0x"+dataFlow.hexPrivateKey, web3);
-            txBuilder.contractAddress = contractAddress;
             break;
         default:
             break;
