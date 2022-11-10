@@ -83,17 +83,21 @@ class testbuilderErc20 implements ITransactionBuilder {
     async buildAndSendTransaction(privateKey: string, contractAddress: string, sendTo: string, amount: string): Promise<string> {
         return new Promise(async (resolve, reject) => {
             
-            var nonce = await this.web3.eth.getTransactionCount(this.DataFlow.hex_cchain_address);
+            
             var contract = new this.web3.eth.Contract(this.ContractAbi.abi, contractAddress);
-            const data = contract.methods.transfer(sendTo, amount).encodeABI();
+
+            var accountFrom = this.web3.eth.accounts.privateKeyToAccount(privateKey);
+            var addressendTo = this.web3.eth.accounts.privateKeyToAccount(sendTo);
+            var nonce = await this.web3.eth.getTransactionCount(accountFrom.address);
+            const data = contract.methods.transfer(addressendTo.address, 1).encodeABI();
             
             var txData = {
                 nonce: nonce,
                 maxFeePerGas: this.web3.utils.toHex(Constants.MAXFEEPERGAS),
                 maxPriorityFeePerGas: this.web3.utils.toHex(Constants.MAXPRIORITYFEEPERGAS),
                 gas: this.web3.utils.toHex(Constants.GAS),
-                from: this.DataFlow.hex_cchain_address,
-                to: sendTo,
+                from: accountFrom.address,
+                to: addressendTo.address,
                 value: this.web3.utils.toHex(0),
                 data: data
             };

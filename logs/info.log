@@ -2812,3 +2812,160 @@
 [2022-11-08T16:52:49.550] [INFO] default - Reading accounts from file...
 [2022-11-08T16:52:49.550] [INFO] default - Accounts already generated
 [2022-11-08T16:52:50.118] [INFO] default - Done!
+[2022-11-10T17:01:01.255] [INFO] default - Server running on port 3000
+[2022-11-10T17:01:33.339] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-10T17:01:33.340] [INFO] default - Importing key..
+[2022-11-10T17:01:34.015] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6' },
+  id: 1
+}
+[2022-11-10T17:01:34.015] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6"},"id":1}
+[2022-11-10T17:01:34.642] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x858d6194e6Fb6F42a3AD4083486252eD418ce524"},"id":1}
+[2022-11-10T17:01:44.419] [INFO] default - Generating accounts... 2
+[2022-11-10T17:01:49.826] [INFO] default - Done!
+[2022-11-10T17:04:22.070] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-10T17:04:22.070] [INFO] default - Importing key..
+[2022-11-10T17:04:22.862] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6' },
+  id: 1
+}
+[2022-11-10T17:04:22.862] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6"},"id":1}
+[2022-11-10T17:04:23.669] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x858d6194e6Fb6F42a3AD4083486252eD418ce524"},"id":1}
+[2022-11-10T17:04:25.360] [INFO] default - Reading accounts from file...
+[2022-11-10T17:04:25.360] [INFO] default - Generating accounts... 1
+[2022-11-10T17:04:28.970] [INFO] default - Done!
+[2022-11-10T17:08:20.439] [INFO] default - Server running on port 3000
+[2022-11-10T17:08:32.403] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-10T17:08:32.403] [INFO] default - Importing key..
+[2022-11-10T17:08:33.343] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6' },
+  id: 1
+}
+[2022-11-10T17:08:33.344] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6"},"id":1}
+[2022-11-10T17:08:34.031] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x858d6194e6Fb6F42a3AD4083486252eD418ce524"},"id":1}
+[2022-11-10T17:08:35.722] [INFO] default - Reading accounts from file...
+[2022-11-10T17:08:35.723] [INFO] default - Accounts already generated
+[2022-11-10T17:08:36.293] [INFO] default - Done!
+[2022-11-10T17:10:54.940] [INFO] default - Server running on port 3000
+[2022-11-10T17:11:08.435] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-10T17:11:08.435] [INFO] default - Importing key..
+[2022-11-10T17:11:09.082] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6' },
+  id: 1
+}
+[2022-11-10T17:11:09.082] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6"},"id":1}
+[2022-11-10T17:11:09.790] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x858d6194e6Fb6F42a3AD4083486252eD418ce524"},"id":1}
+[2022-11-10T17:11:11.538] [INFO] default - Reading accounts from file...
+[2022-11-10T17:11:11.538] [INFO] default - Accounts already generated
+[2022-11-10T17:11:12.235] [INFO] default - Done!
+[2022-11-10T17:13:19.550] [INFO] default - Server running on port 3000
+[2022-11-10T17:13:35.580] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-10T17:13:35.580] [INFO] default - Importing key..
+[2022-11-10T17:13:36.213] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6' },
+  id: 1
+}
+[2022-11-10T17:13:36.213] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6"},"id":1}
+[2022-11-10T17:13:36.836] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x858d6194e6Fb6F42a3AD4083486252eD418ce524"},"id":1}
+[2022-11-10T17:13:39.401] [INFO] default - Reading accounts from file...
+[2022-11-10T17:13:39.401] [INFO] default - Accounts already generated
+[2022-11-10T17:13:40.041] [INFO] default - Done!
+[2022-11-10T17:16:07.813] [INFO] default - blockNumber with max undefined -Infinity
+[2022-11-10T17:16:07.813] [INFO] default - Average time between blocks: NaN
+[2022-11-10T17:16:07.813] [INFO] default - Max block time: -Infinity
+[2022-11-10T17:16:07.813] [INFO] default - Min block time: Infinity
+[2022-11-10T17:16:11.541] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-10T17:16:11.541] [INFO] default - Importing key..
+[2022-11-10T17:16:12.359] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6' },
+  id: 1
+}
+[2022-11-10T17:16:12.359] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6"},"id":1}
+[2022-11-10T17:16:13.328] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x858d6194e6Fb6F42a3AD4083486252eD418ce524"},"id":1}
+[2022-11-10T17:16:15.875] [INFO] default - Reading accounts from file...
+[2022-11-10T17:16:15.875] [INFO] default - Accounts already generated
+[2022-11-10T17:16:16.769] [INFO] default - Done!
+[2022-11-10T17:17:59.374] [INFO] default - Server running on port 3000
+[2022-11-10T17:18:16.245] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-10T17:18:16.245] [INFO] default - Importing key..
+[2022-11-10T17:18:16.868] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6' },
+  id: 1
+}
+[2022-11-10T17:18:16.868] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6"},"id":1}
+[2022-11-10T17:18:17.581] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x858d6194e6Fb6F42a3AD4083486252eD418ce524"},"id":1}
+[2022-11-10T17:18:19.893] [INFO] default - Reading accounts from file...
+[2022-11-10T17:18:19.893] [INFO] default - Accounts already generated
+[2022-11-10T17:18:20.919] [INFO] default - Done!
+[2022-11-10T17:20:32.949] [INFO] default - blockNumber with max undefined -Infinity
+[2022-11-10T17:20:32.949] [INFO] default - Average time between blocks: NaN
+[2022-11-10T17:20:32.949] [INFO] default - Max block time: -Infinity
+[2022-11-10T17:20:32.949] [INFO] default - Min block time: Infinity
+[2022-11-10T17:20:36.057] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-10T17:20:36.057] [INFO] default - Importing key..
+[2022-11-10T17:20:36.692] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6' },
+  id: 1
+}
+[2022-11-10T17:20:36.692] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6"},"id":1}
+[2022-11-10T17:20:37.319] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x858d6194e6Fb6F42a3AD4083486252eD418ce524"},"id":1}
+[2022-11-10T17:20:39.002] [INFO] default - Reading accounts from file...
+[2022-11-10T17:20:39.002] [INFO] default - Accounts already generated
+[2022-11-10T17:20:39.559] [INFO] default - Done!
+[2022-11-10T17:23:50.007] [INFO] default - Server running on port 3000
+[2022-11-10T17:24:09.267] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-10T17:24:09.268] [INFO] default - Importing key..
+[2022-11-10T17:24:09.960] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6' },
+  id: 1
+}
+[2022-11-10T17:24:09.960] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6"},"id":1}
+[2022-11-10T17:24:10.578] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x858d6194e6Fb6F42a3AD4083486252eD418ce524"},"id":1}
+[2022-11-10T17:24:12.829] [INFO] default - Reading accounts from file...
+[2022-11-10T17:24:12.829] [INFO] default - Accounts already generated
+[2022-11-10T17:24:13.421] [INFO] default - Done!
+[2022-11-10T17:24:44.486] [INFO] default - blockNumber with max 48 2
+[2022-11-10T17:24:44.486] [INFO] default - Average time between blocks: 2
+[2022-11-10T17:24:44.486] [INFO] default - Max block time: 2
+[2022-11-10T17:24:44.486] [INFO] default - Min block time: 2
+[2022-11-10T17:24:47.678] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-10T17:24:47.678] [INFO] default - Importing key..
+[2022-11-10T17:24:48.305] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6' },
+  id: 1
+}
+[2022-11-10T17:24:48.305] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6"},"id":1}
+[2022-11-10T17:24:48.944] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x858d6194e6Fb6F42a3AD4083486252eD418ce524"},"id":1}
+[2022-11-10T17:24:51.819] [INFO] default - Reading accounts from file...
+[2022-11-10T17:24:51.819] [INFO] default - Accounts already generated
+[2022-11-10T17:24:52.380] [INFO] default - Done!
+[2022-11-10T17:25:27.583] [INFO] default - blockNumber with max 62 2
+[2022-11-10T17:25:27.583] [INFO] default - Average time between blocks: 2
+[2022-11-10T17:25:27.583] [INFO] default - Max block time: 2
+[2022-11-10T17:25:27.584] [INFO] default - Min block time: 2
+[2022-11-10T17:25:34.982] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-10T17:25:34.983] [INFO] default - Importing key..
+[2022-11-10T17:25:35.606] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6' },
+  id: 1
+}
+[2022-11-10T17:25:35.607] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1m9qx2zrv743zwrpm9ghejeje0dht0gfkq5evv6"},"id":1}
+[2022-11-10T17:25:36.224] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x858d6194e6Fb6F42a3AD4083486252eD418ce524"},"id":1}
+[2022-11-10T17:25:39.245] [INFO] default - Reading accounts from file...
+[2022-11-10T17:25:39.245] [INFO] default - Accounts already generated
+[2022-11-10T17:25:39.897] [INFO] default - Done!
+[2022-11-10T17:26:07.456] [INFO] default - blockNumber with max 77 2
+[2022-11-10T17:26:07.456] [INFO] default - Average time between blocks: 2
+[2022-11-10T17:26:07.456] [INFO] default - Max block time: 2
+[2022-11-10T17:26:07.456] [INFO] default - Min block time: 2
