@@ -14,7 +14,7 @@ import { getXKeyChain } from './configAvalanche';
 import XchainBuilder from "../builders/XchainBuilder";
 import XChainTestWallet from "./XChainTestWallet";
 import AvalancheXChain from "../types/AvalancheXChain";
-import {KeyChain} from "avalanche/dist/apis/avm"
+import { KeyChain } from "avalanche/dist/apis/avm"
 import ITransactionBuilder from "../builders/ItransactionBuilder";
 import xChainBuilder from "../builders/XchainBuilder";
 
@@ -25,19 +25,19 @@ class Utils {
     web3: Web3;
 
     //xchain transaction optional variables
-    urlRpc! : URL;
+    urlRpc!: URL;
     xChainAvalanche!: AvalancheXChain;
-    protocolRPC! : string;
+    protocolRPC!: string;
     principalAccount!: XChainTestWallet;
-    
+
     //optional variable private keys
-    privateKeys!: any[]; 
-    
+    privateKeys!: any[];
+
     constructor(configTypeForCompleteTest: ConfigurationType, dataFlow: DataFlow) {
 
         this.Configuration = configTypeForCompleteTest;
         this.web3 = new Web3(this.Configuration.rpc_keystore + '/ext/bc/C/rpc');;
-        this.dataFlow = dataFlow;   
+        this.dataFlow = dataFlow;
     }
 
 
@@ -190,15 +190,15 @@ class Utils {
         return privateKeys;
     }
 
-    public async generateAccountsXchain(testCase: TestCase){
+    public async generateAccountsXchain(testCase: TestCase) {
 
         //TODO: "Change parameters in funtion NetworkID, AssetID, Protocol rpc,private key, KeyChain... "
         let promisesXChainWallet = [];
-        let privateKeys : XChainTestWallet[];
+        let privateKeys: XChainTestWallet[];
         let principalAccount = new XChainTestWallet(this.dataFlow.bech32_xchain_address, this.Configuration.private_key_with_funds, this.xChainAvalanche);
 
         //Create Private Keys and Wallets
-        for (let x = 0; x <  testCase.Threads; x++) {
+        for (let x = 0; x < testCase.Threads; x++) {
             promisesXChainWallet.push(XChainTestWallet.importKeyAndCreateWallet(this.web3, this.Configuration, this.urlRpc, this.protocolRPC, this.dataFlow.networkID, this.dataFlow.assetID));
         }
         privateKeys = await Promise.all(promisesXChainWallet);
@@ -359,9 +359,8 @@ class Utils {
     }
 
 
-    public async generateAndFundWallets(testCase: TestCase,xChainbuilder? : ITransactionBuilder) {   
-        if (testCase.Chain == "C")
-        {
+    public async generateAndFundWallets(testCase: TestCase, xChainbuilder?: ITransactionBuilder) {
+        if (testCase.Chain == "C") {
             let accounts = await this.generateAccounts(testCase);
             var chunks = this.splitListIntoChunksOfLen(accounts, 50);
             let nonce = await this.web3.eth.getTransactionCount(this.dataFlow.hex_cchain_address);
@@ -378,45 +377,40 @@ class Utils {
                 await Promise.all(promises);
             }
         }
-        else
-        {
-            let accounts = await this.generateAccountsXchain(testCase);
-            this.privateKeys = accounts;
+        else {
+            let accountsWithoutFunds = await this.generateAccountsXchain(testCase);
+            this.privateKeys = accountsWithoutFunds;
             let baseAmount: number = 400000000000000;
-            let baseSend: number = 400000000;
-            let promiseFund = [];
+            let initialAccountsWithFunds : XChainTestWallet[] = [];
 
-            let c = 0;
-            while (c <= testCase.Threads) {
-                if (c < 10) //First 10 Transactions
-                {
-                    console.log("First Transactions -> ", c)
-                    await Utils.sendTransactionXChain(this.principalAccount, accounts[c], baseAmount.toString(), this.xChainAvalanche,xChainbuilder);
-                }
-                else {
-                    if (c % 10 == 0 && promiseFund.length > 0) {
-                        console.log("Iteration --->", (c / 10));
-                        await Promise.all(promiseFund);
-                        promiseFund = [];
-                        baseSend = baseSend - 4000000;
+            //First 10 Transactions
+            for (let i = 0; i < 10; i++) {
+                console.log("First Transactions -> ", i);
+                await Utils.sendTransactionXChain(this.principalAccount, accountsWithoutFunds[i], baseAmount.toString(), this.xChainAvalanche, xChainbuilder);
+                initialAccountsWithFunds.push(accountsWithoutFunds[i]);
+                accountsWithoutFunds = accountsWithoutFunds.filter((account) => account != accountsWithoutFunds[i]);
+            }
 
-                        if (c >= testCase.Threads) {
-                            console.log("BREAKING");
-                            break;
-                        }
-                    }
-
-                    baseSend = baseSend + c;
-
-                    promiseFund.push(Utils.sendTransactionXChain(accounts[c - 10], accounts[c], baseSend.toString(), accounts[c - 10].avalancheXChain,xChainbuilder));
-                }
-                c++;
+            if (testCase.Threads > 10) {
+                this.processFundsXChain(initialAccountsWithFunds, accountsWithoutFunds);
             }
         }
         logger.info("Done!");
     }
+    
+    //Process Fund
+    private async processFundsXChain(initialAccountsWithFunds: XChainTestWallet[], accountsWithoutFunds: XChainTestWallet[])
+    {
+        let queues : number[][] = this.splitListIntoChunksOfLen(accountsWithoutFunds, initialAccountsWithFunds.length);
+        console.log(queues);
+        for(let i = 0; i < queues.length; i++)
+        {
+          //var txs :XChainTestWallet[][] = queues[i].map((value, index) => [initialAccountsWithFunds[i], value]);
+          //executeQueue(txs);
+        }
+    }
 
-    private splitListIntoChunksOfLen(list: string[], len: number) {
+    private splitListIntoChunksOfLen(list: any[], len: number) {
         let chunks = [], i = 0, n = list.length;
         while (i < n) {
             chunks.push(list.slice(i, i += len));
@@ -448,10 +442,9 @@ class Utils {
         console.log('Transaction succcesfull', data.transactionHash);
     }
 
-    public async sendFundsXChain (privatekey: string)
-    {
+    public async sendFundsXChain(privatekey: string) {
         console.log("PRivate key ->", privatekey);
-        
+
     }
 
     public static convertHexPkToCB58(hexPrivKey: string): string {
@@ -670,7 +663,7 @@ class Utils {
     }
 
     public static async sendTransactionXChain(addressFrom: XChainTestWallet, addressTo: XChainTestWallet, amount: string, xChainFlow: AvalancheXChain, xchainBuilder?: ITransactionBuilder) {
-        let txId = await xchainBuilder?.buildAndSendTransaction(addressFrom, "",addressTo, amount,xChainFlow);
+        let txId = await xchainBuilder?.buildAndSendTransaction(addressFrom, "", addressTo, amount, xChainFlow);
 
         console.log("Address ->", addressTo.xChainAddress);
         console.log("New Balance ->", await addressTo.avalancheXChain.xchain.getBalance(addressTo.xChainAddress, addressTo.avalancheXChain.avaxAssetID));
