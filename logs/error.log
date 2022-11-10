@@ -1,0 +1,288 @@
+[2022-11-10T17:15:56.050] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:15:59.923] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:16:00.132] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:16:00.479] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:16:00.788] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:16:01.138] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:16:01.451] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:16:01.810] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:16:02.113] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:16:02.464] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:16:02.768] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:16:03.014] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:16:03.404] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:16:03.648] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:16:04.061] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:16:04.299] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:16:04.612] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:16:04.850] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:24.164] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:24.441] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:24.832] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:25.174] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:25.496] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:25.945] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:26.230] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:26.700] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:26.763] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:27.346] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:27.497] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:27.988] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:28.192] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:28.696] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:28.905] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:29.406] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:29.536] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
+[2022-11-10T17:20:30.133] [ERROR] error - Error: Returned error: already known
+    at Object.ErrorResponse (/home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-helpers/lib/errors.js:28:19)
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-core-requestmanager/lib/index.js:300:36
+    at /home/esteban/Documentos/Proyectos/Test_Suite/node_modules/web3-providers-http/lib/index.js:124:13
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5) {
+  data: null
+}
