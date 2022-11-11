@@ -413,10 +413,15 @@ class Utils {
     private async processFundsXChain(initialAccountsWithFunds: XChainTestWallet[], accountsWithoutFunds: XChainTestWallet[], xChainbuilder?: ITransactionBuilder) {
         let queues: any[][] = this.splitListIntoChunksOfLenXchain(accountsWithoutFunds, initialAccountsWithFunds.length);
         console.log("queues", queues);
+        let promises = [];
+
         for (let i = 0; i < queues.length; i++) {
             var txs: any[][] = queues[i].map((value, index) => [initialAccountsWithFunds[i], value]);
-            await this.executeQueue(txs, xChainbuilder);
+            promises.push(this.executeQueue(txs, xChainbuilder));
         }
+
+        await Promise.all(promises);
+
     }
 
     private async executeQueue(queue: any, xChainbuilder?: ITransactionBuilder) {
@@ -688,13 +693,21 @@ class Utils {
     }
 
     public static async sendTransactionXChain(addressFrom: XChainTestWallet, addressTo: XChainTestWallet, amount: string, xChainFlow: AvalancheXChain, xchainBuilder?: ITransactionBuilder) {
-        let txId = await xchainBuilder?.buildAndSendTransaction(addressFrom, "", addressTo, amount, xChainFlow);
+        try
+        {
+            let txId = await xchainBuilder?.buildAndSendTransaction(addressFrom, "", addressTo, amount, xChainFlow);
 
-        console.log("Amount To Send -> ", amount);
-        console.log("Address ->", addressTo.xChainAddress);
-        console.log("New Balance ->", await addressTo.avalancheXChain.xchain.getBalance(addressTo.xChainAddress, addressTo.avalancheXChain.avaxAssetID));
-        console.log("Tx ID -> ", txId);
-        return txId;
+            console.log("Amount To Send -> ", amount);
+            console.log("Address ->", addressTo.xChainAddress);
+            console.log("New Balance ->", await addressTo.avalancheXChain.xchain.getBalance(addressTo.xChainAddress, addressTo.avalancheXChain.avaxAssetID));
+            console.log("Tx ID -> ", txId);
+            return txId;
+        }
+        catch(e)
+        {
+            errorLogger.error(e);
+            console.log(e);
+        }
     }
 
 }

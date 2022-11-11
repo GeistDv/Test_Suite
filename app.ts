@@ -138,12 +138,8 @@ app.post("/network-runner", async (req, res) => {
 
         await initPrivateKeys(dataFlow, testCase);
 
-        //Wait 20 Seconds
-        console.log("Waiting 20 Seconds.........................");
-        setTimeout(async () => {
-            await startTestsAndGatherMetrics(testCase, configType);
-            //await networkRunner.killGnomeTerminal();
-        }, 20000);
+        await startTestsAndGatherMetrics(testCase, configType);
+        await networkRunner.killGnomeTerminal();
     }
 
     return res.status(200).send("Network Runner executed");

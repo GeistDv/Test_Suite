@@ -286,3 +286,325 @@
     at processTicksAndRejections (internal/process/task_queues.js:97:5) {
   data: null
 }
+[2022-11-11T09:40:12.919] [ERROR] error - {
+  address: 'X-custom16p7nr9fh9jtle6rxfj7499jehcthvx2c4tz4gk',
+  balance: '1000000000000',
+  privateKey: 'PrivateKey-282eyK3BPkf9mAVYz5qmwSkoWsrsFJTh9ehx2AApLmUujTJQFQ',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:13.852] [ERROR] error - {
+  address: 'X-custom1tvpt86dmpum34djp62narmh2znujhfefy6vrmv',
+  balance: '1000000000000',
+  privateKey: 'PrivateKey-27qQxfmzJGZVbS1j7p6GhhiGidTEKZYZBjDLvoGc8dtD79naqC',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:14.365] [ERROR] error - {
+  address: 'X-custom1j838l44s7cfuqfvjtph7w6kv7eya6kr3lenqly',
+  balance: '1000000000000',
+  privateKey: 'PrivateKey-vW5yZBPJT3VAgkWjosKoZvPsuXHGnzBL3UEXuTHUfugc6E5fQ',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:14.767] [ERROR] error - {
+  address: 'X-custom19r5lz0uzyn5gads6sz5sp3lsux4zjrl9cu94sd',
+  balance: '1000000000000',
+  privateKey: 'PrivateKey-2EfKE7ETDK39jPpNJij9AiSuxSwaJiZFGJ4RDHaPdyHME8QUNd',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:16.500] [ERROR] error - {
+  address: 'X-custom1q9r9f4luwhtwx3n7hglep97umna79plxn25tqw',
+  balance: '0',
+  privateKey: 'PrivateKey-2rboMLaY2DJrpaADZRPJo2wz54kgTRpQkZygGba5H9st3o6Rmu',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:16.964] [ERROR] error - {
+  address: 'X-custom1scq5awqmnq88auwma6m86k8gqnfsjnhucppl59',
+  balance: '1000000000000',
+  privateKey: 'PrivateKey-2qXf63ZRRqggiqriYGQPgoYAsCGgyCpA9FhanSDGe3Ypt7zTmj',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:17.439] [ERROR] error - {
+  address: 'X-custom1tvpt86dmpum34djp62narmh2znujhfefy6vrmv',
+  balance: '1000000000000',
+  privateKey: 'PrivateKey-27qQxfmzJGZVbS1j7p6GhhiGidTEKZYZBjDLvoGc8dtD79naqC',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:17.816] [ERROR] error - {
+  address: 'X-custom12l2nvfugq0h82zx8wqtxn5kcn5f9f08z8qcdc7',
+  balance: '0',
+  privateKey: 'PrivateKey-6SLTtUenQSvrghvuGWykZjxE9byvcjemMzM7GsTKAE1Cv2kmZ',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:18.179] [ERROR] error - {
+  address: 'X-custom16fmtqwwt7hsmec40tpru4lyyw6n2htv8nt4xsn',
+  balance: '0',
+  privateKey: 'PrivateKey-2h3kfMjqTh6v2esBdoSvwXGU6dYCuR3VMtn3FCxtugHLke5YFZ',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:18.563] [ERROR] error - {
+  address: 'X-custom15uf05fypk69rvy5x9wwvz9v4m3fj4jauy3zw29',
+  balance: '0',
+  privateKey: 'PrivateKey-ZSL5TKS3NF6Nha5Cw86cze9MT2h4YhPpzY63MrnFRKt9UqMs',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:22.293] [ERROR] error - {
+  address: 'X-custom19r5lz0uzyn5gads6sz5sp3lsux4zjrl9cu94sd',
+  balance: '1000000000000',
+  privateKey: 'PrivateKey-2EfKE7ETDK39jPpNJij9AiSuxSwaJiZFGJ4RDHaPdyHME8QUNd',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:22.676] [ERROR] error - {
+  address: 'X-custom1ejqte9u82pntanj8fnfrm74nhxtxpyhzwljlst',
+  balance: '0',
+  privateKey: 'PrivateKey-6X3Ch1dNGDqpwkAZNiQ3VZGuYSksWHMPswxPNbqe9J5JWGhLn',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:23.056] [ERROR] error - {
+  address: 'X-custom1x07r4yrkwj4qeywvtxqw4m3jzte5ukqz67zf8u',
+  balance: '0',
+  privateKey: 'PrivateKey-XZ8keGSAP1CT8yFuZpLhY7y1yfgtwZgKX4WMB2BDMmFCofx8A',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:23.440] [ERROR] error - {
+  address: 'X-custom1spvy7g8a0fmwk85alf5y4vn3u5g47q9c92np4q',
+  balance: '0',
+  privateKey: 'PrivateKey-bi3bjrHCfkSJjJxiCoyBv4BAJQyYADff21rEGJ9GR2nfam9uS',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:23.822] [ERROR] error - {
+  address: 'X-custom19nfwcs3nhmqh3gw7pnjv75yd9ty5dqnsgpzw5k',
+  balance: '1000000000000',
+  privateKey: 'PrivateKey-w2Kzd2ohbGMEswgdbvknJwBTSkMENdF6uGhQcccifxrmb73Cp',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.648] [ERROR] error - {
+  address: 'X-custom1rx2euvw66uldjxt2g4k8uaahq0wfhtrsg4zs2r',
+  balance: '0',
+  privateKey: 'PrivateKey-233yt3QRY5E7Wi7VqJV45cLZn6NV1KVYM2TdbAYoLQ39midAfr',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.652] [ERROR] error - {
+  address: 'X-custom1j2vkyuq37eqewgmntzv43y40s2rlufyn75td2p',
+  balance: '0',
+  privateKey: 'PrivateKey-4YAcPTTUmANoHZWecRh9c5cv7jyjyq6tBm851JqWH95y5SBjB',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.657] [ERROR] error - {
+  address: 'X-custom1sy48vz4yw28knkk6mx9qjnjkt4vyghce6lepg2',
+  balance: '0',
+  privateKey: 'PrivateKey-2n7guWRBv3YLZwHQkidWtDV6k55eG4yFJsHZvf9nEjLxfqbf5C',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.661] [ERROR] error - {
+  address: 'X-custom1xq4cvkzdpk0r9szgacfr49d43u9963g4anhmu0',
+  balance: '20000000000',
+  privateKey: 'PrivateKey-276NqGxJSTZmm957sr6NUcwKAvn7qmZh4wB7cAM1TT4CwH4ZkM',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.664] [ERROR] error - {
+  address: 'X-custom1qzz5tj0te2zqcztywt8ghlsyndqrykxsuh7jr2',
+  balance: '0',
+  privateKey: 'PrivateKey-5eXftXvAzogSNpk6M7KpUm6VGCo8VmXYfexETuFz8WYrxiJF9',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.666] [ERROR] error - {
+  address: 'X-custom1tgpd7dmshjuh2n3w55dtj5lq7hqssqpekzqqgl',
+  balance: '0',
+  privateKey: 'PrivateKey-2mgNhKV1KqKMXSeF8yvrHx43KeuHPQVPy6fgDuh6FMGXZgKvBt',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.668] [ERROR] error - {
+  address: 'X-custom16gaqef8f2sx7t8rz7c4efk4wg8v6cwuc9x2lxy',
+  balance: '0',
+  privateKey: 'PrivateKey-f5TbtbA88dueur51BwEjnPQJNCVUwjYpbBhEJT9oeYsEvJXot',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.670] [ERROR] error - {
+  address: 'X-custom1nh37vdxxz906jthk4p5ccd6kll8ql8yjg3cqfx',
+  balance: '0',
+  privateKey: 'PrivateKey-m5rNxMhtG9RgtPXidukcNFPrMpUhtEFcdmDeo9ahtmxdMTSGZ',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.671] [ERROR] error - {
+  address: 'X-custom1uyyzw6czq4k4756q0x23890z4hnsjmdlksysyw',
+  balance: '1000000000000',
+  privateKey: 'PrivateKey-jrHkVfMAVXfStcA9RLwfxJ3co7r326iiiU5YpDWcqGvAo6Cwv',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.673] [ERROR] error - {
+  address: 'X-custom16h0ywapxuh86p45yk45t8kmq7zf4sxn33s0kh6',
+  balance: '1000000000000',
+  privateKey: 'PrivateKey-udgxCvtp8bxbfu1F3SyB6g8amVi2BbXi7p5ekJAcGenA43fEH',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.675] [ERROR] error - {
+  address: 'X-custom1chzagqgdevex0t8yqmu77q3gyset0jj7hzzp5h',
+  balance: '0',
+  privateKey: 'PrivateKey-2fJsrC2MoMFxcnUfqR1jf3TnAoctdZrAn5dnNXBR19f3Nbphyz',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.677] [ERROR] error - {
+  address: 'X-custom1e7mpskwa2jywppprgc3xawu76szx00levx3wfh',
+  balance: '0',
+  privateKey: 'PrivateKey-bvV4K1n3LqpAAi4auP9JzJaV64mLon2zGJXCSebgsAkSxGZSp',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.680] [ERROR] error - {
+  address: 'X-custom1gc265wp87zth9a2aaclad98f5zqqn2r4crpn5n',
+  balance: '20000000000',
+  privateKey: 'PrivateKey-2VGNBEM1MZmfTPH3DrpkQPfFssxSH7Q5pPJ28La9X9K2DrRUBM',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.742] [ERROR] error - {
+  address: 'X-custom164dd9nyk5u3s5aykw7umc6pdenm53kd0xpkhrn',
+  balance: '0',
+  privateKey: 'PrivateKey-VNJ6iRwYWL5noVsPWKTce7uSTMevWv3Zm9qr2eX2UpYfHGbim',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.744] [ERROR] error - {
+  address: 'X-custom1rzne2ht8kvsq8wreyytkjcjmpx5jq79l4xmttw',
+  balance: '0',
+  privateKey: 'PrivateKey-eFhau4ezW9dbtsDmzr8QPBaYtKpduenP64WAVSpQcomUjPhb4',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.745] [ERROR] error - {
+  address: 'X-custom16z8jkgglw2ry4qae0wdsyhds8awpfy6drm2sct',
+  balance: '0',
+  privateKey: 'PrivateKey-f29vkspq4AzkZhvVkttTSCzWPCtBxuWL9vCvSXCd4JyQoFA4H',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.747] [ERROR] error - {
+  address: 'X-custom1nc7pp3k6tsmg4je9t6vz78slyjdh3yk5c8l7g2',
+  balance: '0',
+  privateKey: 'PrivateKey-iMiPXdri7BLwMeGbmDwx3EeCagAqi82RQopPL7LoALEqYddLR',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.748] [ERROR] error - {
+  address: 'X-custom1kzl0qmsu609axcp3r0ul7y40zvrmm0mcf3v3td',
+  balance: '0',
+  privateKey: 'PrivateKey-29UYTVLLKUAsJ8h6AHnoEbH6o8aqbTwaYtwSbBZFwVWxUhQWUc',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.750] [ERROR] error - {
+  address: 'X-custom1fxa43mvsdm3lwxzc7457gvzh98yekl57vr4xmc',
+  balance: '0',
+  privateKey: 'PrivateKey-2d8JojMyHFXSrS4BNn7r6WKceGebHKgf5Xz36bqSsVSJ7orpSJ',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.751] [ERROR] error - {
+  address: 'X-custom17y0cw2efy0zrpj2rtxdap8qe88sys7tusvtlx0',
+  balance: '0',
+  privateKey: 'PrivateKey-npbkmPvjLjNeN1k9Yick4pGF19zfx3tWJKrfp7UGS4xPebPcY',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.753] [ERROR] error - {
+  address: 'X-custom1r5aead9vrf50tf6hw9tjqnpnqs0jvu27l74j4h',
+  balance: '1000000000000',
+  privateKey: 'PrivateKey-xXr2bJDWiVs8ZbEAKtBdbCyS8i5SzsipBTFLeAybAYrUAt9rQ',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.755] [ERROR] error - {
+  address: 'X-custom1cg3wf9ty7khswtqg3hy7575hhqg3ewz0fj3ne6',
+  balance: '0',
+  privateKey: 'PrivateKey-aNxDdd4C4CqUQqcC6evAka7UEgdd2jvfz9A1R4HoLqNRDFHDC',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.757] [ERROR] error - {
+  address: 'X-custom1h87yfpkeerm09k0qhmguk7l99mm3y8yle7m86a',
+  balance: '0',
+  privateKey: 'PrivateKey-2khRcFPuefiJSfuoGfdEJwR1eQctBnVs6zUscnxTLgh2bfymjC',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.760] [ERROR] error - {
+  address: 'X-custom10lf9gxxufxs6hej67t3j3dgcn2x5nnu90znmpt',
+  balance: '0',
+  privateKey: 'PrivateKey-bc5WLsTu3bk9xo5Y1AYKpX5RoFUKeDCvTHveZgjUcW2HGfJDo',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.762] [ERROR] error - {
+  address: 'X-custom1waq0pt3j79eklc4sswcvxrqm5qvfmdngah9d6e',
+  balance: '0',
+  privateKey: 'PrivateKey-Y5ZxgeQhar9zRrJRnbrR4PoUoPAZ9rfZtnRiUVjb9d4hAVqYg',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.808] [ERROR] error - {
+  address: 'X-custom1xg4f23arndrktmk48sf7697cg63hnqxtyy5rkr',
+  balance: '0',
+  privateKey: 'PrivateKey-hZrierBV3vnD4x6MUorcNgTuXKFZADCc2ykH4HUQx8cNsGwgj',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.811] [ERROR] error - {
+  address: 'X-custom1jaxy2z2em33udfr4s5ugqcvm0gl4jq3ph3dmzt',
+  balance: '20000000000',
+  privateKey: 'PrivateKey-2kzV54m7qCgFdGNwrivfQurLVHE4D2ANXYY6SFsSaDz68cGUY4',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.813] [ERROR] error - {
+  address: 'X-custom1hzctvtwx5zs5vkc5m39kwl9ggams7zdyxv33d0',
+  balance: '0',
+  privateKey: 'PrivateKey-uJqnmfupcV6nA2uAoxroQQtC5wxyPbqXazijZ4Q6MScYjUyyP',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.815] [ERROR] error - {
+  address: 'X-custom1fvu2ht4xmlktjhndpl7dw650yrxp6eejtj4elx',
+  balance: '0',
+  privateKey: 'PrivateKey-tdwohD4sz1c7icm1EbwgEvc2n36zPyU5ek1rDqt2DokoyBDMu',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.817] [ERROR] error - {
+  address: 'X-custom12afzzlxdng96leut2nnkexjvrs79c9qxk5mau4',
+  balance: '1000000000000',
+  privateKey: 'PrivateKey-2DBUrjthAxocWYKYA8FvE2H4y8VGc1mZhTAxo63gA8itfg7Q3i',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.819] [ERROR] error - {
+  address: 'X-custom1cw47a9r8wakwtjw9g8jksykdfrjy2s4xjqfh3w',
+  balance: '0',
+  privateKey: 'PrivateKey-jCYU9cnM4LiB8yR4FrZ2AcyHWd3wZMzz9pHR959HYRzyta8FD',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.821] [ERROR] error - {
+  address: 'X-custom1z4jc28g9h5x9slfu6d70krtg55mgx3ky8gwv95',
+  balance: '0',
+  privateKey: 'PrivateKey-2tiScA8YqQgRCicFMg1HyJYjbTfGmr2zsWLb749w8j1P74wXsx',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.823] [ERROR] error - {
+  address: 'X-custom1tpwglkv7glz4mpqun78wrfwx0j9l8ux3yadkes',
+  balance: '0',
+  privateKey: 'PrivateKey-2ZjSwkhAagpV78gZRzoh4jhQUJhzUB2SaYfWjDnnrWshq9Qd6G',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.825] [ERROR] error - {
+  address: 'X-custom1th3a9a6sehjh9z42sedyxjxu87zjhyacjatps2',
+  balance: '0',
+  privateKey: 'PrivateKey-sVrSae1AcrvizpsYVWVGyL4nbnDjwJpFMLt6kmYRgXF4cMCiz',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.827] [ERROR] error - {
+  address: 'X-custom1fxrdkrtq3r3ytz65ftzpgt3tgk9u57cst2k9ak',
+  balance: '20000000000',
+  privateKey: 'PrivateKey-2A4H8xfm9oNgVGBmvH8pEeUCWnrV1DVveWFM5yKHKoBuPrzVps',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.828] [ERROR] error - {
+  address: 'X-custom1czfy5rj4uw6h9z728q7t0lhyq5tqfrmy5sa737',
+  balance: '0',
+  privateKey: 'PrivateKey-wUB6PAsmfU9u5sovrajyFrsUQd9nz5RJ2eYFVYjA4SqgJhHuC',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:40:28.829] [ERROR] error - {
+  address: 'X-custom1utyx6zuey6a6ys5ez2gcy9dunafzc0sa8jp70d',
+  balance: '0',
+  privateKey: 'PrivateKey-koqn1zD9CZ4BGQZVZUJNXkRc9PxquQYDDRtz9dkmmr47mrRWU',
+  message: 'Insufficient funds to complete this transaction'
+}
+[2022-11-11T09:45:15.416] [ERROR] error - {
+  addressFrom: 'X-custom16v8p9nq3xa0dfuy6t6pvs5s2meetl7trzerzd0',
+  addressTo: 'X-custom1hz86quc6c3cgyf4yfcdkr6f7ad75c7vg9dj9ae',
+  balance: '1000000000000',
+  privateKey: 'PrivateKey-272o1xRDgfZCMHFvtKN2hp6P31uXMWeT6skN8EfBw3fLb8A3JM',
+  message: 'Insufficient funds to complete this transaction',
+  amount: '20000000000',
+  fee: 1000000000,
+  amountAndFee: '200000000001000000000'
+}

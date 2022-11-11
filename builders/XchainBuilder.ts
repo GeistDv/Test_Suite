@@ -3,7 +3,7 @@ import ITransactionBuilder from './ItransactionBuilder';
 import { ConfigurationType } from '../types/configurationtype';
 import DataFlow from '../types/dataflowtype';
 import XChainTestWallet from '../utils/XChainTestWallet';
-import { logger } from "../utils/logger";
+import { errorLogger, logger } from "../utils/logger";
 import { Constants } from '../constants';
 import axios from 'axios';
 import { Avalanche, BN, Buffer } from "avalanche/dist"
@@ -68,6 +68,24 @@ class xChainBuilder implements ITransactionBuilder{
             const amount: BN = new BN(amountToSend);
 
             const balance = await privateKey.avalancheXChain.xchain.getBalance(privateKey.xChainAddress, privateKey.avalancheXChain.avaxAssetID);
+            
+            console.log("Definitive Balance -> ",balance.balance.toString());
+            
+            //Catch Low Balance
+            if(balance.balance < (amountToSend + 1000000000))
+            {
+                errorLogger.error({
+                    addressFrom: privateKey.xChainAddress,
+                    addressTo: sendTo.xChainAddress,
+                    balance: balance.balance,
+                    privateKey: privateKey.privateKey,
+                    message: "Insufficient funds to complete this transaction",
+                    amount: (amountToSend),
+                    fee: 1000000000,
+                    amountAndFee: amountToSend + 1000000000
+                });
+            }
+            
             //console.log("Balance -> ", balance);
             //console.log("Address -> ", privateKey.xChainAddress);
 
