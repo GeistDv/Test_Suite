@@ -27,7 +27,8 @@ import { basename } from "path";
 
 import XChainTestWallet from './utils/XChainTestWallet';
 import xChainBuilder from "./builders/XchainBuilder";
-import testbuilderErc20 from './builders/testbuilderErc20';
+import testbuilderErc20 from './builders/ERC20TXBuilder';
+import { test } from "shelljs";
 
 dotenv.config();
 // Needed for self signed certs.
@@ -57,9 +58,9 @@ let networkRunner: NetworkRunner;
 
 let web3: Web3;
 let urlRpcDetails: URL;
-let protocolRPC : string;
-let chainType : string;
-let configDataFlow : DataFlow;
+let protocolRPC: string;
+let chainType: string;
+let configDataFlow: DataFlow;
 
 
 const app = express();
@@ -83,7 +84,6 @@ app.post("/start", async (req, res) => {
     //read json file
     var jsonData: any = JSON.parse(fs.readFileSync(pathGrungni + "/" + networkName + ".json", "utf8"));
     var privateKeyFirstStaker = jsonData.Stakers[0].PrivateKey;
-
     //cast into configurationtype
     let configType: ConfigurationType = completeTestConfiguration as ConfigurationType;
     configType.private_key_with_funds = privateKeyFirstStaker;
@@ -127,7 +127,7 @@ app.post("/network-runner", async (req, res) => {
 
         let configType = networkRunner.configuration;
         let dataFlow = await initApp(networkRunner.configuration);
-        if (testCase.Chain == "X"){
+        if (testCase.Chain == "X") {
             let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, dataFlow.networkID, networkRunner.configuration.private_key_with_funds, dataFlow.assetID);
             let principalAccount = new XChainTestWallet(dataFlow.bech32_xchain_address, networkRunner.configuration.private_key_with_funds, xChainAvalanche);
             utils.xChainAvalanche = xChainAvalanche;
@@ -135,7 +135,7 @@ app.post("/network-runner", async (req, res) => {
             chainType = testCase.Chain;
 
         }
-        
+
         await initPrivateKeys(dataFlow, testCase);
 
         //Wait 20 Seconds
@@ -143,51 +143,10 @@ app.post("/network-runner", async (req, res) => {
         setTimeout(async () => {
             await startTestsAndGatherMetrics(testCase, configType);
             //await networkRunner.killGnomeTerminal();
-        },20000);
+        }, 20000);
     }
 
     return res.status(200).send("Network Runner executed");
-});
-
-app.post("/erc20tx", async (req, res) => {
-    let completeTestConfiguration: ConfigurationTypeForCompleteTest = req.body;
-    let testCases = await DataTests.readDataTest(completeTestConfiguration.sheet_name);
-    var networkName = completeTestConfiguration.rpc.split("/").pop();
-
-    //read json file
-    var jsonData: any = JSON.parse(fs.readFileSync(pathGrungni + "/" + networkName + ".json", "utf8"));
-    var privateKeyFirstStaker = jsonData.Stakers[0].PrivateKey;
-
-    let configType: ConfigurationType = completeTestConfiguration as ConfigurationType;
-    configType.private_key_with_funds = privateKeyFirstStaker;
-    var dataFlow = await initApp(configType);
-    for (let i = 0; i < testCases.length; i++) {
-
-        var testCase = testCases[i];
-        let prevTestCase: TestCase;
-        if (i > 0) {
-            prevTestCase = testCases[i - 1]
-        }
-        else {
-            prevTestCase = testCases[i]
-        }
-        utils.generateAccounts(testCase);
-    }
-
-    var testbuilderErc20x = new testbuilderErc20(configType, web3, dataFlow);
-
-    privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
-    let contractAddress = await testbuilderErc20x.deployContract(privateKeyFirstStaker, web3);
-
-    for (let i = 0; i < privateKeys.length; i++) {
-        testbuilderErc20x.mint(privateKeyFirstStaker, web3, contractAddress, privateKeys[i])
-    }
-    var promisetransactions = [];
-
-    for (let i = 0; i < privateKeys.length - 1; i++) {
-        promisetransactions.push(testbuilderErc20x.buildAndSendTransaction(privateKeys[i], contractAddress, privateKeys[i + 1], '1'))
-    }
-
 });
 
 // single endpoint to test (cloud)
@@ -199,10 +158,9 @@ app.post('/', async (req, res) => {
     if (req.body.ID == privateKeys.length) {
         sendTo = privateKeys[0];
     }
-    if(chainType == "X")
-    {   
-        
-        let xWallet : XChainTestWallet = privateKey;
+    if (chainType == "X") {
+
+        let xWallet: XChainTestWallet = privateKey;
         let balance = await xWallet.avalancheXChain.xchain.getBalance(xWallet.xChainAddress, xWallet.avalancheXChain.avaxAssetID);
 
         console.log("______________________________________________");
@@ -210,30 +168,30 @@ app.post('/', async (req, res) => {
         console.log("Address From:", privateKey.xChainAddress);
         console.log("Address to:", sendTo.xChainAddress);
         console.log("Amount:", web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER_X_CHAIN, 'gwei'));
-        console.log("Balance:",balance);
+        console.log("Balance:", balance);
 
         //Temporal Amount
         let ammountConversion = web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER_X_CHAIN, 'gwei');
         let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, configDataFlow.networkID, privateKey.privateKey, configDataFlow.assetID);
-        txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo,ammountConversion ,xChainAvalanche)
-        .then(data => {
-            res.send(data);
-        }).catch(err => {
-            errorLogger.error(err);
-            res.status(500).send(err);
-        });
+        txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, ammountConversion, xChainAvalanche)
+            .then(data => {
+                res.send(data);
+            }).catch(err => {
+                errorLogger.error(err);
+                res.status(500).send(err);
+            });
 
     }
-    else{
+    else {
         txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, Constants.AMOUNT_TO_TRANSFER)
-        .then(data => {
-            res.send(data);
-        }).catch(err => {
-            errorLogger.error(err);
-            res.status(500).send(err);
-        });
+            .then(data => {
+                res.send(data);
+            }).catch(err => {
+                errorLogger.error(err);
+                res.status(500).send(err);
+            });
     }
-    
+
 });
 
 app.post('/pingpong', async (req, res) => {
@@ -322,47 +280,49 @@ async function initDataFlowAccount(configurationtype: ConfigurationType): Promis
 
 // function to initialize the app
 async function initPrivateKeys(dataflow: DataFlow, testCase: TestCase): Promise<Boolean> {
-    if(testCase.Chain == "C"){
+    if (testCase.Chain == "C") {
         //evaluate if file exists
-    if (fs.existsSync(Constants.PRIVATE_KEYS_FILE)) {
-        privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
-        let account = web3.eth.accounts.privateKeyToAccount(privateKeys[0]);
-        balance = await web3.eth.getBalance(account.address);
-        if (balance == "0") {
-            //delete file privatekeys.csv
-            fs.unlinkSync(Constants.PRIVATE_KEYS_FILE);
+        if (fs.existsSync(Constants.PRIVATE_KEYS_FILE)) {
+            privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
+            let account = web3.eth.accounts.privateKeyToAccount(privateKeys[0]);
+            balance = await web3.eth.getBalance(account.address);
+            if (balance == "0") {
+                //delete file privatekeys.csv
+                fs.unlinkSync(Constants.PRIVATE_KEYS_FILE);
+            }
         }
-    }
-
-    if (balance == "0") {
-        //import and export
-        await utils.transferFunds();
-        balance = await web3.eth.getBalance(dataflow.hex_cchain_address);
-        console.log('New balance after import/export : ', balance);
-    }
-
-    // initialize accounts
-    console.log("Generating accounts ... ");
-    await utils.generateAndFundWallets(testCase);
-
-    // read file private keys using fs
-    privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
-    }
-    //private keys create wallets and send funds in xchain 
-    else
-    {
+        if (balance == "0") {
+            //import and export
+            await utils.transferFunds();
+            balance = await web3.eth.getBalance(dataflow.hex_cchain_address);
+            console.log('New balance after import/export : ', balance);
+        }
+        if (testCase.TestType == "erc20tx" || testCase.TestType == "erc1155tx") {
+            contractAddress = await txBuilder.deployContract("0x" + dataflow.hexPrivateKey, web3);
+            txBuilder.contractAddress = contractAddress;
+            utils.txBuilder = txBuilder;
+        }
         // initialize accounts
         console.log("Generating accounts ... ");
-        await utils.generateAndFundWallets(testCase,txBuilder);
+        await utils.generateAndFundWallets(testCase);
+        // read file private keys using fs
+        privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
+    }
+    //private keys create wallets and send funds in xchain 
+    else {
+        // initialize accounts
+        console.log("Generating accounts ... ");
+        await utils.generateAndFundWallets(testCase, txBuilder);
         privateKeys = utils.privateKeys;
     }
-    
+
 
     return true;
 
 }
 
 async function initBuilder(configurationType: ConfigurationType, dataFlow: DataFlow) {
+
     // initialize transaction builder
     switch (configurationType.test_type) {
         case "transfer": txBuilder = new SimpleTXBuilder(configurationType, web3, dataFlow);
@@ -374,6 +334,8 @@ async function initBuilder(configurationType: ConfigurationType, dataFlow: DataF
             txBuilder = new xChainBuilder(configurationType, web3, dataFlow);
             urlRpcDetails = await getURLDetails(configurationType.rpc);
             protocolRPC = urlRpcDetails.protocol.replace(":", "");
+            break;
+        case "erc1155tx": txBuilder = new ERC1155TXBuilder(configurationType, web3, dataFlow);
             break;
         default:
             break;

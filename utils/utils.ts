@@ -17,6 +17,7 @@ import AvalancheXChain from "../types/AvalancheXChain";
 import { KeyChain } from "avalanche/dist/apis/avm"
 import ITransactionBuilder from "../builders/ItransactionBuilder";
 import xChainBuilder from "../builders/XchainBuilder";
+import testbuilderErc20 from '../builders/ERC20TXBuilder';
 
 class Utils {
 
@@ -33,11 +34,13 @@ class Utils {
     //optional variable private keys
     privateKeys!: any[];
 
+    txBuilder: ITransactionBuilder;
     constructor(configTypeForCompleteTest: ConfigurationType, dataFlow: DataFlow) {
 
         this.Configuration = configTypeForCompleteTest;
         this.web3 = new Web3(this.Configuration.rpc_keystore + '/ext/bc/C/rpc');;
         this.dataFlow = dataFlow;
+        this.txBuilder = new testbuilderErc20(this.Configuration, this.web3, this.dataFlow);
     }
 
 
@@ -368,20 +371,29 @@ class Utils {
 
                 let chunk = chunks[i];
                 let promises = [];
+                let promisesMint = [];
 
                 for (let j = 0; j < chunk.length; j++) {
                     let account = chunk[j];
+                    if (testCase.TestType == "erc20tx" || testCase.TestType == "erc1155tx") {
+                        promisesMint.push(await this.txBuilder.mint?.("0x" + this.dataFlow.hexPrivateKey, this.web3, account, nonce));
+                        nonce++;
+                    }
                     promises.push(this.sendFunds(account, nonce));
-                    nonce++
+                    nonce++;
                 }
+
                 await Promise.all(promises);
+                if (testCase.TestType == "erc20tx") {
+                    await Promise.all(promisesMint);
+                }
             }
         }
         else { //X Chain
             let accountsWithoutFunds = await this.generateAccountsXchain(testCase);
             this.privateKeys = accountsWithoutFunds;
             let baseAmount: number = parseFloat(this.web3.utils.toWei(Constants.INITIAL_FUNDS, 'gwei')) * testCase.Threads;
-            let initialAccountsWithFunds : XChainTestWallet[] = [];
+            let initialAccountsWithFunds: XChainTestWallet[] = [];
 
             //First 10 Transactions
             for (let i = 0; i < 10; i++) {
@@ -396,30 +408,26 @@ class Utils {
         }
         logger.info("Done!");
     }
-    
+
     //Process Fund
-    private async processFundsXChain(initialAccountsWithFunds: XChainTestWallet[], accountsWithoutFunds: XChainTestWallet[], xChainbuilder?: ITransactionBuilder)
-    {
-        let queues : any[][] = this.splitListIntoChunksOfLenXchain(accountsWithoutFunds, initialAccountsWithFunds.length);
-        console.log("queues",queues);
-        for(let i = 0; i < queues.length; i++)
-        {
-          var txs :any[][] = queues[i].map((value, index) => [initialAccountsWithFunds[i], value]);
-          await this.executeQueue(txs, xChainbuilder);
+    private async processFundsXChain(initialAccountsWithFunds: XChainTestWallet[], accountsWithoutFunds: XChainTestWallet[], xChainbuilder?: ITransactionBuilder) {
+        let queues: any[][] = this.splitListIntoChunksOfLenXchain(accountsWithoutFunds, initialAccountsWithFunds.length);
+        console.log("queues", queues);
+        for (let i = 0; i < queues.length; i++) {
+            var txs: any[][] = queues[i].map((value, index) => [initialAccountsWithFunds[i], value]);
+            await this.executeQueue(txs, xChainbuilder);
         }
     }
 
-    private async executeQueue(queue: any, xChainbuilder?: ITransactionBuilder)
-    {
-        for(let i = 0; i < queue.length; i++)
-        {
+    private async executeQueue(queue: any, xChainbuilder?: ITransactionBuilder) {
+        for (let i = 0; i < queue.length; i++) {
             let amountTransfer = this.web3.utils.toWei(Constants.INITIAL_FUNDS, 'gwei');
-            await Utils.sendTransactionXChain(queue[i][0], queue[i][1], amountTransfer,queue[i][0].avalancheXChain, xChainbuilder);
+            await Utils.sendTransactionXChain(queue[i][0], queue[i][1], amountTransfer, queue[i][0].avalancheXChain, xChainbuilder);
         }
     }
 
-    private splitListIntoChunksOfLenXchain(list : any[], len : any) {
-        let chunks : any [][] = [];
+    private splitListIntoChunksOfLenXchain(list: any[], len: any) {
+        let chunks: any[][] = [];
         let i = 0, n = list.length;
         while (i < n) {
             chunks.push(list.slice(i, i += len));

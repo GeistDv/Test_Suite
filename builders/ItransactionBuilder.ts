@@ -10,6 +10,9 @@ interface ITransactionBuilder {
     Configuration : ConfigurationType;
     buildAndSendTransaction(privateKey : string | XChainTestWallet, contractAddress : string, sendTo : string | XChainTestWallet, amount : string | number,avalancheXChain?:AvalancheXChain): Promise<string>
     deployContract(privateKey : string, web3 : Web3) : Promise<string>
+    contractAddress? : string;
+    deployContract(privateKey : string, web3 : Web3) : Promise<string>,
+    mint?(privateKey: string, web3: Web3, addressTomint: string, nonce : number): Promise<string>
 }
 
 //export the interface
