@@ -129,9 +129,9 @@ app.post("/network-runner", async (req, res) => {
         let dataFlow = await initApp(networkRunner.configuration);
         if (testCase.Chain == "X") {
             let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, dataFlow.networkID, networkRunner.configuration.private_key_with_funds, dataFlow.assetID);
-            let principalAccount = new XChainTestWallet(dataFlow.bech32_xchain_address, networkRunner.configuration.private_key_with_funds, xChainAvalanche);
+            let mainAccount = new XChainTestWallet(dataFlow.bech32_xchain_address, networkRunner.configuration.private_key_with_funds, xChainAvalanche);
             utils.xChainAvalanche = xChainAvalanche;
-            utils.principalAccount = principalAccount;
+            utils.mainAccount = mainAccount;
             chainType = testCase.Chain;
 
         }
@@ -163,11 +163,11 @@ app.post('/', async (req, res) => {
         console.log("ID", req.body.ID);
         console.log("Address From:", privateKey.xChainAddress);
         console.log("Address to:", sendTo.xChainAddress);
-        console.log("Amount:", web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER_X_CHAIN, 'gwei'));
+        console.log("Amount:", web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei'));
         console.log("Balance:", balance);
 
         //Temporal Amount
-        let ammountConversion = web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER_X_CHAIN, 'gwei');
+        let ammountConversion = web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei');
         let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, configDataFlow.networkID, privateKey.privateKey, configDataFlow.assetID);
         txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, ammountConversion, xChainAvalanche)
             .then(data => {

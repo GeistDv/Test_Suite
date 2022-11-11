@@ -69,8 +69,6 @@ class xChainBuilder implements ITransactionBuilder{
 
             const balance = await privateKey.avalancheXChain.xchain.getBalance(privateKey.xChainAddress, privateKey.avalancheXChain.avaxAssetID);
             
-            console.log("Definitive Balance -> ",balance.balance.toString());
-            
             //Catch Low Balance
             if(balance.balance < (amountToSend + 1000000000))
             {
@@ -84,11 +82,10 @@ class xChainBuilder implements ITransactionBuilder{
                     fee: 1000000000,
                     amountAndFee: amountToSend + 1000000000
                 });
+
+                throw new Error("Insufficient funds to complete this transaction");
             }
             
-            //console.log("Balance -> ", balance);
-            //console.log("Address -> ", privateKey.xChainAddress);
-
             const unsignedTx: UnsignedTx = await avalancheXChain.xchain.buildBaseTx(
                 utxoSet,
                 amount,

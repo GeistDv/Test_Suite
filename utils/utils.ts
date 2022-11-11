@@ -29,7 +29,7 @@ class Utils {
     urlRpc!: URL;
     xChainAvalanche!: AvalancheXChain;
     protocolRPC!: string;
-    principalAccount!: XChainTestWallet;
+    mainAccount!: XChainTestWallet;
 
     //optional variable private keys
     privateKeys!: any[];
@@ -198,8 +198,7 @@ class Utils {
         //TODO: "Change parameters in funtion NetworkID, AssetID, Protocol rpc,private key, KeyChain... "
         let promisesXChainWallet = [];
         let privateKeys: XChainTestWallet[];
-        let principalAccount = new XChainTestWallet(this.dataFlow.bech32_xchain_address, this.Configuration.private_key_with_funds, this.xChainAvalanche);
-
+       
         //Create Private Keys and Wallets
         for (let x = 0; x < testCase.Threads; x++) {
             promisesXChainWallet.push(XChainTestWallet.importKeyAndCreateWallet(this.web3, this.Configuration, this.urlRpc, this.protocolRPC, this.dataFlow.networkID, this.dataFlow.assetID));
@@ -390,23 +389,82 @@ class Utils {
             }
         }
         else { //X Chain
+
             let accountsWithoutFunds = await this.generateAccountsXchain(testCase);
             this.privateKeys = accountsWithoutFunds;
+
+            console.log("Fund Accounts, wait please......");
+            let txIDMultiple = await this.multipleFundsAVM(
+                this.privateKeys,
+                this.mainAccount.avalancheXChain.avaxAssetID,
+                parseFloat(this.web3.utils.toWei(Constants.INITIAL_FUNDS, 'gwei')),
+                this.mainAccount
+            );
+
+            console.log("txIDMultiple -> ",txIDMultiple);
+
+            console.log("Private Keys -> ",this.privateKeys);
+
+            /*
             let baseAmount: number = parseFloat(this.web3.utils.toWei(Constants.INITIAL_FUNDS, 'gwei')) * testCase.Threads;
             let initialAccountsWithFunds: XChainTestWallet[] = [];
 
             //First 10 Transactions
             for (let i = 0; i < 10; i++) {
-                await Utils.sendTransactionXChain(this.principalAccount, accountsWithoutFunds[i], baseAmount.toString(), this.xChainAvalanche, xChainbuilder);
+                await Utils.sendTransactionXChain(this.mainAccount, accountsWithoutFunds[i], baseAmount.toString(), this.xChainAvalanche, xChainbuilder);
                 initialAccountsWithFunds.push(accountsWithoutFunds[i]);
                 accountsWithoutFunds = accountsWithoutFunds.filter((account) => account.xChainAddress != accountsWithoutFunds[i].xChainAddress);
             }
 
             if (testCase.Threads > 10) {
                 this.processFundsXChain(initialAccountsWithFunds, accountsWithoutFunds, xChainbuilder);
-            }
+            }*/
+
         }
         logger.info("Done!");
+    }
+
+    //Multiple Funds AVM
+    private async multipleFundsAVM(accounts: XChainTestWallet[], assetID: string, amount: number, mainAccount: XChainTestWallet) {
+        return new Promise((resolve, reject) => {
+            var data = JSON.stringify({
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "avm.sendMultiple",
+                "params": {
+                    "outputs": accounts.map((account) => {
+
+                        let transaction = {
+                            "assetID": account.avalancheXChain.avaxAssetID,
+                            "to": account.xChainAddress,
+                            "amount": amount
+                        }
+                        return transaction;
+                    }),
+                    "from": [mainAccount.xChainAddress],
+                    "changeAddr": mainAccount.xChainAddress,
+                    "memo": "",
+                    "username": Constants.KEYSTORE_USER,
+                    "password": Constants.KEYSTORE_PASSWORD
+                }
+            });
+
+            var config = {
+                method: 'post',
+                url: this.Configuration.rpc + '/ext/bc/X',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+
+            axios(config).then(function (response) {
+                resolve(response.data.result.txID)
+            }).catch(function (error) {
+                console.log(error);
+                reject(error);
+            });
+        });
     }
 
     //Process Fund
@@ -693,8 +751,7 @@ class Utils {
     }
 
     public static async sendTransactionXChain(addressFrom: XChainTestWallet, addressTo: XChainTestWallet, amount: string, xChainFlow: AvalancheXChain, xchainBuilder?: ITransactionBuilder) {
-        try
-        {
+        try {
             let txId = await xchainBuilder?.buildAndSendTransaction(addressFrom, "", addressTo, amount, xChainFlow);
 
             console.log("Amount To Send -> ", amount);
@@ -703,8 +760,7 @@ class Utils {
             console.log("Tx ID -> ", txId);
             return txId;
         }
-        catch(e)
-        {
+        catch (e) {
             errorLogger.error(e);
             console.log(e);
         }
