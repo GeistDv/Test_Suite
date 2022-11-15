@@ -497,7 +497,7 @@ class Utils {
 
     public static async validateIfCurrentApiNodesExists(testcase : TestCase)
     {
-        var  KubectlCheckerApi : KubectlChecker= new KubectlChecker(`kubectl top pods --all-namespaces | findstr "santi-api"`);
+        var  KubectlCheckerApi : KubectlChecker= new KubectlChecker(`kubectl top pods --all-namespaces | grep "santi-api"`);
         await KubectlCheckerApi.execCommandWithoutMetrics();
         try{
             let apiNodes : string[] = String(KubectlCheckerApi.dataPods).trim().split("\n");
