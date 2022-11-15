@@ -384,7 +384,7 @@ async function initNetwork(testCase: TestCase,
     networkname: string | undefined,
     configType: ConfigurationType): Promise<Boolean> {
     //TODO: change or for and in validation 
-    if (Utils.validateIfCurrentApiNodesExists(testCase, prevTestCase) && await Utils.validateIfCurrentValidatorsExists(configType, testCase)) {
+    if (await Utils.validateIfCurrentApiNodesExists(testCase) && await Utils.validateIfCurrentValidatorsExists(configType, testCase)) {
         console.log("Network already has the same number of validators and api nodes");
         return true
     }

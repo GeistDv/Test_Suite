@@ -495,8 +495,22 @@ class Utils {
         return dataResponse;
     }
 
-    public static validateIfCurrentApiNodesExists(testcase: TestCase, prevtestcase: TestCase) {
-        return (testcase.ApiNodes == prevtestcase.ApiNodes)
+    public static async validateIfCurrentApiNodesExists(testcase : TestCase)
+    {
+        var  KubectlCheckerApi : KubectlChecker= new KubectlChecker(`kubectl top pods --all-namespaces | findstr "santi-api"`);
+        await KubectlCheckerApi.execCommandWithoutMetrics();
+        try{
+            let apiNodes : string[] = String(KubectlCheckerApi.dataPods).trim().split("\n");
+            console.log("Network Api Nodes:",apiNodes.length);
+            console.log("TestCase APi Nodes:", testcase.ApiNodes)
+            return(testcase.ApiNodes == apiNodes.length)
+        }
+        catch (e)
+        {
+            console.log("Something went wrong evaluating the api nodes");
+            return false;
+        }
+        
     }
     //method to validate if service is up
     public static async validateIfCurrentValidatorsExists(config: ConfigurationType, testCase: TestCase): Promise<boolean> {
