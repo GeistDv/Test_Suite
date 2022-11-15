@@ -79,7 +79,9 @@ app.post("/start", async (req, res) => {
     let completeTestConfiguration: ConfigurationTypeForCompleteTest = req.body;
 
     //extract last route from url
-    var networkName = completeTestConfiguration.rpc.split("/").pop();
+    //var networkName = completeTestConfiguration.rpc.split("/").pop();
+    var network = completeTestConfiguration.rpc.split("/")
+    var networkName = (network[2].split("."))[0]
 
     //read json file
     var jsonData: any = JSON.parse(fs.readFileSync(pathGrungni + "/" + networkName + ".json", "utf8"));
@@ -106,6 +108,14 @@ app.post("/start", async (req, res) => {
         console.log("Running case .. " + i);
         await initNetwork(testCase, prevTestCase, networkName, configType);
         var dataFlow = await initApp(configType);
+        if (testCase.Chain == "X") {
+            let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, dataFlow.networkID, configType.private_key_with_funds, dataFlow.assetID);
+            let mainAccount = new XChainTestWallet(dataFlow.bech32_xchain_address, configType.private_key_with_funds, xChainAvalanche);
+            utils.xChainAvalanche = xChainAvalanche;
+            utils.mainAccount = mainAccount;
+            chainType = testCase.Chain;
+
+        }
         await initPrivateKeys(dataFlow, testCase);
         await startTestsAndGatherMetrics(testCase, configType);
     }
@@ -155,6 +165,10 @@ app.post('/', async (req, res) => {
         sendTo = privateKeys[0];
     }
     if (chainType == "X") {
+
+        //TODO: Temporal Blockchain ID in Addresses, change to Dynamic Blockchain ID but using Avalanche Js
+        privateKey.xChainAddress = privateKey.xChainAddress.replace("X-","2eNy1mUFdmaxXNj1eQHUe7Np4gju9sJsEtWQ4MX3ToiNKuADed-");
+        sendTo.xChainAddress = sendTo.xChainAddress.replace("X-","2eNy1mUFdmaxXNj1eQHUe7Np4gju9sJsEtWQ4MX3ToiNKuADed-");
 
         let xWallet: XChainTestWallet = privateKey;
         let balance = await xWallet.avalancheXChain.xchain.getBalance(xWallet.xChainAddress, xWallet.avalancheXChain.avaxAssetID);

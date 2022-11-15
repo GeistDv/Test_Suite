@@ -451,7 +451,7 @@ class Utils {
 
             var config = {
                 method: 'post',
-                url: this.Configuration.rpc + '/ext/bc/X',
+                url: this.Configuration.rpc_keystore + '/ext/bc/X',
                 headers: {
                     'Content-Type': 'application/json'
                 },
