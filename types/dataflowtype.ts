@@ -11,6 +11,7 @@ type DataFlow = {
     chainId : number;
     assetID  : string;
     networkID : number;
+    blockchainIDXChain: string
 }
 
 //export 

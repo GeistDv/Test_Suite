@@ -60,10 +60,6 @@ class xChainBuilder implements ITransactionBuilder{
         return new Promise(async (resolve, reject) => {
             const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs([privateKey.xChainAddress]);
 
-
-            let adresses = avalancheXChain.xKeyChain.getAddressStrings();
-            console.log("Adresses",adresses);
-
             const utxoSet: UTXOSet = avmUTXOResponse.utxos;
             const asOf: BN = UnixNow();
             const threshold: number = 1;

@@ -109,7 +109,7 @@ app.post("/start", async (req, res) => {
         await initNetwork(testCase, prevTestCase, networkName, configType);
         var dataFlow = await initApp(configType);
         if (testCase.Chain == "X") {
-            let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, dataFlow.networkID, configType.private_key_with_funds, dataFlow.assetID);
+            let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, dataFlow.networkID, configType.private_key_with_funds, dataFlow.assetID, dataFlow.blockchainIDXChain);
             let mainAccount = new XChainTestWallet(dataFlow.bech32_xchain_address, configType.private_key_with_funds, xChainAvalanche);
             utils.xChainAvalanche = xChainAvalanche;
             utils.mainAccount = mainAccount;
@@ -138,7 +138,7 @@ app.post("/network-runner", async (req, res) => {
         let configType = networkRunner.configuration;
         let dataFlow = await initApp(networkRunner.configuration);
         if (testCase.Chain == "X") {
-            let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, dataFlow.networkID, networkRunner.configuration.private_key_with_funds, dataFlow.assetID);
+            let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, dataFlow.networkID, networkRunner.configuration.private_key_with_funds, dataFlow.assetID, dataFlow.blockchainIDXChain);
             let mainAccount = new XChainTestWallet(dataFlow.bech32_xchain_address, networkRunner.configuration.private_key_with_funds, xChainAvalanche);
             utils.xChainAvalanche = xChainAvalanche;
             utils.mainAccount = mainAccount;
@@ -167,13 +167,14 @@ app.post('/', async (req, res) => {
     if (chainType == "X") {
 
         //TODO: Temporal Blockchain ID in Addresses, change to Dynamic Blockchain ID but using Avalanche Js
-        privateKey.xChainAddress = privateKey.xChainAddress.replace("X-","2eNy1mUFdmaxXNj1eQHUe7Np4gju9sJsEtWQ4MX3ToiNKuADed-");
-        sendTo.xChainAddress = sendTo.xChainAddress.replace("X-","2eNy1mUFdmaxXNj1eQHUe7Np4gju9sJsEtWQ4MX3ToiNKuADed-");
+        privateKey.xChainAddress = privateKey.xChainAddress.replace("X-",`${configDataFlow.blockchainIDXChain}-`);
+        sendTo.xChainAddress = sendTo.xChainAddress.replace("X-",`${configDataFlow.blockchainIDXChain}-`);
 
         let xWallet: XChainTestWallet = privateKey;
         let balance = await xWallet.avalancheXChain.xchain.getBalance(xWallet.xChainAddress, xWallet.avalancheXChain.avaxAssetID);
 
         console.log("______________________________________________");
+        console.log("Private Key ->", xWallet.privateKey);
         console.log("ID", req.body.ID);
         console.log("Address From:", privateKey.xChainAddress);
         console.log("Address to:", sendTo.xChainAddress);
@@ -182,7 +183,7 @@ app.post('/', async (req, res) => {
 
         //Temporal Amount
         let ammountConversion = web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei');
-        let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, configDataFlow.networkID, privateKey.privateKey, configDataFlow.assetID);
+        let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, configDataFlow.networkID, privateKey.privateKey, configDataFlow.assetID,configDataFlow.blockchainIDXChain);
         txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, ammountConversion, xChainAvalanche)
             .then(data => {
                 res.send(data);
@@ -265,6 +266,7 @@ async function initDataFlowAccount(configurationtype: ConfigurationType): Promis
     let account = web3.eth.accounts.privateKeyToAccount('0x' + hexPK);
     let assetID = await Utils.getStakingAssetID(configurationtype);
     let networkID = parseInt(await Utils.getNetworkID(configurationtype));
+    let blockchainIDXChain = await Utils.getBlockchainID(configurationtype, "X");
     balance = await web3.eth.getBalance(account.address);
 
     console.log("Account: ", account.address);
@@ -280,7 +282,8 @@ async function initDataFlowAccount(configurationtype: ConfigurationType): Promis
         gasPrice: gasPrice.toString(),
         chainId: chainId,
         assetID: assetID,
-        networkID: networkID
+        networkID: networkID,
+        blockchainIDXChain: blockchainIDXChain
     }
     configDataFlow = dataFlow;
     console.log("Data flow: ", dataFlow);

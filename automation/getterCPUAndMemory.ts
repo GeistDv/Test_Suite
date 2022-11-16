@@ -9,9 +9,9 @@ let KubectlCheckerRoot : KubectlChecker;
 let KubectlCheckerValidator : KubectlChecker;
 
 export function initKubectlChecker() {
-    KubectlCheckerApi = new KubectlChecker(`kubectl top pods --all-namespaces | grep "ivancho-api"`);
-    KubectlCheckerRoot = new KubectlChecker(`kubectl top pods --all-namespaces | grep "ivancho-root"`);
-    KubectlCheckerValidator = new KubectlChecker(`kubectl top pods --all-namespaces | grep "ivancho-validator"`);
+    KubectlCheckerApi = new KubectlChecker(`kubectl top pods --all-namespaces | grep "santi-api"`);
+    KubectlCheckerRoot = new KubectlChecker(`kubectl top pods --all-namespaces | grep "santi-root"`);
+    KubectlCheckerValidator = new KubectlChecker(`kubectl top pods --all-namespaces | grep "santi-validator"`);
 }
 
 export function startTimerVerifyKubectl() {

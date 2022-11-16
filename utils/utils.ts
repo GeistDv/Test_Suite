@@ -201,7 +201,7 @@ class Utils {
        
         //Create Private Keys and Wallets
         for (let x = 0; x < testCase.Threads; x++) {
-            promisesXChainWallet.push(XChainTestWallet.importKeyAndCreateWallet(this.web3, this.Configuration, this.urlRpc, this.protocolRPC, this.dataFlow.networkID, this.dataFlow.assetID));
+            promisesXChainWallet.push(XChainTestWallet.importKeyAndCreateWallet(this.web3, this.Configuration, this.urlRpc, this.protocolRPC, this.dataFlow.networkID, this.dataFlow.assetID, this.dataFlow.blockchainIDXChain));
         }
         privateKeys = await Promise.all(promisesXChainWallet);
         return privateKeys;
@@ -764,6 +764,35 @@ class Utils {
             errorLogger.error(e);
             console.log(e);
         }
+    }
+
+    public static async getBlockchainID(config: ConfigurationType, chain: string) : Promise<string>
+    {
+        return new Promise((resolve, reject) => {
+            var data = JSON.stringify({
+                "jsonrpc":"2.0",
+                "id":1,
+                "method" :"info.getBlockchainID",
+                "params": {
+                    "alias":chain
+                }
+            });
+
+            var request = {
+                method: 'post',
+                url: config.rpc + '/ext/info',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+
+            axios(request).then(function (response) {
+                resolve(response.data.result.blockchainID);
+            }).catch(function (error) {
+                reject(null);
+            });
+        });
     }
 
 }
