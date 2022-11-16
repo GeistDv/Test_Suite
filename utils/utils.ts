@@ -195,15 +195,24 @@ class Utils {
 
     public async generateAccountsXchain(testCase: TestCase) {
 
-        //TODO: "Change parameters in funtion NetworkID, AssetID, Protocol rpc,private key, KeyChain... "
+        let privateKeys: XChainTestWallet[] = [];
         let promisesXChainWallet = [];
-        let privateKeys: XChainTestWallet[];
-       
         //Create Private Keys and Wallets
-        for (let x = 0; x < testCase.Threads; x++) {
-            promisesXChainWallet.push(XChainTestWallet.importKeyAndCreateWallet(this.web3, this.Configuration, this.urlRpc, this.protocolRPC, this.dataFlow.networkID, this.dataFlow.assetID, this.dataFlow.blockchainIDXChain));
+        for(let i = 0; i<10; i++ )
+        {
+            console.log("Batch -> ",i);
+            let promisePrivateKeys: XChainTestWallet[];
+            for (let x = 0; x < (testCase.Threads*0.1); x++) {
+                promisesXChainWallet.push(XChainTestWallet.importKeyAndCreateWallet(this.web3, this.Configuration, this.urlRpc, this.protocolRPC, this.dataFlow.networkID, this.dataFlow.assetID, this.dataFlow.blockchainIDXChain));
+            }
+            promisePrivateKeys = await Promise.all(promisesXChainWallet);
+            console.log("Response Batch -> ",promisePrivateKeys);
+            privateKeys = privateKeys.concat(promisePrivateKeys);
+            promisesXChainWallet = []
+            promisePrivateKeys = []
         }
-        privateKeys = await Promise.all(promisesXChainWallet);
+
+        console.log("Lenght Private Keys -> ", privateKeys.length);
         return privateKeys;
     }
 
