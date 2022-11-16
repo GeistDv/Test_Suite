@@ -2,7 +2,8 @@ import Web3 from 'web3';
 import ITransactionBuilder from './ItransactionBuilder';
 import { ConfigurationType } from '../types/configurationtype';
 import DataFlow from '../types/dataflowtype';
-import { logger } from "../utils/logger";
+import XChainTestWallet from '../utils/XChainTestWallet';
+import { errorLogger, logger } from "../utils/logger";
 import { Constants } from '../constants';
 import axios from 'axios';
 import { Avalanche, BN, Buffer } from "avalanche/dist"
@@ -25,13 +26,21 @@ import {
 } from "avalanche/dist/utils";
 import AvalancheXChain from '../types/AvalancheXChain';
 
+
 import { InitialStates, SECPTransferOutput } from "avalanche/dist/apis/avm"
 
-class xChainBuilder {
+class xChainBuilder implements ITransactionBuilder{
 
+    ContractAbi: any;
+    Configuration: ConfigurationType;
+    DataFlow: DataFlow;
+    web3: Web3;
+    PathprivateKeys: any;
 
-    constructor() {
-
+    constructor(Config: ConfigurationType, web3: Web3, dataFlow: DataFlow) {
+        this.Configuration = Config;
+        this.web3 = web3;
+        this.DataFlow = dataFlow;
     }
 
     deployContract(privateKey: string, web3: Web3): Promise<string> {
@@ -40,16 +49,16 @@ class xChainBuilder {
         });
     }
 
-    public static async prepareAndSignTransaction(
-        fromAddress: any[],
-        sendAddress: string[],
-        avalancheXChain: AvalancheXChain,
+
+    public async buildAndSendTransaction(
+        privateKey: XChainTestWallet,
+        contractAddress: string,
+        sendTo: XChainTestWallet,
         amountToSend: number,
-        validateBalance: boolean
+        avalancheXChain: AvalancheXChain
     ): Promise<string> {
         return new Promise(async (resolve, reject) => {
-
-            const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs(fromAddress);
+            const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs([privateKey.xChainAddress]);
 
             const utxoSet: UTXOSet = avmUTXOResponse.utxos;
             const asOf: BN = UnixNow();
@@ -58,13 +67,32 @@ class xChainBuilder {
             const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send AVAX");
             const amount: BN = new BN(amountToSend);
 
+            const balance = await privateKey.avalancheXChain.xchain.getBalance(privateKey.xChainAddress, privateKey.avalancheXChain.avaxAssetID);
+            
+            //Catch Low Balance
+            if(balance.balance < (amountToSend + 1000000000))
+            {
+                errorLogger.error({
+                    addressFrom: privateKey.xChainAddress,
+                    addressTo: sendTo.xChainAddress,
+                    balance: balance.balance,
+                    privateKey: privateKey.privateKey,
+                    message: "Insufficient funds to complete this transaction",
+                    amount: (amountToSend),
+                    fee: 1000000000,
+                    amountAndFee: amountToSend + 1000000000
+                });
+
+                throw new Error("Insufficient funds to complete this transaction");
+            }
+            
             const unsignedTx: UnsignedTx = await avalancheXChain.xchain.buildBaseTx(
                 utxoSet,
                 amount,
                 avalancheXChain.avaxAssetID,
-                sendAddress,
-                fromAddress,
-                fromAddress,
+                [sendTo.xChainAddress],
+                [privateKey.xChainAddress],
+                [privateKey.xChainAddress],
                 memo,
                 asOf,
                 locktime,
@@ -77,22 +105,17 @@ class xChainBuilder {
             let status: string = "";
 
             //Temporal Solution
-            while (status.toUpperCase() != "ACCEPTED") {
+            while (status.toUpperCase() != "ACCEPTED" && status.toUpperCase() != "REJECTED") {
                 status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
             }
-            
-            resolve(txid);
+
+            if (status.toUpperCase() != "REJECTED") {
+                resolve(txid);
+            }
+            else {
+                reject("Rejected Transaction");
+            }
         });
-    }
-
-    public static async getBalanceAddress(address: string, avalancheXChain: AvalancheXChain) {
-        const getBalanceResponse: GetBalanceResponse = await avalancheXChain.xchain.getBalance(
-            address,
-            avalancheXChain.avaxAssetID
-        );
-
-        const balance: BN = new BN(getBalanceResponse.balance);
-        return balance;
     }
 
 }

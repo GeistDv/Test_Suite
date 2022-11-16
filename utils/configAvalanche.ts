@@ -1,13 +1,20 @@
-import { Avalanche } from "avalanche/dist";
+import { Avalanche,BN } from "avalanche/dist";
 import { AVMAPI, KeyChain } from "avalanche/dist/apis/avm";
 import AvalancheXChain from "../types/AvalancheXChain";
 
-export async function getXKeyChain(ipData: string, portData: number, protocolData: string, networkIDData: number, privateKey: string, avaxAssetIDData: string) : Promise<AvalancheXChain> {
+export async function getXKeyChain(
+    ipData: string,
+    portData: number,
+    protocolData: string,
+    networkIDData: number,
+    privateKey: string,
+    avaxAssetIDData: string,
+    blockchainID: string) : Promise<AvalancheXChain> {
     const ip: string = ipData
     const port: number = portData
     const protocol: string = protocolData
     const networkID: number = networkIDData
-    const xBlockchainID: string = "X"
+    const xBlockchainID: string = blockchainID
     const avalanche: Avalanche = new Avalanche(
         ip,
         port,
@@ -16,7 +23,11 @@ export async function getXKeyChain(ipData: string, portData: number, protocolDat
         xBlockchainID
     )
 
-    const xchain: AVMAPI = avalanche.XChain()
+    const xchain: AVMAPI = avalanche.XChain();
+
+    //Fee Transactions
+    xchain.setTxFee(new BN(1000000));
+
     const xKeychain: KeyChain = xchain.keyChain();
 
     const privKey: string = privateKey;

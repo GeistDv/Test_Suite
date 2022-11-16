@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 let blockNumberReference: number;
 
 
-export async function startTestsAndGatherMetrics(testCase: TestCase, configurationType: ConfigurationType) {
+export async function startTestsAndGatherMetrics(testCase: TestCase, configurationType: ConfigurationType, networkName: string) {
 
     try {
 
@@ -32,7 +32,7 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
 
         // Start Test JMeter
         if (configurationType.enable_kubectl_measurements) {
-            initKubectlChecker();
+            initKubectlChecker(networkName);
             startTimerVerifyKubectl();
         }
 

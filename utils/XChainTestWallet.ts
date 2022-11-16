@@ -25,15 +25,16 @@ class XChainTestWallet {
 
     public static async importKeyAndCreateWallet(
         web3: Web3,
-        networkRunner: NetworkRunner,
+        configurationType: ConfigurationType,
         url: URL,
         protocolRPC: string,
         networkID: number,
-        assetID: string
+        assetID: string,
+        blockchainID: string
     ) {
         let privateKey = this.generatePrivateKey(web3);
-        let xAddress: string = await this.ImportKeyAVM(privateKey, networkRunner.configuration);
-        let avalancheXChain = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC, networkID, privateKey, assetID);
+        let xAddress: string = await this.ImportKeyAVM(privateKey, configurationType);
+        let avalancheXChain = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC, networkID, privateKey, assetID, blockchainID);
         let xChain = new XChainTestWallet(xAddress, privateKey, avalancheXChain);
         return xChain;
     }
