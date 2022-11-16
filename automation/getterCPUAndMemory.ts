@@ -8,10 +8,10 @@ let KubectlCheckerApi : KubectlChecker;
 let KubectlCheckerRoot : KubectlChecker;
 let KubectlCheckerValidator : KubectlChecker;
 
-export function initKubectlChecker() {
-    KubectlCheckerApi = new KubectlChecker(`kubectl top pods --all-namespaces | grep "santi-api"`);
-    KubectlCheckerRoot = new KubectlChecker(`kubectl top pods --all-namespaces | grep "santi-root"`);
-    KubectlCheckerValidator = new KubectlChecker(`kubectl top pods --all-namespaces | grep "santi-validator"`);
+export function initKubectlChecker(networkName: string) {
+    KubectlCheckerApi = new KubectlChecker(`kubectl top pods --all-namespaces | grep "${networkName}-api"`);
+    KubectlCheckerRoot = new KubectlChecker(`kubectl top pods --all-namespaces | grep "${networkName}-root"`);
+    KubectlCheckerValidator = new KubectlChecker(`kubectl top pods --all-namespaces | grep "${networkName}-validator"`);
 }
 
 export function startTimerVerifyKubectl() {
