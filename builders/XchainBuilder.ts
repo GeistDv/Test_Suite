@@ -58,14 +58,6 @@ class xChainBuilder implements ITransactionBuilder {
         avalancheXChain: AvalancheXChain
     ): Promise<string> {
         return new Promise(async (resolve, reject) => {
-            const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs([privateKey.xChainAddress]);
-
-            const utxoSet: UTXOSet = avmUTXOResponse.utxos;
-            const asOf: BN = UnixNow();
-            const threshold: number = 1;
-            const locktime: BN = new BN(0);
-            const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send AVAX");
-            const amount: BN = new BN(amountToSend);
             
             console.log("______________________________________________");
             let haveSpendableUtxos = false;
@@ -83,6 +75,17 @@ class xChainBuilder implements ITransactionBuilder {
                     haveSpendableUtxos = true;
                 }
             }
+            
+            const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs([privateKey.xChainAddress]);
+
+            const utxoSet: UTXOSet = avmUTXOResponse.utxos;
+            const asOf: BN = UnixNow();
+            const threshold: number = 1;
+            const locktime: BN = new BN(0);
+            const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send AVAX");
+            const amount: BN = new BN(amountToSend);
+            
+            
 
             console.log("Address From:", privateKey.xChainAddress);
             console.log("Address to:", sendTo.xChainAddress);
