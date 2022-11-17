@@ -198,10 +198,10 @@ class Utils {
         let privateKeys: XChainTestWallet[] = [];
         let promisesXChainWallet = [];
         //Create Private Keys and Wallets
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 20; i++) {
             console.log("Batch -> ", i);
             let promisePrivateKeys: XChainTestWallet[];
-            for (let x = 0; x < (testCase.Threads * 0.1); x++) {
+            for (let x = 0; x < (testCase.Threads * 0.05); x++) {
                 promisesXChainWallet.push(XChainTestWallet.importKeyAndCreateWallet(this.web3, this.Configuration, this.urlRpc, this.protocolRPC, this.dataFlow.networkID, this.dataFlow.assetID, this.dataFlow.blockchainIDXChain));
             }
             promisePrivateKeys = await Promise.all(promisesXChainWallet);
