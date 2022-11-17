@@ -165,23 +165,34 @@ app.post('/', async (req, res) => {
         sendTo = privateKeys[0];
     }
     if (chainType == "X") {
-        setTimeout(() => {
-            //TODO: Temporal Blockchain ID in Addresses, change to Dynamic Blockchain ID but using Avalanche Js
-            privateKey.xChainAddress = privateKey.xChainAddress.replace("X-", `${configDataFlow.blockchainIDXChain}-`);
-            sendTo.xChainAddress = sendTo.xChainAddress.replace("X-", `${configDataFlow.blockchainIDXChain}-`);
+        //TODO: Temporal Blockchain ID in Addresses, change to Dynamic Blockchain ID but using Avalanche Js
+        privateKey.xChainAddress = privateKey.xChainAddress.replace("X-", `${configDataFlow.blockchainIDXChain}-`);
+        sendTo.xChainAddress = sendTo.xChainAddress.replace("X-", `${configDataFlow.blockchainIDXChain}-`);
 
-            let xWallet: XChainTestWallet = privateKey;
+        let xWallet: XChainTestWallet = privateKey;
+        let isSpendableUtxos = false;
+        while(!isSpendableUtxos)
+        {
+            let balance = await xWallet.avalancheXChain.xchain.getBalance(xWallet.xChainAddress, xWallet.avalancheXChain.avaxAssetID);
+            if(balance.utxoIDs.length <= 0)
+            {
+                isSpendableUtxos = false;
+            }
+            else
+            {
+                isSpendableUtxos = true;
+            }
+        }
 
-            //Temporal Amount
-            let ammountConversion = web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei');
-            txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, ammountConversion, xWallet.avalancheXChain)
-                .then(data => {
-                    res.send(data);
-                }).catch(err => {
-                    errorLogger.error(err);
-                    res.status(500).send(err);
-                });
-        }, 2000);
+        //Temporal Amount
+        let ammountConversion = web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei');
+        txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, ammountConversion, xWallet.avalancheXChain)
+            .then(data => {
+                res.send(data);
+            }).catch(err => {
+                errorLogger.error(err);
+                res.status(500).send(err);
+            });
     }
     else {
         txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, Constants.AMOUNT_TO_TRANSFER)
