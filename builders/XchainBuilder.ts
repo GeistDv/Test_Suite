@@ -66,12 +66,22 @@ class xChainBuilder implements ITransactionBuilder {
             const locktime: BN = new BN(0);
             const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send AVAX");
             const amount: BN = new BN(amountToSend);
-
-            const balance = await privateKey.avalancheXChain.xchain.getBalance(privateKey.xChainAddress, privateKey.avalancheXChain.avaxAssetID);
-
-
+            
             console.log("______________________________________________");
-            console.log("Balance:", balance);
+            let haveSpendableUtxos = false;
+            while(!haveSpendableUtxos)
+            {
+                const balance = await privateKey.avalancheXChain.xchain.getBalance(privateKey.xChainAddress, privateKey.avalancheXChain.avaxAssetID);
+                console.log(balance);
+                if(balance.utxoIDs.length <= 0)
+                {
+                    haveSpendableUtxos = false;
+                }
+                else
+                {
+                    haveSpendableUtxos = true;
+                }
+            }
             console.log("Address From:", privateKey.xChainAddress);
             console.log("Address to:", sendTo.xChainAddress);
             console.log("Amount:", Web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei'));
