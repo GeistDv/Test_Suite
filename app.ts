@@ -376,7 +376,7 @@ async function initNetwork(testCase: TestCase,
     }
 
     console.log(testCase.ValidatorNodes);
-    var processKubectl = child.exec("go run main.go k8s create " + networkname + " --validators " + testCase.ValidatorNodes + " --api-nodes " + testCase.ApiNodes, { cwd: pathGrungni });
+    var processKubectl = child.exec("go run main.go k8s create " + networkname + " --validators " + testCase.ValidatorNodes + " --api-nodes " + testCase.ApiNodes +" --image europe-west3-docker.pkg.dev/pwk-c4t-dev/internal-camino-dev/camino-node:tiedemann-4ea9e741c9927e02621549d1d9c72a6b4ad616fa-1667782788", { cwd: pathGrungni });
 
     console.log("Creating network with " + testCase.ValidatorNodes + " validators ...");
     var response = await promiseFromChildProcess(processKubectl);

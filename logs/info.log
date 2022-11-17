@@ -3978,3 +3978,4 @@
   id: 1
 }
 [2022-11-17T09:47:02.477] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1dsz4qpgcakjt67nn82p37sfpw3lly825wzcq9z"},"id":1}
+[2022-11-17T11:29:29.707] [INFO] default - Server running on port 3000
