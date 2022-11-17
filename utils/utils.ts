@@ -198,15 +198,14 @@ class Utils {
         let privateKeys: XChainTestWallet[] = [];
         let promisesXChainWallet = [];
         //Create Private Keys and Wallets
-        for(let i = 0; i<10; i++ )
-        {
-            console.log("Batch -> ",i);
+        for (let i = 0; i < 10; i++) {
+            console.log("Batch -> ", i);
             let promisePrivateKeys: XChainTestWallet[];
-            for (let x = 0; x < (testCase.Threads*0.1); x++) {
+            for (let x = 0; x < (testCase.Threads * 0.1); x++) {
                 promisesXChainWallet.push(XChainTestWallet.importKeyAndCreateWallet(this.web3, this.Configuration, this.urlRpc, this.protocolRPC, this.dataFlow.networkID, this.dataFlow.assetID, this.dataFlow.blockchainIDXChain));
             }
             promisePrivateKeys = await Promise.all(promisesXChainWallet);
-            console.log("Response Batch -> ",promisePrivateKeys);
+            console.log("Response Batch -> ", promisePrivateKeys);
             privateKeys = privateKeys.concat(promisePrivateKeys);
             promisesXChainWallet = []
             promisePrivateKeys = []
@@ -403,16 +402,24 @@ class Utils {
             this.privateKeys = accountsWithoutFunds;
 
             console.log("Fund Accounts, wait please......");
-            let txIDMultiple = await this.multipleFundsAVM(
+            let txIDMultiple : string = await this.multipleFundsAVM(
                 this.privateKeys,
                 this.mainAccount.avalancheXChain.avaxAssetID,
                 parseFloat(this.web3.utils.toWei(Constants.INITIAL_FUNDS, 'gwei')),
                 this.mainAccount
             );
 
-            console.log("txIDMultiple -> ",txIDMultiple);
+            let statusTx : string = "";
 
-            console.log("Private Keys -> ",this.privateKeys);
+            while(statusTx.toUpperCase() != "ACCEPTED" && statusTx.toUpperCase() != "REJECTED" && statusTx.toUpperCase() != "UNKNOWN")
+            {
+                statusTx = await Utils.getTxStatusAVM(this.Configuration, txIDMultiple);
+                console.log("Status TX -> ", statusTx);
+            }
+
+            console.log("txIDMultiple -> ", txIDMultiple);
+
+            console.log("Private Keys -> ", this.privateKeys);
 
             /*
             let baseAmount: number = parseFloat(this.web3.utils.toWei(Constants.INITIAL_FUNDS, 'gwei')) * testCase.Threads;
@@ -434,7 +441,7 @@ class Utils {
     }
 
     //Multiple Funds AVM
-    private async multipleFundsAVM(accounts: XChainTestWallet[], assetID: string, amount: number, mainAccount: XChainTestWallet) {
+    private async multipleFundsAVM(accounts: XChainTestWallet[], assetID: string, amount: number, mainAccount: XChainTestWallet) : Promise<string> {
         return new Promise((resolve, reject) => {
             var data = JSON.stringify({
                 "jsonrpc": "2.0",
@@ -775,15 +782,14 @@ class Utils {
         }
     }
 
-    public static async getBlockchainID(config: ConfigurationType, chain: string) : Promise<string>
-    {
+    public static async getBlockchainID(config: ConfigurationType, chain: string): Promise<string> {
         return new Promise((resolve, reject) => {
             var data = JSON.stringify({
-                "jsonrpc":"2.0",
-                "id":1,
-                "method" :"info.getBlockchainID",
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "info.getBlockchainID",
                 "params": {
-                    "alias":chain
+                    "alias": chain
                 }
             });
 
@@ -798,6 +804,34 @@ class Utils {
 
             axios(request).then(function (response) {
                 resolve(response.data.result.blockchainID);
+            }).catch(function (error) {
+                reject(null);
+            });
+        });
+    }
+
+    public static async getTxStatusAVM(config: ConfigurationType, txID: string) : Promise<string> {
+        return new Promise((resolve, reject) => {
+            var data = JSON.stringify({
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "avm.getTxStatus",
+                "params": {
+                    "txID": txID
+                }
+            });
+
+            var request = {
+                method: 'post',
+                url: config.rpc + '/ext/bc/X',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+
+            axios(request).then(function (response) {
+                resolve(response.data.result.status);
             }).catch(function (error) {
                 reject(null);
             });

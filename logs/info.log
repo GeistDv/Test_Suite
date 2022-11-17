@@ -3803,3 +3803,178 @@
 [2022-11-16T18:40:51.754] [INFO] default - Average time between blocks: NaN
 [2022-11-16T18:40:51.755] [INFO] default - Max block time: -Infinity
 [2022-11-16T18:40:51.755] [INFO] default - Min block time: Infinity
+[2022-11-17T08:20:08.587] [INFO] default - Server running on port 3000
+[2022-11-17T08:20:42.280] [INFO] default - Server running on port 3000
+[2022-11-17T08:22:06.219] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-17T08:22:06.220] [INFO] default - Importing key..
+[2022-11-17T08:22:06.273] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-17T08:22:06.273] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-17T08:22:06.294] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x8db97C7cEcE249c2b98bDC0226Cc4C2A57BF52FC"},"id":1}
+[2022-11-17T08:22:17.690] [INFO] default - Done!
+[2022-11-17T08:23:03.563] [INFO] default - blockNumber with max undefined -Infinity
+[2022-11-17T08:23:03.564] [INFO] default - Average time between blocks: NaN
+[2022-11-17T08:23:03.564] [INFO] default - Max block time: -Infinity
+[2022-11-17T08:23:03.564] [INFO] default - Min block time: Infinity
+[2022-11-17T08:23:55.068] [INFO] default - Server running on port 3000
+[2022-11-17T08:24:10.377] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-17T08:24:10.377] [INFO] default - Importing key..
+[2022-11-17T08:24:10.427] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-17T08:24:10.427] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-17T08:24:10.449] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x8db97C7cEcE249c2b98bDC0226Cc4C2A57BF52FC"},"id":1}
+[2022-11-17T08:24:32.992] [INFO] default - Done!
+[2022-11-17T08:26:07.740] [INFO] default - blockNumber with max undefined -Infinity
+[2022-11-17T08:26:07.741] [INFO] default - Average time between blocks: NaN
+[2022-11-17T08:26:07.741] [INFO] default - Max block time: -Infinity
+[2022-11-17T08:26:07.741] [INFO] default - Min block time: Infinity
+[2022-11-17T08:26:19.793] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-17T08:26:19.794] [INFO] default - Importing key..
+[2022-11-17T08:26:19.832] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-17T08:26:19.832] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-17T08:26:19.853] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x8db97C7cEcE249c2b98bDC0226Cc4C2A57BF52FC"},"id":1}
+[2022-11-17T08:27:06.680] [INFO] default - Done!
+[2022-11-17T08:30:11.264] [INFO] default - blockNumber with max undefined -Infinity
+[2022-11-17T08:30:11.265] [INFO] default - Average time between blocks: NaN
+[2022-11-17T08:30:11.265] [INFO] default - Max block time: -Infinity
+[2022-11-17T08:30:11.265] [INFO] default - Min block time: Infinity
+[2022-11-17T08:33:43.679] [INFO] default - Server running on port 3000
+[2022-11-17T08:35:31.658] [INFO] default - Server running on port 3000
+[2022-11-17T08:36:45.972] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-17T08:36:45.972] [INFO] default - Importing key..
+[2022-11-17T08:36:46.018] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-17T08:36:46.018] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-17T08:36:46.041] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x8db97C7cEcE249c2b98bDC0226Cc4C2A57BF52FC"},"id":1}
+[2022-11-17T08:36:48.887] [INFO] default - Done!
+[2022-11-17T08:36:59.603] [INFO] default - blockNumber with max undefined -Infinity
+[2022-11-17T08:36:59.603] [INFO] default - Average time between blocks: NaN
+[2022-11-17T08:36:59.603] [INFO] default - Max block time: -Infinity
+[2022-11-17T08:36:59.603] [INFO] default - Min block time: Infinity
+[2022-11-17T08:39:13.341] [INFO] default - Server running on port 3000
+[2022-11-17T08:41:26.571] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-17T08:41:26.572] [INFO] default - Importing key..
+[2022-11-17T08:41:26.612] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-17T08:41:26.612] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-17T08:41:26.634] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x8db97C7cEcE249c2b98bDC0226Cc4C2A57BF52FC"},"id":1}
+[2022-11-17T08:41:29.220] [INFO] default - Done!
+[2022-11-17T08:41:40.787] [INFO] default - blockNumber with max undefined -Infinity
+[2022-11-17T08:41:40.787] [INFO] default - Average time between blocks: NaN
+[2022-11-17T08:41:40.787] [INFO] default - Max block time: -Infinity
+[2022-11-17T08:41:40.787] [INFO] default - Min block time: Infinity
+[2022-11-17T08:43:54.436] [INFO] default - Server running on port 3000
+[2022-11-17T08:46:31.719] [INFO] default - Server running on port 3000
+[2022-11-17T08:46:42.326] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-17T08:46:42.327] [INFO] default - Importing key..
+[2022-11-17T08:46:43.351] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1dsz4qpgcakjt67nn82p37sfpw3lly825wzcq9z' },
+  id: 1
+}
+[2022-11-17T08:46:43.351] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1dsz4qpgcakjt67nn82p37sfpw3lly825wzcq9z"},"id":1}
+[2022-11-17T08:47:02.185] [INFO] default - Server running on port 3000
+[2022-11-17T08:47:08.847] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-17T08:47:08.847] [INFO] default - Importing key..
+[2022-11-17T08:47:09.770] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1dsz4qpgcakjt67nn82p37sfpw3lly825wzcq9z' },
+  id: 1
+}
+[2022-11-17T08:47:09.770] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1dsz4qpgcakjt67nn82p37sfpw3lly825wzcq9z"},"id":1}
+[2022-11-17T08:47:10.689] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x6644E545CCa368175f076A462B53723Df54a9936"},"id":1}
+[2022-11-17T08:47:53.295] [INFO] default - Done!
+[2022-11-17T08:59:03.122] [INFO] default - Server running on port 3000
+[2022-11-17T08:59:22.425] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-17T08:59:22.426] [INFO] default - Importing key..
+[2022-11-17T08:59:22.476] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-17T08:59:22.476] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-17T08:59:22.508] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x8db97C7cEcE249c2b98bDC0226Cc4C2A57BF52FC"},"id":1}
+[2022-11-17T09:00:28.849] [INFO] default - Server running on port 3000
+[2022-11-17T09:00:49.482] [INFO] default - {"jsonrpc":"2.0","result":{"success":true},"id":1}
+[2022-11-17T09:00:49.482] [INFO] default - Importing key..
+[2022-11-17T09:00:49.528] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p' },
+  id: 1
+}
+[2022-11-17T09:00:49.528] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p"},"id":1}
+[2022-11-17T09:00:49.548] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x8db97C7cEcE249c2b98bDC0226Cc4C2A57BF52FC"},"id":1}
+[2022-11-17T09:02:47.596] [INFO] default - Server running on port 3000
+[2022-11-17T09:20:51.301] [INFO] default - Server running on port 3000
+[2022-11-17T09:22:14.798] [INFO] default - {"jsonrpc":"2.0","result":{},"id":1}
+[2022-11-17T09:22:14.798] [INFO] default - Importing key..
+[2022-11-17T09:22:15.710] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1dsz4qpgcakjt67nn82p37sfpw3lly825wzcq9z' },
+  id: 1
+}
+[2022-11-17T09:22:15.711] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1dsz4qpgcakjt67nn82p37sfpw3lly825wzcq9z"},"id":1}
+[2022-11-17T09:22:16.521] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x6644E545CCa368175f076A462B53723Df54a9936"},"id":1}
+[2022-11-17T09:23:55.453] [INFO] default - Server running on port 3000
+[2022-11-17T09:24:32.572] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-17T09:24:32.573] [INFO] default - Importing key..
+[2022-11-17T09:24:33.264] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1dsz4qpgcakjt67nn82p37sfpw3lly825wzcq9z' },
+  id: 1
+}
+[2022-11-17T09:24:33.264] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1dsz4qpgcakjt67nn82p37sfpw3lly825wzcq9z"},"id":1}
+[2022-11-17T09:24:33.963] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x6644E545CCa368175f076A462B53723Df54a9936"},"id":1}
+[2022-11-17T09:25:41.441] [INFO] default - Server running on port 3000
+[2022-11-17T09:25:45.519] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-17T09:25:45.520] [INFO] default - Importing key..
+[2022-11-17T09:25:46.196] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1dsz4qpgcakjt67nn82p37sfpw3lly825wzcq9z' },
+  id: 1
+}
+[2022-11-17T09:25:46.196] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1dsz4qpgcakjt67nn82p37sfpw3lly825wzcq9z"},"id":1}
+[2022-11-17T09:25:46.889] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x6644E545CCa368175f076A462B53723Df54a9936"},"id":1}
+[2022-11-17T09:26:05.186] [INFO] default - Done!
+[2022-11-17T09:28:09.641] [INFO] default - blockNumber with max undefined -Infinity
+[2022-11-17T09:28:09.642] [INFO] default - Average time between blocks: NaN
+[2022-11-17T09:28:09.642] [INFO] default - Max block time: -Infinity
+[2022-11-17T09:28:09.642] [INFO] default - Min block time: Infinity
+[2022-11-17T09:28:12.885] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-17T09:28:12.885] [INFO] default - Importing key..
+[2022-11-17T09:28:13.591] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1dsz4qpgcakjt67nn82p37sfpw3lly825wzcq9z' },
+  id: 1
+}
+[2022-11-17T09:28:13.591] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1dsz4qpgcakjt67nn82p37sfpw3lly825wzcq9z"},"id":1}
+[2022-11-17T09:28:14.265] [INFO] default - {"jsonrpc":"2.0","result":{"address":"0x6644E545CCa368175f076A462B53723Df54a9936"},"id":1}
+[2022-11-17T09:29:37.407] [INFO] default - Done!
+[2022-11-17T09:46:58.510] [INFO] default - blockNumber with max undefined -Infinity
+[2022-11-17T09:46:58.510] [INFO] default - Average time between blocks: NaN
+[2022-11-17T09:46:58.510] [INFO] default - Max block time: -Infinity
+[2022-11-17T09:46:58.510] [INFO] default - Min block time: Infinity
+[2022-11-17T09:47:01.777] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
+[2022-11-17T09:47:01.777] [INFO] default - Importing key..
+[2022-11-17T09:47:02.477] [INFO] default - {
+  jsonrpc: '2.0',
+  result: { address: 'X-custom1dsz4qpgcakjt67nn82p37sfpw3lly825wzcq9z' },
+  id: 1
+}
+[2022-11-17T09:47:02.477] [INFO] default - {"jsonrpc":"2.0","result":{"address":"X-custom1dsz4qpgcakjt67nn82p37sfpw3lly825wzcq9z"},"id":1}

@@ -171,20 +171,10 @@ app.post('/', async (req, res) => {
         sendTo.xChainAddress = sendTo.xChainAddress.replace("X-",`${configDataFlow.blockchainIDXChain}-`);
 
         let xWallet: XChainTestWallet = privateKey;
-        let balance = await xWallet.avalancheXChain.xchain.getBalance(xWallet.xChainAddress, xWallet.avalancheXChain.avaxAssetID);
-
-        console.log("______________________________________________");
-        console.log("Private Key ->", xWallet.privateKey);
-        console.log("ID", req.body.ID);
-        console.log("Address From:", privateKey.xChainAddress);
-        console.log("Address to:", sendTo.xChainAddress);
-        console.log("Amount:", web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei'));
-        console.log("Balance:", balance);
-
+        
         //Temporal Amount
         let ammountConversion = web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei');
-        let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, configDataFlow.networkID, privateKey.privateKey, configDataFlow.assetID,configDataFlow.blockchainIDXChain);
-        txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, ammountConversion, xChainAvalanche)
+        txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, ammountConversion, xWallet.avalancheXChain)
             .then(data => {
                 res.send(data);
             }).catch(err => {

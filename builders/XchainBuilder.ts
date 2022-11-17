@@ -29,7 +29,7 @@ import AvalancheXChain from '../types/AvalancheXChain';
 
 import { InitialStates, SECPTransferOutput } from "avalanche/dist/apis/avm"
 
-class xChainBuilder implements ITransactionBuilder{
+class xChainBuilder implements ITransactionBuilder {
 
     ContractAbi: any;
     Configuration: ConfigurationType;
@@ -68,10 +68,9 @@ class xChainBuilder implements ITransactionBuilder{
             const amount: BN = new BN(amountToSend);
 
             const balance = await privateKey.avalancheXChain.xchain.getBalance(privateKey.xChainAddress, privateKey.avalancheXChain.avaxAssetID);
-            
+
             //Catch Low Balance
-            if(balance.balance < (amountToSend + 1000000000))
-            {
+            if (balance.balance < (amountToSend + 1000000000)) {
                 errorLogger.error({
                     addressFrom: privateKey.xChainAddress,
                     addressTo: sendTo.xChainAddress,
@@ -85,7 +84,7 @@ class xChainBuilder implements ITransactionBuilder{
 
                 throw new Error("Insufficient funds to complete this transaction");
             }
-            
+
             const unsignedTx: UnsignedTx = await avalancheXChain.xchain.buildBaseTx(
                 utxoSet,
                 amount,
@@ -105,16 +104,21 @@ class xChainBuilder implements ITransactionBuilder{
             let status: string = "";
 
             //Temporal Solution
-            while (status.toUpperCase() != "ACCEPTED" && status.toUpperCase() != "REJECTED") {
+            while (status.toUpperCase() != "ACCEPTED" && status.toUpperCase() != "REJECTED" && status.toUpperCase() != "UNKNOWN") {
                 status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
+
+                if(status.toUpperCase() != "PROCESSING")
+                {
+                    console.log("Status Tx -> ", status);
+                }
             }
 
-            if (status.toUpperCase() != "REJECTED") {
-                resolve(txid);
-            }
-            else {
-                reject("Rejected Transaction");
-            }
+            console.log("______________________________________________");
+            console.log("Address From:", privateKey.xChainAddress);
+            console.log("Address to:", sendTo.xChainAddress);
+            console.log("Amount:", Web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei'));
+
+            resolve(txid);
         });
     }
 
