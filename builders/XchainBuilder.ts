@@ -73,7 +73,7 @@ class xChainBuilder implements ITransactionBuilder {
             while(!haveSpendableUtxos)
             {
                 balance = await privateKey.avalancheXChain.xchain.getBalance(privateKey.xChainAddress, privateKey.avalancheXChain.avaxAssetID);
-                console.log(balance);
+                console.log("Balance", balance);
                 if(balance.utxoIDs.length <= 0)
                 {
                     haveSpendableUtxos = false;
@@ -83,6 +83,7 @@ class xChainBuilder implements ITransactionBuilder {
                     haveSpendableUtxos = true;
                 }
             }
+
             console.log("Address From:", privateKey.xChainAddress);
             console.log("Address to:", sendTo.xChainAddress);
             console.log("Amount:", Web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei'));
