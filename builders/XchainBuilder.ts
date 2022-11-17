@@ -69,9 +69,10 @@ class xChainBuilder implements ITransactionBuilder {
             
             console.log("______________________________________________");
             let haveSpendableUtxos = false;
+            let balance: any;
             while(!haveSpendableUtxos)
             {
-                const balance = await privateKey.avalancheXChain.xchain.getBalance(privateKey.xChainAddress, privateKey.avalancheXChain.avaxAssetID);
+                balance = await privateKey.avalancheXChain.xchain.getBalance(privateKey.xChainAddress, privateKey.avalancheXChain.avaxAssetID);
                 console.log(balance);
                 if(balance.utxoIDs.length <= 0)
                 {
