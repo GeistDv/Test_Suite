@@ -69,6 +69,13 @@ class xChainBuilder implements ITransactionBuilder {
 
             const balance = await privateKey.avalancheXChain.xchain.getBalance(privateKey.xChainAddress, privateKey.avalancheXChain.avaxAssetID);
 
+
+            console.log("______________________________________________");
+            console.log("Balance:", balance);
+            console.log("Address From:", privateKey.xChainAddress);
+            console.log("Address to:", sendTo.xChainAddress);
+            console.log("Amount:", Web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei'));
+            
             //Catch Low Balance
             if (balance.balance < (amountToSend + 1000000000)) {
                 errorLogger.error({
@@ -82,7 +89,7 @@ class xChainBuilder implements ITransactionBuilder {
                     amountAndFee: amountToSend + 1000000000
                 });
 
-                throw new Error("Insufficient funds to complete this transaction");
+                reject("Insufficient funds to complete this transaction");
             }
 
             const unsignedTx: UnsignedTx = await avalancheXChain.xchain.buildBaseTx(
@@ -108,10 +115,6 @@ class xChainBuilder implements ITransactionBuilder {
                 status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
             }
 
-            console.log("______________________________________________");
-            console.log("Address From:", privateKey.xChainAddress);
-            console.log("Address to:", sendTo.xChainAddress);
-            console.log("Amount:", Web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei'));
 
             resolve(txid);
         });

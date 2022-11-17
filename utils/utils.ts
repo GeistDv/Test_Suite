@@ -411,7 +411,7 @@ class Utils {
 
             let statusTx : string = "";
 
-            while(statusTx.toUpperCase() != "ACCEPTED" && statusTx.toUpperCase() != "REJECTED" && statusTx.toUpperCase() != "UNKNOWN")
+            while(statusTx.toUpperCase() != "ACCEPTED" && statusTx.toUpperCase() != "REJECTED")
             {
                 statusTx = await Utils.getTxStatusAVM(this.Configuration, txIDMultiple);
                 console.log("Status TX -> ", statusTx);
