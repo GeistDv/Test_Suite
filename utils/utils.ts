@@ -405,7 +405,7 @@ class Utils {
             let txIDMultiple : string = await this.multipleFundsAVM(
                 this.privateKeys,
                 this.mainAccount.avalancheXChain.avaxAssetID,
-                parseFloat(this.web3.utils.toWei(Constants.INITIAL_FUNDS, 'gwei')),
+                parseFloat(this.web3.utils.toWei("60", 'gwei')),
                 this.mainAccount
             );
 
