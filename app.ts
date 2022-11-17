@@ -165,23 +165,23 @@ app.post('/', async (req, res) => {
         sendTo = privateKeys[0];
     }
     if (chainType == "X") {
+        setTimeout(() => {
+            //TODO: Temporal Blockchain ID in Addresses, change to Dynamic Blockchain ID but using Avalanche Js
+            privateKey.xChainAddress = privateKey.xChainAddress.replace("X-", `${configDataFlow.blockchainIDXChain}-`);
+            sendTo.xChainAddress = sendTo.xChainAddress.replace("X-", `${configDataFlow.blockchainIDXChain}-`);
 
-        //TODO: Temporal Blockchain ID in Addresses, change to Dynamic Blockchain ID but using Avalanche Js
-        privateKey.xChainAddress = privateKey.xChainAddress.replace("X-",`${configDataFlow.blockchainIDXChain}-`);
-        sendTo.xChainAddress = sendTo.xChainAddress.replace("X-",`${configDataFlow.blockchainIDXChain}-`);
+            let xWallet: XChainTestWallet = privateKey;
 
-        let xWallet: XChainTestWallet = privateKey;
-        
-        //Temporal Amount
-        let ammountConversion = web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei');
-        txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, ammountConversion, xWallet.avalancheXChain)
-            .then(data => {
-                res.send(data);
-            }).catch(err => {
-                errorLogger.error(err);
-                res.status(500).send(err);
-            });
-
+            //Temporal Amount
+            let ammountConversion = web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei');
+            txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, ammountConversion, xWallet.avalancheXChain)
+                .then(data => {
+                    res.send(data);
+                }).catch(err => {
+                    errorLogger.error(err);
+                    res.status(500).send(err);
+                });
+        }, 2000);
     }
     else {
         txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, Constants.AMOUNT_TO_TRANSFER)
@@ -376,7 +376,7 @@ async function initNetwork(testCase: TestCase,
     }
 
     console.log(testCase.ValidatorNodes);
-    var processKubectl = child.exec("go run main.go k8s create " + networkname + " --validators " + testCase.ValidatorNodes + " --api-nodes " + testCase.ApiNodes +" --image europe-west3-docker.pkg.dev/pwk-c4t-dev/internal-camino-dev/camino-node:tiedemann-4ea9e741c9927e02621549d1d9c72a6b4ad616fa-1667782788", { cwd: pathGrungni });
+    var processKubectl = child.exec("go run main.go k8s create " + networkname + " --validators " + testCase.ValidatorNodes + " --api-nodes " + testCase.ApiNodes + " --image europe-west3-docker.pkg.dev/pwk-c4t-dev/internal-camino-dev/camino-node:tiedemann-4ea9e741c9927e02621549d1d9c72a6b4ad616fa-1667782788", { cwd: pathGrungni });
 
     console.log("Creating network with " + testCase.ValidatorNodes + " validators ...");
     var response = await promiseFromChildProcess(processKubectl);
