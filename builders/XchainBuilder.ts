@@ -106,11 +106,6 @@ class xChainBuilder implements ITransactionBuilder {
             //Temporal Solution
             while (status.toUpperCase() != "ACCEPTED" && status.toUpperCase() != "REJECTED") {
                 status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
-
-                if(status.toUpperCase() != "PROCESSING")
-                {
-                    console.log("Status Tx -> ", status);
-                }
             }
 
             console.log("______________________________________________");
