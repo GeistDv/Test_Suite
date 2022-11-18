@@ -108,6 +108,9 @@ app.post("/start", async (req, res) => {
         console.log("Running case .. " + i);
         await initNetwork(testCase, prevTestCase, networkName, configType);
         var dataFlow = await initApp(configType);
+
+        testCase.Chain == "X" ? await Utils.deleteUser(configType) : null;
+        
         if (testCase.Chain == "X") {
             let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, dataFlow.networkID, configType.private_key_with_funds, dataFlow.assetID, dataFlow.blockchainIDXChain);
             let mainAccount = new XChainTestWallet(dataFlow.bech32_xchain_address, configType.private_key_with_funds, xChainAvalanche);
@@ -130,12 +133,16 @@ app.post("/network-runner", async (req, res) => {
 
     let testCases = await DataTests.readDataTest(req.body.sheet_name);
 
+
+    networkRunner = await getConfigTypeWithNetworkRunner(req, testCases[0].ValidatorNodes);
+
     for (let i = 0; i < testCases.length; i++) {
         let testCase = testCases[i];
-        networkRunner = await getConfigTypeWithNetworkRunner(req, testCase);
-        console.log(networkRunner);
 
         let configType = networkRunner.configuration;
+        
+        testCase.Chain == "X" ? await Utils.deleteUser(configType) : "false";
+        
         let dataFlow = await initApp(networkRunner.configuration);
         if (testCase.Chain == "X") {
             let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, dataFlow.networkID, networkRunner.configuration.private_key_with_funds, dataFlow.assetID, dataFlow.blockchainIDXChain);
@@ -149,9 +156,9 @@ app.post("/network-runner", async (req, res) => {
         await initPrivateKeys(dataFlow, testCase);
 
         await startTestsAndGatherMetrics(testCase, configType, "");
-        await networkRunner.killGnomeTerminal();
     }
 
+    await networkRunner.killGnomeTerminal();
     return res.status(200).send("Network Runner executed");
 });
 

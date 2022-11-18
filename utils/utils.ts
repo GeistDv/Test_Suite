@@ -838,6 +838,35 @@ class Utils {
         });
     }
 
+    public static async deleteUser(config: ConfigurationType) : Promise<any> {
+        return new Promise((resolve, reject) => {
+            var data = JSON.stringify({
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "keystore.deleteUser",
+                "params" : {
+                    "username": Constants.KEYSTORE_USER,
+                    "password": Constants.KEYSTORE_PASSWORD
+                }
+            });
+
+            var request = {
+                method: 'post',
+                url: config.rpc + '/ext/keystore',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+
+            axios(request).then(function (response) {
+                resolve(response.data.result);
+            }).catch(function (error) {
+                reject(null);
+            });
+        });
+    }
+
 }
 
 export default Utils;
