@@ -173,11 +173,13 @@ app.post('/', async (req, res) => {
     }
     if (chainType == "X") {
         try {
+
             //TODO: Temporal Blockchain ID in Addresses, change to Dynamic Blockchain ID but using Avalanche Js
             privateKey.xChainAddress = privateKey.xChainAddress.replace("X-", `${configDataFlow.blockchainIDXChain}-`);
             sendTo.xChainAddress = sendTo.xChainAddress.replace("X-", `${configDataFlow.blockchainIDXChain}-`);
 
             let xWallet: XChainTestWallet = privateKey;
+
             let isSpendableUtxos = false;
             while (!isSpendableUtxos) {
                 let balance = await xWallet.avalancheXChain.xchain.getBalance(xWallet.xChainAddress, xWallet.avalancheXChain.avaxAssetID);

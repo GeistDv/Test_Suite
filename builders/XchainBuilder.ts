@@ -64,7 +64,7 @@ class xChainBuilder implements ITransactionBuilder {
             const asOf: BN = UnixNow();
             const threshold: number = 1;
             const locktime: BN = new BN(0);
-            const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send AVAX");
+            const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send CAM");
             const amount: BN = new BN(amountToSend);
 
             const balance = await privateKey.avalancheXChain.xchain.getBalance(privateKey.xChainAddress, privateKey.avalancheXChain.avaxAssetID);
@@ -89,7 +89,7 @@ class xChainBuilder implements ITransactionBuilder {
                 });
 
                 reject("Insufficient funds to complete this transaction");
-            }
+            };
 
             const unsignedTx: UnsignedTx = await avalancheXChain.xchain.buildBaseTx(
                 utxoSet,
