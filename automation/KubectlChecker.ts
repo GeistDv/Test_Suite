@@ -25,6 +25,17 @@ class KubectlChecker {
             console.log("Error in Checker PODS", err);
         });
     }
+    public async execCommandWithoutMetrics(){
+        var processKubectl = child.exec(this.commandKubcetl);
+        let tempArray : any[];
+        try{
+            tempArray = Array(await this.promiseFromChildProcess(processKubectl))
+            this.dataPods = tempArray[0].slice(0)
+        }
+        catch (e) {
+            console.log("Error in Checker PODS", e);
+        }
+    }
 
     private async promiseFromChildProcess(child: any) {
         let outputsData: any[] = [];
