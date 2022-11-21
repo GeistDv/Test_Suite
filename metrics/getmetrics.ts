@@ -1,6 +1,6 @@
 import Prometheus from "../utils/prometheus";
 
-let queryString = 'max_over_time(camino_resource_tracker_cpu_usage{namespace="santi"}[1m])';
+let queryString = 'camino_resource_tracker_cpu_usage{namespace="santi"}';
 Prometheus.PrometheusQueryExecutor(queryString)
 .then((result) => {
     //return result;
