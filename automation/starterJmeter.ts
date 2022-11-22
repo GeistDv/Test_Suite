@@ -10,7 +10,7 @@ import { ConfigurationType } from '../types/configurationtype';
 import dotenv from 'dotenv';
 import DataTests from '../DataTest';
 
-import { execPrometheus, killPrometheus, calculateMetrics} from '../utils/getMetrics';
+import { execPrometheus, killPrometheus, calculateMetrics, deleteJSONMetrics} from '../utils/getMetrics';
 
 dotenv.config();
 
@@ -33,10 +33,11 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
         console.log("Block Number Reference :", blockNumberReference);
 
         // Start Test JMeter
+        /*
         if (configurationType.enable_kubectl_measurements) {
             initKubectlChecker(networkName);
             startTimerVerifyKubectl();
-        }
+        }*/
 
         let executingPrometheus = execPrometheus();
 
@@ -56,8 +57,7 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
         console.log("METRICS,",metrics);
 
 
-        let dataKubectl = finishTimerKubcetl(configurationType);
-        // console.log("dataKubectl", dataKubectl);
+        //let dataKubectl = finishTimerKubcetl(configurationType);
         console.log("Info Test:", infoTest);
 
         let jsonStadistic = require(`../${infoTest.dirname
@@ -75,18 +75,18 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
             maxTPS: transactionPerSecond != null ? transactionPerSecond.maxY : null, // Max TPS
             errorPct: jsonStadistic.Total.errorPct, // % Error
             timeProcess: infoTest.miliseconds, // Total Time To Process,
-            apiCPU: dataKubectl.api.cpu,
-            apiMemory: dataKubectl.api.memory,
-            rootCPU: dataKubectl.root.cpu,
-            rootMemory: dataKubectl.root.memory,
-            validatorsCPU: dataKubectl.validators.cpu,
-            validatorsMemory: dataKubectl.validators.memory,
-            maxMemoryAPI: dataKubectl.api.maxMemory,
-            maxMemoryRoot: dataKubectl.root.maxMemory,
-            maxMemoryValidators: dataKubectl.validators.maxMemory,
-            maxCPUAPI: dataKubectl.api.maxCPU,
-            maxCPURoot: dataKubectl.root.maxCPU,
-            maxCPUValidators: dataKubectl.validators.maxCPU,
+            apiCPU: metrics.cpu.dataTotalApi,
+            apiMemory: metrics.memory.dataTotalApi,
+            rootCPU: metrics.cpu.dataTotalRoot,
+            rootMemory: metrics.memory.dataTotalRoot,
+            validatorsCPU: metrics.cpu.dataTotalValidators,
+            validatorsMemory: metrics.memory.dataTotalValidators,
+            maxMemoryAPI: metrics.memory.maxDataApi,
+            maxMemoryRoot: metrics.memory.maxDataRoot,
+            maxMemoryValidators: metrics.memory.maxDataValidators,
+            maxCPUAPI: metrics.cpu.maxDataApi,
+            maxCPURoot: metrics.cpu.maxDataRoot,
+            maxCPUValidators: metrics.cpu.maxDataValidators,
         }
 
         console.log(data);
@@ -95,9 +95,13 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
         }
 
         // Force Clean Kubectl
+        /*
         if (configurationType.enable_kubectl_measurements) {
             restarMaxCPUAndMaxMemory();
         }
+        */
+
+        deleteJSONMetrics();
 
     } catch (e) {
         console.log("Test JMeter Failed:", e);

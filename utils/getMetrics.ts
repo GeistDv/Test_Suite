@@ -1,40 +1,34 @@
 import * as child from 'child_process';
 import path from 'path';
 import Prometheus from './prometheus';
+import fs from 'fs';
 
-let cpuPrometheus : any = undefined;
-let memoryPrometheus : any = undefined;
+let cpuPrometheus: any = undefined;
+let memoryPrometheus: any = undefined;
 
-export function execPrometheus()
-{
-    try
-    {
+export function execPrometheus() {
+    try {
         cpuPrometheus = child.fork(path.join(__dirname + `/../metrics/cpuMetrics.ts`));
         memoryPrometheus = child.fork(path.join(__dirname + `/../metrics/memoryMetrics.ts`));
         return true;
     }
-    catch(e)
-    {
+    catch (e) {
         return false;
     }
 }
 
-export function killPrometheus()
-{
-    try
-    {
+export function killPrometheus() {
+    try {
         cpuPrometheus.disconnect();
         memoryPrometheus.disconnect();
         return true;
     }
-    catch(e)
-    {
+    catch (e) {
         return false;
     }
 }
 
-export function calculateMetrics () 
-{
+export function calculateMetrics() {
     const dataCPU = require(path.join(__dirname + `/../temp/cpuMetrics.json`));
     let resultsCPU = Prometheus.processJson(dataCPU);
 
@@ -42,7 +36,7 @@ export function calculateMetrics ()
     let resultsMemory = Prometheus.processJson(dataMemory);
 
 
-    let finalData = {
+    let metricsResult = {
         cpu: {
             dataTotalValidators: resultsCPU.dataTotalValidators,
             dataTotalApi: resultsCPU.dataTotalApi,
@@ -60,5 +54,17 @@ export function calculateMetrics ()
             maxDataRoot: resultsMemory.maxDataRoot
         },
     }
-    return finalData;
+    return metricsResult;
+}
+
+export function deleteJSONMetrics() {
+    try 
+    {
+        fs.unlinkSync(path.join(__dirname + `/../temp/cpuMetrics.json`));
+        fs.unlinkSync(path.join(__dirname + `/../temp/memoryMetrics.json`));
+        return true;
+    }
+    catch (e) {
+        return false;
+    }
 }
