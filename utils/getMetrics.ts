@@ -19,8 +19,15 @@ export function execPrometheus() {
 
 export function killPrometheus() {
     try {
+        
         cpuPrometheus.disconnect();
         memoryPrometheus.disconnect();
+        
+        cpuPrometheus.kill();
+        memoryPrometheus.kill();
+        
+        cpuPrometheus = undefined;
+        memoryPrometheus = undefined;
         return true;
     }
     catch (e) {
