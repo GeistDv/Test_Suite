@@ -21,7 +21,9 @@ export async function getXKeyChain(
         protocol,
         networkID,
         xBlockchainID
-    )
+    );
+
+    avalanche.setHRP("kopernikus");
 
     const xchain: AVMAPI = avalanche.XChain();
 

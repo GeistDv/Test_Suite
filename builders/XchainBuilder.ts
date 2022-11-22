@@ -29,7 +29,7 @@ import AvalancheXChain from '../types/AvalancheXChain';
 
 import { InitialStates, SECPTransferOutput } from "avalanche/dist/apis/avm"
 
-class xChainBuilder implements ITransactionBuilder{
+class xChainBuilder implements ITransactionBuilder {
 
     ContractAbi: any;
     Configuration: ConfigurationType;
@@ -64,14 +64,19 @@ class xChainBuilder implements ITransactionBuilder{
             const asOf: BN = UnixNow();
             const threshold: number = 1;
             const locktime: BN = new BN(0);
-            const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send AVAX");
+            const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send CAM");
             const amount: BN = new BN(amountToSend);
 
             const balance = await privateKey.avalancheXChain.xchain.getBalance(privateKey.xChainAddress, privateKey.avalancheXChain.avaxAssetID);
+
+            console.log("______________________________________________");
+            console.log("Balance:", balance);
+            console.log("Address From:", privateKey.xChainAddress);
+            console.log("Address to:", sendTo.xChainAddress);
+            console.log("Amount:", Web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei'));
             
             //Catch Low Balance
-            if(balance.balance < (amountToSend + 1000000000))
-            {
+            if (balance.balance < (amountToSend + 1000000000)) {
                 errorLogger.error({
                     addressFrom: privateKey.xChainAddress,
                     addressTo: sendTo.xChainAddress,
@@ -83,9 +88,9 @@ class xChainBuilder implements ITransactionBuilder{
                     amountAndFee: amountToSend + 1000000000
                 });
 
-                throw new Error("Insufficient funds to complete this transaction");
-            }
-            
+                reject("Insufficient funds to complete this transaction");
+            };
+
             const unsignedTx: UnsignedTx = await avalancheXChain.xchain.buildBaseTx(
                 utxoSet,
                 amount,
@@ -109,12 +114,8 @@ class xChainBuilder implements ITransactionBuilder{
                 status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
             }
 
-            if (status.toUpperCase() != "REJECTED") {
-                resolve(txid);
-            }
-            else {
-                reject("Rejected Transaction");
-            }
+
+            resolve(txid);
         });
     }
 

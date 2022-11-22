@@ -108,6 +108,9 @@ app.post("/start", async (req, res) => {
         console.log("Running case .. " + i);
         await initNetwork(testCase, prevTestCase, networkName, configType);
         var dataFlow = await initApp(configType);
+
+        testCase.Chain == "X" ? await Utils.deleteUser(configType) : null;
+        
         if (testCase.Chain == "X") {
             let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, dataFlow.networkID, configType.private_key_with_funds, dataFlow.assetID, dataFlow.blockchainIDXChain);
             let mainAccount = new XChainTestWallet(dataFlow.bech32_xchain_address, configType.private_key_with_funds, xChainAvalanche);
@@ -130,12 +133,16 @@ app.post("/network-runner", async (req, res) => {
 
     let testCases = await DataTests.readDataTest(req.body.sheet_name);
 
+
+    networkRunner = await getConfigTypeWithNetworkRunner(req, testCases[0].ValidatorNodes);
+
     for (let i = 0; i < testCases.length; i++) {
         let testCase = testCases[i];
-        networkRunner = await getConfigTypeWithNetworkRunner(req, testCase);
-        console.log(networkRunner);
 
         let configType = networkRunner.configuration;
+        
+        testCase.Chain == "X" ? await Utils.deleteUser(configType) : "false";
+        
         let dataFlow = await initApp(networkRunner.configuration);
         if (testCase.Chain == "X") {
             let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, dataFlow.networkID, networkRunner.configuration.private_key_with_funds, dataFlow.assetID, dataFlow.blockchainIDXChain);
@@ -149,9 +156,9 @@ app.post("/network-runner", async (req, res) => {
         await initPrivateKeys(dataFlow, testCase);
 
         await startTestsAndGatherMetrics(testCase, configType, "");
-        await networkRunner.killGnomeTerminal();
     }
 
+    await networkRunner.killGnomeTerminal();
     return res.status(200).send("Network Runner executed");
 });
 
@@ -165,33 +172,39 @@ app.post('/', async (req, res) => {
         sendTo = privateKeys[0];
     }
     if (chainType == "X") {
+        try {
 
-        //TODO: Temporal Blockchain ID in Addresses, change to Dynamic Blockchain ID but using Avalanche Js
-        privateKey.xChainAddress = privateKey.xChainAddress.replace("X-",`${configDataFlow.blockchainIDXChain}-`);
-        sendTo.xChainAddress = sendTo.xChainAddress.replace("X-",`${configDataFlow.blockchainIDXChain}-`);
+            //TODO: Temporal Blockchain ID in Addresses, change to Dynamic Blockchain ID but using Avalanche Js
+            privateKey.xChainAddress = privateKey.xChainAddress.replace("X-", `${configDataFlow.blockchainIDXChain}-`);
+            sendTo.xChainAddress = sendTo.xChainAddress.replace("X-", `${configDataFlow.blockchainIDXChain}-`);
 
-        let xWallet: XChainTestWallet = privateKey;
-        let balance = await xWallet.avalancheXChain.xchain.getBalance(xWallet.xChainAddress, xWallet.avalancheXChain.avaxAssetID);
+            let xWallet: XChainTestWallet = privateKey;
 
-        console.log("______________________________________________");
-        console.log("Private Key ->", xWallet.privateKey);
-        console.log("ID", req.body.ID);
-        console.log("Address From:", privateKey.xChainAddress);
-        console.log("Address to:", sendTo.xChainAddress);
-        console.log("Amount:", web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei'));
-        console.log("Balance:", balance);
+            let isSpendableUtxos = false;
+            while (!isSpendableUtxos) {
+                let balance = await xWallet.avalancheXChain.xchain.getBalance(xWallet.xChainAddress, xWallet.avalancheXChain.avaxAssetID);
+                if (balance.utxoIDs.length <= 0) {
+                    isSpendableUtxos = false;
+                }
+                else {
+                    isSpendableUtxos = true;
+                }
+            }
 
-        //Temporal Amount
-        let ammountConversion = web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei');
-        let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, configDataFlow.networkID, privateKey.privateKey, configDataFlow.assetID,configDataFlow.blockchainIDXChain);
-        txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, ammountConversion, xChainAvalanche)
-            .then(data => {
-                res.send(data);
-            }).catch(err => {
-                errorLogger.error(err);
-                res.status(500).send(err);
-            });
-
+            //Temporal Amount
+            let ammountConversion = web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei');
+            txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, ammountConversion, xWallet.avalancheXChain)
+                .then(data => {
+                    res.send(data);
+                }).catch(err => {
+                    errorLogger.error(err);
+                    res.status(500).send(err);
+                });
+        }
+        catch (e) {
+            errorLogger.error(e);
+            res.status(500).send(e);
+        }
     }
     else {
         txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, Constants.AMOUNT_TO_TRANSFER)
@@ -386,7 +399,7 @@ async function initNetwork(testCase: TestCase,
     }
 
     console.log(testCase.ValidatorNodes);
-    var processKubectl = child.exec("go run main.go k8s create " + networkname + " --validators " + testCase.ValidatorNodes + " --api-nodes " + testCase.ApiNodes, { cwd: pathGrungni });
+    var processKubectl = child.exec("go run main.go k8s create " + networkname + " --validators " + testCase.ValidatorNodes + " --api-nodes " + testCase.ApiNodes + " --image europe-west3-docker.pkg.dev/pwk-c4t-dev/internal-camino-dev/camino-node:tiedemann-4ea9e741c9927e02621549d1d9c72a6b4ad616fa-1667782788", { cwd: pathGrungni });
 
     console.log("Creating network with " + testCase.ValidatorNodes + " validators ...");
     var response = await promiseFromChildProcess(processKubectl);
