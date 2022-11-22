@@ -10,9 +10,7 @@ class Metrics {
     {
         let intervalSecconds = 15;
         setInterval(async () => {
-            console.log("Making Prometheus request");
             let data = await Prometheus.PrometheusQueryExecutor(stringQuery);
-            console.log(data);
             this.results.push(data)
         }, intervalSecconds * 1000);
     }
@@ -39,6 +37,11 @@ class Metrics {
         {
             process.exit();
         }
+    }
+
+    public async clearMetrics()
+    {
+        this.results = [];
     }
 }
 

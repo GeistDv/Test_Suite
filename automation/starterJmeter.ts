@@ -10,7 +10,7 @@ import { ConfigurationType } from '../types/configurationtype';
 import dotenv from 'dotenv';
 import DataTests from '../DataTest';
 
-import { execPrometheus, killPrometheus, calculateMetrics, deleteJSONMetrics} from '../utils/getMetrics';
+import { execPrometheus, disconnectPrometheusProcess, calculateMetrics, deleteJSONMetrics} from '../metrics/getMetrics';
 
 dotenv.config();
 
@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 let blockNumberReference: number;
 
 
-export async function startTestsAndGatherMetrics(testCase: TestCase, configurationType: ConfigurationType, networkName: string) {
+export async function startTestsAndGatherMetrics(testCase: TestCase, configurationType: ConfigurationType, numberCase: number) {
 
     try {
 
@@ -39,12 +39,12 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
             startTimerVerifyKubectl();
         }*/
 
-        let executingPrometheus = execPrometheus();
+        let executingPrometheus = execPrometheus(numberCase);
 
         console.log("executingPrometheus -> ",executingPrometheus);
 
         let infoTest: any = await startJmeterWithShell(testCase);
-        let killedPrometheus = killPrometheus();
+        let killedPrometheus = disconnectPrometheusProcess();
         let metrics : any = undefined;
 
         if(killedPrometheus == true)
@@ -101,7 +101,7 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
         }
         */
 
-        //deleteJSONMetrics();
+        deleteJSONMetrics();
 
     } catch (e) {
         console.log("Test JMeter Failed:", e);

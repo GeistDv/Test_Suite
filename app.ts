@@ -120,7 +120,7 @@ app.post("/start", async (req, res) => {
 
         }
         await initPrivateKeys(dataFlow, testCase);
-        await startTestsAndGatherMetrics(testCase, configType, networkName);
+        await startTestsAndGatherMetrics(testCase, configType, i);
     }
 
     console.log("Finished all tests");
@@ -155,7 +155,7 @@ app.post("/network-runner", async (req, res) => {
 
         await initPrivateKeys(dataFlow, testCase);
 
-        await startTestsAndGatherMetrics(testCase, configType, "");
+        await startTestsAndGatherMetrics(testCase, configType, i);
     }
 
     await networkRunner.killGnomeTerminal();

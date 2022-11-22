@@ -5,5 +5,6 @@ let metrics = new Metrics();
 metrics.execPrometheus(queryString);
 
 process.on("disconnect", () => {
-    metrics.saveJSONData("memoryMetrics.json");
+    metrics.saveJSONData(`memoryMetrics${process.env.caseTest}.json`);
+    metrics.clearMetrics();
 })
