@@ -51,7 +51,7 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
         {
             setTimeout(() => {
                 metrics = calculateMetrics();
-            },1000);
+            },3000);
         }
 
         console.log("METRICS,",metrics);
