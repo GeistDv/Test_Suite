@@ -4,80 +4,83 @@ import dotenv from 'dotenv';
 
 class Prometheus {
 
-    public static async PrometheusQueryExecutor(queryString:string): Promise<any> {
-        let cont = 0;
-        let results: any[] = [];
-        let intervalSecconds = 15;
-        const interval = setInterval(() => {
-        console.log("Making Prometheus request");
+    public static async PrometheusQueryExecutor(queryString: string): Promise<any> {
         return new Promise(async (resolve, reject) => {
             var request = {
                 method: 'post',
                 url: 'https://prometheus.camino.network/api/v1/query?query=' + queryString
             };
 
-            axios(request)
-            .then(function (response) {
-                results.push(response.data);
-                cont = cont+1;
-                if(cont == 5){
-                    processJson(results);
-                    clearInterval(interval);
-                 }
-            })
-            .catch(function (error) {
+            axios(request).then(function (response) {
+                resolve(response.data);
+            }).catch(function (error) {
                 console.log(error);
                 reject(false)
-                console.log(error);
             });
         });
-      }, intervalSecconds * 1000);
     }
-}
 
-function processJson(json: any){
-    let result = JSON.parse(JSON.stringify(json));
-    let cpuValidators: any[] = [];
-    let cpuApi: any[] = [];
-    let cpuRoot: any[] = [];
-    for(let res of result){
-        for(let resu of res.data.result){
-            let resultValue = resu.value[1];
-            if(resu.metric.pod.includes("api")){
-                cpuApi.push(resultValue);
+    public static processJson(json: any)
+    {
+        let result = JSON.parse(JSON.stringify(json));
+        let dataValidators: any[] = [];
+        let dataApi: any[] = [];
+        let dataRoot: any[] = [];
+
+        for (let res of result) {
+            for (let resu of res.data.result) {
+                let resultValue = resu.value[1];
+                if (resu.metric.pod.includes("api")) {
+                    dataApi.push(resultValue);
+                }
+                else if (resu.metric.pod.includes("validator")) {
+                    dataValidators.push(resultValue);
+                }
+                else {
+                    dataRoot.push(resultValue)
+                }
             }
-            else if(resu.metric.pod.includes("validator")){
-                cpuValidators.push(resultValue);
-            }
-            else{
-                cpuRoot.push(resultValue)
-            }    
         }
-    }
-    let cpuTotalValidators = sumMetricValues(cpuValidators);
-    let cpuTotalApi = sumMetricValues(cpuApi);
-    let cpuTotalRoot = sumMetricValues(cpuRoot);
-    let maxCpuValidators = getMaxMetricValue(cpuValidators);
-    let maxApiValidators = getMaxMetricValue(cpuApi);
-    let maxRootValidators = getMaxMetricValue(cpuRoot);
-    console.log("Total CPU Validators: " + cpuTotalValidators);
-    console.log("Total CPU Api: " + cpuTotalApi);
-    console.log("Total CPU Root: " + cpuTotalRoot);
-    console.log("Max CPU Validators: " + maxCpuValidators);
-    console.log("Max CPU Api: " + maxApiValidators);
-    console.log("Max CPU Root: " + maxRootValidators);
-}
+        
+        let dataTotalValidators = Prometheus.sumMetricValues(dataValidators);
+        let dataTotalApi = Prometheus.sumMetricValues(dataApi);
+        let dataTotalRoot = Prometheus.sumMetricValues(dataRoot);
+        let maxDataValidators = Prometheus.getMaxMetricValue(dataValidators);
+        let maxDataApi = Prometheus.getMaxMetricValue(dataApi);
+        let maxDataRoot = Prometheus.getMaxMetricValue(dataRoot);
 
-function sumMetricValues(values: string[]){
-    let total = 0; 
-    for(let res of values){
-        total += parseFloat(res);
+        console.log("Total Data Validators: " + dataTotalValidators);
+        console.log("Total Data Api: " + dataTotalApi);
+        console.log("Total Data Root: " + dataTotalRoot);
+        console.log("Max Data Validators: " + maxDataValidators);
+        console.log("Max Data Api: " + maxDataApi);
+        console.log("Max Data Root: " + maxDataRoot);
+    
+        let resultsData = {
+            dataTotalValidators: dataTotalValidators,
+            dataTotalApi: dataTotalApi,
+            dataTotalRoot: dataTotalRoot,
+            maxDataApi: maxDataApi,
+            maxDataValidators: maxDataValidators,
+            maxDataRoot: maxDataRoot
+        }
+    
+        return resultsData;
     }
-    return total;
-}
 
-function getMaxMetricValue(values: number[]){
-    return Math.max.apply(null, values);
+    public static sumMetricValues(values: string[])
+    {
+        let total = 0;
+        for (let res of values) {
+            total += parseFloat(res);
+        }
+        return total;
+    }
+
+    public static getMaxMetricValue(values: number[]) {
+        return Math.max.apply(null, values);
+    }
+
 }
 
 export default Prometheus;

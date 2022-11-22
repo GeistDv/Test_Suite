@@ -3755,3 +3755,6 @@
 [2022-11-16T14:52:00.569] [INFO] default - Min block time: Infinity
 [2022-11-16T14:52:03.754] [INFO] default - {"jsonrpc":"2.0","error":{"code":-32000,"message":"user already exists: netacticateam","data":null},"id":1}
 [2022-11-16T14:52:03.755] [INFO] default - Importing key..
+[2022-11-22T11:41:18.672] [INFO] default - Server running on port 3000
+[2022-11-22T11:50:55.339] [INFO] default - Server running on port 3000
+[2022-11-22T11:59:36.039] [INFO] default - Server running on port 3000

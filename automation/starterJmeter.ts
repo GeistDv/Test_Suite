@@ -10,6 +10,8 @@ import { ConfigurationType } from '../types/configurationtype';
 import dotenv from 'dotenv';
 import DataTests from '../DataTest';
 
+import { execPrometheus, killPrometheus, calculateMetrics} from '../utils/getMetrics';
+
 dotenv.config();
 
 const express = require('express');
@@ -36,7 +38,23 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
             startTimerVerifyKubectl();
         }
 
+        let executingPrometheus = execPrometheus();
+
+        console.log("executingPrometheus -> ",executingPrometheus);
+
         let infoTest: any = await startJmeterWithShell(testCase);
+        let killedPrometheus = killPrometheus();
+        let metrics : any = undefined;
+
+        if(killedPrometheus == true)
+        {
+            setTimeout(() => {
+                metrics = calculateMetrics();
+            },1000);
+        }
+
+        console.log("METRICS,",metrics);
+
 
         let dataKubectl = finishTimerKubcetl(configurationType);
         // console.log("dataKubectl", dataKubectl);
