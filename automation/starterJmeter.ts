@@ -51,7 +51,7 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
         {
             setTimeout(() => {
                 metrics = calculateMetrics();
-            },1000);
+            },2000);
         }
 
         console.log("METRICS,",metrics);
@@ -101,7 +101,7 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
         }
         */
 
-        deleteJSONMetrics();
+        //deleteJSONMetrics();
 
     } catch (e) {
         console.log("Test JMeter Failed:", e);
