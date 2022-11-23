@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import ConfigurationType from '../types/configurationtype';
+import { ConfigurationType } from '../types/configurationtype';
 import DataFlow from '../types/dataflowtype';
 import ITransactionBuilder from './ItransactionBuilder';
 import { logger } from "../utils/logger";

@@ -14,7 +14,7 @@ import { getXKeyChain } from './configAvalanche';
 import XchainBuilder from "../builders/XchainBuilder";
 import XChainTestWallet from "./XChainTestWallet";
 import AvalancheXChain from "../types/AvalancheXChain";
-import { KeyChain } from "avalanche/dist/apis/avm"
+import { KeyChain } from "@c4tplatform/caminojs/dist/apis/avm"
 import ITransactionBuilder from "../builders/ItransactionBuilder";
 import xChainBuilder from "../builders/XchainBuilder";
 import testbuilderErc20 from '../builders/ERC20TXBuilder';

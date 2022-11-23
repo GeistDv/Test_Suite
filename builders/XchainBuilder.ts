@@ -6,28 +6,28 @@ import XChainTestWallet from '../utils/XChainTestWallet';
 import { errorLogger, logger } from "../utils/logger";
 import { Constants } from '../constants';
 import axios from 'axios';
-import { Avalanche, BN, Buffer } from "avalanche/dist"
+import { Avalanche, BN, Buffer } from "@c4tplatform/caminojs/dist"
 import {
     AVMAPI,
     KeyChain,
     UTXOSet,
     UnsignedTx,
     Tx
-} from "avalanche/dist/apis/avm"
+} from "@c4tplatform/caminojs/dist/apis/avm"
 import {
     GetBalanceResponse,
     GetUTXOsResponse
-} from "avalanche/dist/apis/avm/interfaces"
-import { Defaults } from "avalanche/dist/utils"
+} from "@c4tplatform/caminojs/dist/apis/avm/interfaces"
+//import { Defaults } from "@c4tplatform/caminojs/dist/utils"
 import {
     PrivateKeyPrefix,
     DefaultLocalGenesisPrivateKey,
     UnixNow
-} from "avalanche/dist/utils";
+} from "@c4tplatform/caminojs/dist/utils";
 import AvalancheXChain from '../types/AvalancheXChain';
 
 
-import { InitialStates, SECPTransferOutput } from "avalanche/dist/apis/avm"
+//import { InitialStates, SECPTransferOutput } from "@c4tplatform/caminojs/dist/apis/avm"
 
 class xChainBuilder implements ITransactionBuilder {
 

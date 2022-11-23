@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import { BinTools, Buffer } from "avalanche";
+import { BinTools, Buffer } from "@c4tplatform/caminojs";
 import { logger } from "./logger";
 import axios from "axios";
 import { Constants } from "../constants";
@@ -35,9 +35,9 @@ class XChainTestWallet {
         let privateKey = this.generatePrivateKey(web3);
 
         //TODO: Get X Chain Address
-        let xAddress: string = await this.ImportKeyAVM(privateKey, configurationType);
+        // let xAddress: string = await this.ImportKeyAVM(privateKey, configurationType);
         let avalancheXChain = await getXKeyChain(url.hostname, parseInt(url.port), protocolRPC, networkID, privateKey, assetID, blockchainID);
-        let xChain = new XChainTestWallet(xAddress, privateKey, avalancheXChain);
+        let xChain = new XChainTestWallet(avalancheXChain.addressStrings[0], privateKey, avalancheXChain);
         return xChain;
     }
 
@@ -55,32 +55,33 @@ class XChainTestWallet {
         return encoded;
     }
 
-    private static async ImportKeyAVM(cb58PrivateKey: string, config: ConfigurationType) {
-        var data = JSON.stringify(
-            {
-                "jsonrpc": "2.0",
-                "id": 1,
-                "method": "avm.importKey",
-                "params": {
-                    "username": Constants.KEYSTORE_USER,
-                    "password": Constants.KEYSTORE_PASSWORD,
-                    "privateKey": cb58PrivateKey
-                }
-            }
-        );
+    // private static async ImportKeyAVM(cb58PrivateKey: string, config: ConfigurationType) {
+    //     var data = JSON.stringify(
+    //         {
+    //             "jsonrpc": "2.0",
+    //             "id": 1,
+    //             "method": "avm.importKey",
+    //             "params": {
+    //                 "username": Constants.KEYSTORE_USER,
+    //                 "password": Constants.KEYSTORE_PASSWORD,
+    //                 "privateKey": cb58PrivateKey
+    //             }
+    //         }
+    //     );
 
-        var request = {
-            method: 'post',
-            url: config.rpc_keystore + '/ext/bc/X',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: data
-        };
+    //     var request = {
+    //         method: 'post',
+    //         url: config.rpc_keystore + '/ext/bc/X',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         data: data
+    //     };
 
-        let resultData: any = await axios(request);
-        return resultData.data.result.address.toString();
-    }
+    //     let resultData: any = await axios(request);
+    //     console.log(resultData);
+    //     return resultData.data.result.address.toString();
+    // }
 }
 
 export default XChainTestWallet;
