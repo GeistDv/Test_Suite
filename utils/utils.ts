@@ -299,7 +299,7 @@ class Utils {
                     ],
                     "to": this.dataFlow.bech32_cchain_address,
                     "amount": balance,
-                    "assetID": "AVAX",
+                    "assetID": "CAM",
                     "changeAddr": this.dataFlow.bech32_xchain_address,
                     "username": Constants.KEYSTORE_USER,
                     "password": Constants.KEYSTORE_PASSWORD

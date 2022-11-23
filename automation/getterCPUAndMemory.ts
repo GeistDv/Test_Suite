@@ -59,7 +59,7 @@ export function finishTimerKubcetl(configurationType: ConfigurationType) {
         }
     }
     try {
-        if (configurationType.enable_kubectl_measurements) {
+        if (configurationType.enable_measurements) {
             dataKuberctl = getGroupsKuberctlData();
             clearInterval(running);
             running = null;

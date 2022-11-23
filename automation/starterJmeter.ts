@@ -10,6 +10,8 @@ import { ConfigurationType } from '../types/configurationtype';
 import dotenv from 'dotenv';
 import DataTests from '../DataTest';
 
+import { execPrometheus, disconnectPrometheusProcess, calculateMetrics, deleteJSONMetrics } from '../metrics/getMetrics';
+
 dotenv.config();
 
 const express = require('express');
@@ -20,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 let blockNumberReference: number;
 
 
-export async function startTestsAndGatherMetrics(testCase: TestCase, configurationType: ConfigurationType, networkName: string) {
+export async function startTestsAndGatherMetrics(testCase: TestCase, configurationType: ConfigurationType, numberCase: number) {
 
     try {
 
@@ -31,15 +33,31 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
         console.log("Block Number Reference :", blockNumberReference);
 
         // Start Test JMeter
-        if (configurationType.enable_kubectl_measurements) {
+        /*
+        if (configurationType.enable_measurements) {
             initKubectlChecker(networkName);
             startTimerVerifyKubectl();
+        }*/
+        let metrics: any = undefined;
+        let killedPrometheus = false;
+
+        if (configurationType.enable_measurements) {
+            execPrometheus(numberCase);
         }
 
         let infoTest: any = await startJmeterWithShell(testCase);
 
-        let dataKubectl = finishTimerKubcetl(configurationType);
-        // console.log("dataKubectl", dataKubectl);
+        if(configurationType.enable_measurements)
+        {
+            killedPrometheus = disconnectPrometheusProcess();
+            if (killedPrometheus == true) {
+                setTimeout(() => {
+                    metrics = calculateMetrics();
+                }, 5000);
+            }
+        }
+
+        //let dataKubectl = finishTimerKubcetl(configurationType);
         console.log("Info Test:", infoTest);
 
         let jsonStadistic = require(`../${infoTest.dirname
@@ -57,18 +75,18 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
             maxTPS: transactionPerSecond != null ? transactionPerSecond.maxY : null, // Max TPS
             errorPct: jsonStadistic.Total.errorPct, // % Error
             timeProcess: infoTest.miliseconds, // Total Time To Process,
-            apiCPU: dataKubectl.api.cpu,
-            apiMemory: dataKubectl.api.memory,
-            rootCPU: dataKubectl.root.cpu,
-            rootMemory: dataKubectl.root.memory,
-            validatorsCPU: dataKubectl.validators.cpu,
-            validatorsMemory: dataKubectl.validators.memory,
-            maxMemoryAPI: dataKubectl.api.maxMemory,
-            maxMemoryRoot: dataKubectl.root.maxMemory,
-            maxMemoryValidators: dataKubectl.validators.maxMemory,
-            maxCPUAPI: dataKubectl.api.maxCPU,
-            maxCPURoot: dataKubectl.root.maxCPU,
-            maxCPUValidators: dataKubectl.validators.maxCPU,
+            apiCPU: metrics != undefined ? metrics.cpu.dataTotalApi : "",
+            apiMemory: metrics != undefined ? metrics.memory.dataTotalApi : "",
+            rootCPU: metrics != undefined ? metrics.cpu.dataTotalRoot : "",
+            rootMemory: metrics != undefined ? metrics.memory.dataTotalRoot : "",
+            validatorsCPU: metrics != undefined ? metrics.cpu.dataTotalValidators : "",
+            validatorsMemory: metrics != undefined ? metrics.memory.dataTotalValidators : "",
+            maxMemoryAPI: metrics != undefined ? metrics.memory.maxDataApi : "",
+            maxMemoryRoot: metrics != undefined ? metrics.memory.maxDataRoot : "",
+            maxMemoryValidators: metrics != undefined ? metrics.memory.maxDataValidators : "",
+            maxCPUAPI: metrics != undefined ? metrics.cpu.maxDataApi : "",
+            maxCPURoot: metrics != undefined ? metrics.cpu.maxDataRoot : "",
+            maxCPUValidators: metrics != undefined ? metrics.cpu.maxDataValidators : "",
         }
 
         console.log(data);
@@ -77,9 +95,13 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
         }
 
         // Force Clean Kubectl
-        if (configurationType.enable_kubectl_measurements) {
+        /*
+        if (configurationType.enable_measurements) {
             restarMaxCPUAndMaxMemory();
         }
+        */
+
+        deleteJSONMetrics();
 
     } catch (e) {
         console.log("Test JMeter Failed:", e);
