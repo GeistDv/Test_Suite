@@ -12,7 +12,7 @@ class NetworkRunner {
 
     configuration: ConfigurationType = {
         enable_gdocs_insertion: false,
-        enable_kubectl_measurements: false,
+        enable_measurements: false,
         private_key_with_funds: "PrivateKey-ewoqjP7PxY4yr3iLTpLisriqt94hdyDFNgchSxGGztUrTXtNN",
         rpc: "",
         rpc_keystore: "",
@@ -20,21 +20,11 @@ class NetworkRunner {
         sheet_name: "",
     };
 
-    //Temporal Solution
-    testCase: TestCase = {
-        StakingAmount: "0",
-        ValidatorNodes: 0,
-        ApiNodes: 0,
-        Threads: 0,
-        Loops: 0,
-        Chain: "C",
-        TestType: "transfer",
-        Position: 0
-    }
+    validatorNodes: number = 0;
 
     ppidGnomeProcess : any = null;
 
-    constructor(config: ConfigurationType, testCase: TestCase) {
+    constructor(config: ConfigurationType, validatorNodes: number) {
 
         //Configuration Type
         this.configuration.enable_gdocs_insertion = config.enable_gdocs_insertion != undefined ? config.enable_gdocs_insertion : false;
@@ -42,7 +32,7 @@ class NetworkRunner {
         this.configuration.sheet_name = config.sheet_name != undefined ? config.sheet_name : "";
 
         //Test Case
-        this.testCase = testCase;
+        this.validatorNodes = validatorNodes;
     }
 
     public async runNetworkRunner() {
@@ -55,7 +45,7 @@ class NetworkRunner {
                     this.ppidGnomeProcess = ppid;
                     console.log("PPID Data", ppid);
                     this.getPPIDProcessGnomeTerminal();
-                    let cantNodes = this.testCase.ValidatorNodes;
+                    let cantNodes = this.validatorNodes;
                     console.log("Count Nodes ->", cantNodes);
 
                     let processRunnerCurlRunner: any = child.exec(`sh ./network-runner/CurlCaminoRunner.sh ${cantNodes}`);

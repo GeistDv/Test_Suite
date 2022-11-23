@@ -8,10 +8,10 @@ let KubectlCheckerApi : KubectlChecker;
 let KubectlCheckerRoot : KubectlChecker;
 let KubectlCheckerValidator : KubectlChecker;
 
-export function initKubectlChecker() {
-    KubectlCheckerApi = new KubectlChecker(`kubectl top pods --all-namespaces | grep "ivancho-api"`);
-    KubectlCheckerRoot = new KubectlChecker(`kubectl top pods --all-namespaces | grep "ivancho-root"`);
-    KubectlCheckerValidator = new KubectlChecker(`kubectl top pods --all-namespaces | grep "ivancho-validator"`);
+export function initKubectlChecker(networkName: string) {
+    KubectlCheckerApi = new KubectlChecker(`kubectl top pods --all-namespaces | grep "${networkName}-api"`);
+    KubectlCheckerRoot = new KubectlChecker(`kubectl top pods --all-namespaces | grep "${networkName}-root"`);
+    KubectlCheckerValidator = new KubectlChecker(`kubectl top pods --all-namespaces | grep "${networkName}-validator"`);
 }
 
 export function startTimerVerifyKubectl() {
@@ -59,7 +59,7 @@ export function finishTimerKubcetl(configurationType: ConfigurationType) {
         }
     }
     try {
-        if (configurationType.enable_kubectl_measurements) {
+        if (configurationType.enable_measurements) {
             dataKuberctl = getGroupsKuberctlData();
             clearInterval(running);
             running = null;

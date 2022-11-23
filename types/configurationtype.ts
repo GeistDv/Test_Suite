@@ -3,7 +3,7 @@ import { StringLiteral } from "typescript";
 type SimpleConfigurationType =
 {
     test_type: string;
-    enable_kubectl_measurements : boolean;
+    enable_measurements : boolean;
     enable_gdocs_insertion : boolean;
     sheet_name : string;
 }

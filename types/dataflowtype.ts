@@ -9,6 +9,9 @@ type DataFlow = {
     hex_cchain_address : string;
     gasPrice : string;
     chainId : number;
+    assetID  : string;
+    networkID : number;
+    blockchainIDXChain: string
 }
 
 //export 

@@ -5,7 +5,7 @@ import { BinTools, Buffer } from "avalanche";
 import axios from "axios";
 import { ConfigurationType } from "../types/configurationtype";
 import DataFlow from "../types/dataflowtype";
-import { logger,errorLogger } from "./logger";
+import { logger, errorLogger } from "./logger";
 import { Constants } from "../constants";
 import NetworkRunner from "../network-runner/NetworkRunner";
 import KubectlChecker from '../automation/KubectlChecker';
@@ -14,14 +14,26 @@ import { getXKeyChain } from './configAvalanche';
 import XchainBuilder from "../builders/XchainBuilder";
 import XChainTestWallet from "./XChainTestWallet";
 import AvalancheXChain from "../types/AvalancheXChain";
-import testbuilderErc20 from '../builders/ERC20TXBuilder';
+import { KeyChain } from "@c4tplatform/caminojs/dist/apis/avm"
 import ITransactionBuilder from "../builders/ItransactionBuilder";
+import xChainBuilder from "../builders/XchainBuilder";
+import testbuilderErc20 from '../builders/ERC20TXBuilder';
 
 class Utils {
 
     Configuration: ConfigurationType;
     dataFlow: DataFlow;
     web3: Web3;
+
+    //xchain transaction optional variables
+    urlRpc!: URL;
+    xChainAvalanche!: AvalancheXChain;
+    protocolRPC!: string;
+    mainAccount!: XChainTestWallet;
+
+    //optional variable private keys
+    privateKeys!: any[];
+
     txBuilder: ITransactionBuilder;
     constructor(configTypeForCompleteTest: ConfigurationType, dataFlow: DataFlow) {
 
@@ -58,15 +70,15 @@ class Utils {
             };
 
             axios(request)
-            .then(function (response) {
-                logger.info(JSON.stringify(response.data));
-                resolve(true);
-            })
-            .catch(function (error) {
-                console.log(error);
-                reject(false)
-                errorLogger.error(error);
-            });
+                .then(function (response) {
+                    logger.info(JSON.stringify(response.data));
+                    resolve(true);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    reject(false)
+                    errorLogger.error(error);
+                });
         });
     }
 
@@ -95,14 +107,14 @@ class Utils {
             };
 
             axios(request)
-            .then(function (response) {
-                resolve(true);
-                logger.info(JSON.stringify(response.data));
-            })
-            .catch(function (error) {
-                reject(false)
-                errorLogger.error(error);
-            });
+                .then(function (response) {
+                    resolve(true);
+                    logger.info(JSON.stringify(response.data));
+                })
+                .catch(function (error) {
+                    reject(false)
+                    errorLogger.error(error);
+                });
         });
     }
 
@@ -137,10 +149,10 @@ class Utils {
                 resolve(response.data.result.address);
                 logger.info(JSON.stringify(response.data));
             })
-            .catch(function (error) {
-                reject(false);
-                errorLogger.error(error);
-            });
+                .catch(function (error) {
+                    reject(false);
+                    errorLogger.error(error);
+                });
 
         });
     }
@@ -174,10 +186,32 @@ class Utils {
         let privateKeys: string[] = [];
 
         for (let i = 0; i < numberOFAccountsToCreate; i++) {
-            let account = await this.web3.eth.accounts.create(this.web3.utils.randomHex(32))
+            let account = await this.web3.eth.accounts.create(this.web3.utils.randomHex(32));
             privateKeys.push(account.privateKey)
         }
 
+        return privateKeys;
+    }
+
+    public async generateAccountsXchain(testCase: TestCase) {
+
+        let privateKeys: XChainTestWallet[] = [];
+        let promisesXChainWallet = [];
+        //Create Private Keys and Wallets
+        for (let i = 0; i < 20; i++) {
+            console.log("Batch -> ", i);
+            let promisePrivateKeys: XChainTestWallet[];
+            for (let x = 0; x < (testCase.Threads * 0.05); x++) {
+                promisesXChainWallet.push(XChainTestWallet.importKeyAndCreateWallet(this.web3, this.Configuration, this.urlRpc, this.protocolRPC, this.dataFlow.networkID, this.dataFlow.assetID, this.dataFlow.blockchainIDXChain));
+            }
+            promisePrivateKeys = await Promise.all(promisesXChainWallet);
+            console.log("Response Batch -> ", promisePrivateKeys);
+            privateKeys = privateKeys.concat(promisePrivateKeys);
+            promisesXChainWallet = []
+            promisePrivateKeys = []
+        }
+
+        console.log("Lenght Private Keys -> ", privateKeys.length);
         return privateKeys;
     }
 
@@ -265,7 +299,7 @@ class Utils {
                     ],
                     "to": this.dataFlow.bech32_cchain_address,
                     "amount": balance,
-                    "assetID": "AVAX",
+                    "assetID": "CAM",
                     "changeAddr": this.dataFlow.bech32_xchain_address,
                     "username": Constants.KEYSTORE_USER,
                     "password": Constants.KEYSTORE_PASSWORD
@@ -335,40 +369,152 @@ class Utils {
     }
 
 
-    public async generateAndFundWallets(testCase: TestCase) {
-        let accounts = await this.generateAccounts(testCase)
-        let nonce = await this.web3.eth.getTransactionCount(this.dataFlow.hex_cchain_address);
-        var chunks = this.splitListIntoChunksOfLen(accounts, 50);
+    public async generateAndFundWallets(testCase: TestCase, xChainbuilder?: ITransactionBuilder) {
+        if (testCase.Chain == "C") {
+            let accounts = await this.generateAccounts(testCase);
+            var chunks = this.splitListIntoChunksOfLen(accounts, 50);
+            let nonce = await this.web3.eth.getTransactionCount(this.dataFlow.hex_cchain_address);
+            for (let i = 0; i < chunks.length; i++) {
 
-        for (let i = 0; i < chunks.length; i++) {
+                let chunk = chunks[i];
+                let promises = [];
+                let promisesMint = [];
 
-            let chunk = chunks[i];
-            let promises = [];
-            let promisesMint = [];
-
-            for (let j = 0; j < chunk.length; j++) {
-                let account = chunk[j];
-                if(testCase.TestType=="erc20tx" || testCase.TestType == "erc1155tx")
-                {
-                    promisesMint.push(await this.txBuilder.mint?.("0x"+this.dataFlow.hexPrivateKey,this.web3,account,nonce));
+                for (let j = 0; j < chunk.length; j++) {
+                    let account = chunk[j];
+                    if (testCase.TestType == "erc20tx" || testCase.TestType == "erc1155tx") {
+                        promisesMint.push(await this.txBuilder.mint?.("0x" + this.dataFlow.hexPrivateKey, this.web3, account, nonce));
+                        nonce++;
+                    }
+                    promises.push(this.sendFunds(account, nonce));
                     nonce++;
                 }
-                promises.push(this.sendFunds(account, nonce));
-                nonce++;
+
+                await Promise.all(promises);
+                if (testCase.TestType == "erc20tx") {
+                    await Promise.all(promisesMint);
+                }
+            }
+        }
+        else { //X Chain
+
+            let accountsWithoutFunds = await this.generateAccountsXchain(testCase);
+            this.privateKeys = accountsWithoutFunds;
+
+            console.log("Fund Accounts, wait please......");
+            let txIDMultiple : string = await this.multipleFundsAVM(
+                this.privateKeys,
+                this.mainAccount.avalancheXChain.avaxAssetID,
+                parseFloat(this.web3.utils.toWei("60", 'gwei')),
+                this.mainAccount
+            );
+
+            let statusTx : string = "";
+
+            while(statusTx.toUpperCase() != "ACCEPTED" && statusTx.toUpperCase() != "REJECTED")
+            {
+                statusTx = await Utils.getTxStatusAVM(this.Configuration, txIDMultiple);
+                console.log("Status TX -> ", statusTx);
             }
 
-            await Promise.all(promises);
-            if(testCase.TestType == "erc20tx")
-            {
-                await Promise.all(promisesMint);
+            console.log("txIDMultiple -> ", txIDMultiple);
+
+            console.log("Private Keys -> ", this.privateKeys);
+
+            /*
+            let baseAmount: number = parseFloat(this.web3.utils.toWei(Constants.INITIAL_FUNDS, 'gwei')) * testCase.Threads;
+            let initialAccountsWithFunds: XChainTestWallet[] = [];
+
+            //First 10 Transactions
+            for (let i = 0; i < 10; i++) {
+                await Utils.sendTransactionXChain(this.mainAccount, accountsWithoutFunds[i], baseAmount.toString(), this.xChainAvalanche, xChainbuilder);
+                initialAccountsWithFunds.push(accountsWithoutFunds[i]);
+                accountsWithoutFunds = accountsWithoutFunds.filter((account) => account.xChainAddress != accountsWithoutFunds[i].xChainAddress);
             }
+
+            if (testCase.Threads > 10) {
+                this.processFundsXChain(initialAccountsWithFunds, accountsWithoutFunds, xChainbuilder);
+            }*/
 
         }
-
         logger.info("Done!");
     }
 
-    private splitListIntoChunksOfLen(list: string[], len: number) {
+    //Multiple Funds AVM
+    private async multipleFundsAVM(accounts: XChainTestWallet[], assetID: string, amount: number, mainAccount: XChainTestWallet) : Promise<string> {
+        return new Promise((resolve, reject) => {
+            var data = JSON.stringify({
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "avm.sendMultiple",
+                "params": {
+                    "outputs": accounts.map((account) => {
+
+                        let transaction = {
+                            "assetID": account.avalancheXChain.avaxAssetID,
+                            "to": account.xChainAddress,
+                            "amount": amount
+                        }
+                        return transaction;
+                    }),
+                    "from": [mainAccount.xChainAddress],
+                    "changeAddr": mainAccount.xChainAddress,
+                    "memo": "",
+                    "username": Constants.KEYSTORE_USER,
+                    "password": Constants.KEYSTORE_PASSWORD
+                }
+            });
+
+            var config = {
+                method: 'post',
+                url: this.Configuration.rpc_keystore + '/ext/bc/X',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+
+            axios(config).then(function (response) {
+                resolve(response.data.result.txID)
+            }).catch(function (error) {
+                console.log(error);
+                reject(error);
+            });
+        });
+    }
+
+    //Process Fund
+    private async processFundsXChain(initialAccountsWithFunds: XChainTestWallet[], accountsWithoutFunds: XChainTestWallet[], xChainbuilder?: ITransactionBuilder) {
+        let queues: any[][] = this.splitListIntoChunksOfLenXchain(accountsWithoutFunds, initialAccountsWithFunds.length);
+        console.log("queues", queues);
+        let promises = [];
+
+        for (let i = 0; i < queues.length; i++) {
+            var txs: any[][] = queues[i].map((value, index) => [initialAccountsWithFunds[i], value]);
+            promises.push(this.executeQueue(txs, xChainbuilder));
+        }
+
+        await Promise.all(promises);
+
+    }
+
+    private async executeQueue(queue: any, xChainbuilder?: ITransactionBuilder) {
+        for (let i = 0; i < queue.length; i++) {
+            let amountTransfer = this.web3.utils.toWei(Constants.INITIAL_FUNDS, 'gwei');
+            await Utils.sendTransactionXChain(queue[i][0], queue[i][1], amountTransfer, queue[i][0].avalancheXChain, xChainbuilder);
+        }
+    }
+
+    private splitListIntoChunksOfLenXchain(list: any[], len: any) {
+        let chunks: any[][] = [];
+        let i = 0, n = list.length;
+        while (i < n) {
+            chunks.push(list.slice(i, i += len));
+        }
+        return chunks;
+    }
+
+    private splitListIntoChunksOfLen(list: any[], len: number) {
         let chunks = [], i = 0, n = list.length;
         while (i < n) {
             chunks.push(list.slice(i, i += len));
@@ -398,6 +544,11 @@ class Utils {
         var stringToWrite: string = (fs.existsSync('privatekeys.csv') ? '\n' : '') + privatekey;
         fs.appendFileSync('privatekeys.csv', stringToWrite);
         console.log('Transaction succcesfull', data.transactionHash);
+    }
+
+    public async sendFundsXChain(privatekey: string) {
+        console.log("PRivate key ->", privatekey);
+
     }
 
     public static convertHexPkToCB58(hexPrivKey: string): string {
@@ -629,27 +780,105 @@ class Utils {
         });
     }
 
-    public static async sendFoundTransactionXChain(accountAVM: string, accountXChain: XChainTestWallet, xChainAvalanche: AvalancheXChain, baseAmount: number)
-    {
-        let txIdSigned = await XchainBuilder.prepareAndSignTransaction([accountAVM], [accountXChain.xChainAddress], xChainAvalanche, baseAmount, false);
-        return txIdSigned;
-    }
+    public static async sendTransactionXChain(addressFrom: XChainTestWallet, addressTo: XChainTestWallet, amount: string, xChainFlow: AvalancheXChain, xchainBuilder?: ITransactionBuilder) {
+        try {
+            let txId = await xchainBuilder?.buildAndSendTransaction(addressFrom, "", addressTo, amount, xChainFlow);
 
-    public static async sendTransactionXChain(addressFrom: XChainTestWallet, addressTo: XChainTestWallet, amount: number, xChainFlow: AvalancheXChain) {
-        let txId = await XchainBuilder.prepareAndSignTransaction([addressFrom.xChainAddress], [addressTo.xChainAddress], xChainFlow, amount, true);
-        
-        console.log("Address ->", addressTo.xChainAddress);
-        console.log("New Balance ->", await addressTo.avalancheXChain.xchain.getBalance(addressTo.xChainAddress, addressTo.avalancheXChain.avaxAssetID));
-        console.log("Tx ID -> ",txId);
-        return txId;
-    }
-
-    private splitListIntoChunksOfLenXChain (list: string[], len: number) {
-        let chunks = [], i = 0, n = list.length;
-        while (i < n) {
-            chunks.push(list.slice(i, i += len));
+            console.log("Amount To Send -> ", amount);
+            console.log("Address ->", addressTo.xChainAddress);
+            console.log("New Balance ->", await addressTo.avalancheXChain.xchain.getBalance(addressTo.xChainAddress, addressTo.avalancheXChain.avaxAssetID));
+            console.log("Tx ID -> ", txId);
+            return txId;
         }
-        return chunks;
+        catch (e) {
+            errorLogger.error(e);
+            console.log(e);
+        }
+    }
+
+    public static async getBlockchainID(config: ConfigurationType, chain: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            var data = JSON.stringify({
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "info.getBlockchainID",
+                "params": {
+                    "alias": chain
+                }
+            });
+
+            var request = {
+                method: 'post',
+                url: config.rpc + '/ext/info',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+
+            axios(request).then(function (response) {
+                resolve(response.data.result.blockchainID);
+            }).catch(function (error) {
+                reject(null);
+            });
+        });
+    }
+
+    public static async getTxStatusAVM(config: ConfigurationType, txID: string) : Promise<string> {
+        return new Promise((resolve, reject) => {
+            var data = JSON.stringify({
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "avm.getTxStatus",
+                "params": {
+                    "txID": txID
+                }
+            });
+
+            var request = {
+                method: 'post',
+                url: config.rpc + '/ext/bc/X',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+
+            axios(request).then(function (response) {
+                resolve(response.data.result.status);
+            }).catch(function (error) {
+                reject(null);
+            });
+        });
+    }
+
+    public static async deleteUser(config: ConfigurationType) : Promise<any> {
+        return new Promise((resolve, reject) => {
+            var data = JSON.stringify({
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "keystore.deleteUser",
+                "params" : {
+                    "username": Constants.KEYSTORE_USER,
+                    "password": Constants.KEYSTORE_PASSWORD
+                }
+            });
+
+            var request = {
+                method: 'post',
+                url: config.rpc + '/ext/keystore',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+
+            axios(request).then(function (response) {
+                resolve(response.data.result);
+            }).catch(function (error) {
+                reject(null);
+            });
+        });
     }
 
 }

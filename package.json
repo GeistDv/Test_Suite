@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@c4tplatform/caminojs": "file:../caminojs",
     "@ethereumjs/tx": "^4.0.0",
     "@npmcli/config": "^4.2.2",
     "@openzeppelin/contracts": "^4.7.3",
@@ -27,6 +28,7 @@
     "googleapis": "^108.0.0",
     "log4js": "^6.6.1",
     "openzeppelin-contracts": "^4.0.0",
+    "p-queue": "^7.3.0",
     "path": "^0.12.7",
     "shelljs": "^0.8.5",
     "typescript": "^4.8.4",
