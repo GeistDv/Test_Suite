@@ -12,7 +12,7 @@ class NetworkRunner {
 
     configuration: ConfigurationType = {
         enable_gdocs_insertion: false,
-        enable_kubectl_measurements: false,
+        enable_measurements: false,
         private_key_with_funds: "PrivateKey-ewoqjP7PxY4yr3iLTpLisriqt94hdyDFNgchSxGGztUrTXtNN",
         rpc: "",
         rpc_keystore: "",

@@ -84,7 +84,7 @@ When the server is up and running, you can perform tests keeping in mind the fol
 
   - "enable_gdocs_insertion": "true" or "false"
      Specify if you want to activate the insertion of the test results in Google Spreadsheet.
-  - "enable_kubectl_measurements": "true" or "false"
+  - "enable_measurements": "true" or "false"
      Specify if you want collect kubectl measurements data.
   - "test_type": "transfer"
      Specify the test type(only transfer for now).
@@ -123,7 +123,7 @@ When the server is up and running, you can perform tests keeping in mind the fol
   --header 'Content-Type: application/json' \
   --data-raw '{
       "enable_gdocs_insertion" : true,
-      "enable_kubectl_measurements" : true,
+      "enable_measurements" : true,
       "test_type" : "transfer",
       "rpc":"https://kopernikus.camino.foundation/santi",
       "rpc_keystore" : "https://kopernikus.camino.foundation/santi/static",

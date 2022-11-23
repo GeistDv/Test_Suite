@@ -34,28 +34,27 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
 
         // Start Test JMeter
         /*
-        if (configurationType.enable_kubectl_measurements) {
+        if (configurationType.enable_measurements) {
             initKubectlChecker(networkName);
             startTimerVerifyKubectl();
         }*/
-
-        let executingPrometheus = execPrometheus(numberCase);
-
-        console.log("executingPrometheus -> ",executingPrometheus);
-
-        let infoTest: any = await startJmeterWithShell(testCase);
-        let killedPrometheus = disconnectPrometheusProcess();
         let metrics : any = undefined;
-
-        if(killedPrometheus == true)
-        {
-            setTimeout(() => {
-                metrics = calculateMetrics();
-            },2000);
+        if (configurationType.enable_measurements) {
+            let executingPrometheus = execPrometheus(numberCase);
+            console.log("executingPrometheus -> ",executingPrometheus);
+            let killedPrometheus = disconnectPrometheusProcess();
+            
+            if(killedPrometheus == true)
+            {
+                setTimeout(() => {
+                    metrics = calculateMetrics();
+                },2000);
+            }
+    
+            console.log("METRICS,",metrics);
         }
-
-        console.log("METRICS,",metrics);
-
+        
+        let infoTest: any = await startJmeterWithShell(testCase);
 
         //let dataKubectl = finishTimerKubcetl(configurationType);
         console.log("Info Test:", infoTest);
@@ -75,18 +74,18 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
             maxTPS: transactionPerSecond != null ? transactionPerSecond.maxY : null, // Max TPS
             errorPct: jsonStadistic.Total.errorPct, // % Error
             timeProcess: infoTest.miliseconds, // Total Time To Process,
-            apiCPU: metrics.cpu.dataTotalApi,
-            apiMemory: metrics.memory.dataTotalApi,
-            rootCPU: metrics.cpu.dataTotalRoot,
-            rootMemory: metrics.memory.dataTotalRoot,
-            validatorsCPU: metrics.cpu.dataTotalValidators,
-            validatorsMemory: metrics.memory.dataTotalValidators,
-            maxMemoryAPI: metrics.memory.maxDataApi,
-            maxMemoryRoot: metrics.memory.maxDataRoot,
-            maxMemoryValidators: metrics.memory.maxDataValidators,
-            maxCPUAPI: metrics.cpu.maxDataApi,
-            maxCPURoot: metrics.cpu.maxDataRoot,
-            maxCPUValidators: metrics.cpu.maxDataValidators,
+            apiCPU: metrics != undefined ? metrics.cpu.dataTotalApi : "",
+            apiMemory: metrics != undefined ? metrics.memory.dataTotalApi : "",
+            rootCPU: metrics != undefined ? metrics.cpu.dataTotalRoot : "",
+            rootMemory: metrics != undefined ? metrics.memory.dataTotalRoot : "",
+            validatorsCPU: metrics != undefined ? metrics.cpu.dataTotalValidators : "",
+            validatorsMemory: metrics != undefined ? metrics.memory.dataTotalValidators : "",
+            maxMemoryAPI: metrics != undefined ? metrics.memory.maxDataApi : "",
+            maxMemoryRoot: metrics != undefined ? metrics.memory.maxDataRoot : "",
+            maxMemoryValidators: metrics != undefined ? metrics.memory.maxDataValidators : "",
+            maxCPUAPI: metrics != undefined ? metrics.cpu.maxDataApi : "",
+            maxCPURoot: metrics != undefined ? metrics.cpu.maxDataRoot : "",
+            maxCPUValidators: metrics != undefined ? metrics.cpu.maxDataValidators : "", 
         }
 
         console.log(data);
@@ -96,7 +95,7 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
 
         // Force Clean Kubectl
         /*
-        if (configurationType.enable_kubectl_measurements) {
+        if (configurationType.enable_measurements) {
             restarMaxCPUAndMaxMemory();
         }
         */

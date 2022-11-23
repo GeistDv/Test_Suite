@@ -26,6 +26,9 @@ export function execPrometheus(numberCaseData: number) {
         return false;
     }
 }
+export function convertBytesToMebibytes(bytes: number) {
+    return bytes / 1048576;
+}
 
 export function disconnectPrometheusProcess() {
     try {
@@ -57,12 +60,12 @@ export function calculateMetrics() {
             maxDataRoot: resultsCPU.maxDataRoot
         },
         memory: {
-            dataTotalValidators: resultsMemory.dataTotalValidators,
-            dataTotalApi: resultsMemory.dataTotalApi,
-            dataTotalRoot: resultsMemory.dataTotalRoot,
-            maxDataApi: resultsMemory.maxDataApi,
-            maxDataValidators: resultsMemory.maxDataValidators,
-            maxDataRoot: resultsMemory.maxDataRoot
+            dataTotalValidators: convertBytesToMebibytes(resultsMemory.dataTotalValidators),
+            dataTotalApi: convertBytesToMebibytes(resultsMemory.dataTotalApi),
+            dataTotalRoot: convertBytesToMebibytes(resultsMemory.dataTotalRoot),
+            maxDataApi: convertBytesToMebibytes(resultsMemory.maxDataApi),
+            maxDataValidators: convertBytesToMebibytes(resultsMemory.maxDataValidators),
+            maxDataRoot: convertBytesToMebibytes(resultsMemory.maxDataRoot)
         },
     }
     return metricsResult;
