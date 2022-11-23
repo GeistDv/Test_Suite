@@ -10,7 +10,7 @@ import { ConfigurationType } from '../types/configurationtype';
 import dotenv from 'dotenv';
 import DataTests from '../DataTest';
 
-import { execPrometheus, disconnectPrometheusProcess, calculateMetrics, deleteJSONMetrics} from '../metrics/getMetrics';
+import { execPrometheus, disconnectPrometheusProcess, calculateMetrics, deleteJSONMetrics } from '../metrics/getMetrics';
 
 dotenv.config();
 
@@ -38,23 +38,24 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
             initKubectlChecker(networkName);
             startTimerVerifyKubectl();
         }*/
-        let metrics : any = undefined;
+        let metrics: any = undefined;
+        let killedPrometheus = false;
+
         if (configurationType.enable_measurements) {
-            let executingPrometheus = execPrometheus(numberCase);
-            console.log("executingPrometheus -> ",executingPrometheus);
-            let killedPrometheus = disconnectPrometheusProcess();
-            
-            if(killedPrometheus == true)
-            {
+            execPrometheus(numberCase);
+        }
+
+        let infoTest: any = await startJmeterWithShell(testCase);
+
+        if(configurationType.enable_measurements)
+        {
+            killedPrometheus = disconnectPrometheusProcess();
+            if (killedPrometheus == true) {
                 setTimeout(() => {
                     metrics = calculateMetrics();
-                },2000);
+                }, 5000);
             }
-    
-            console.log("METRICS,",metrics);
         }
-        
-        let infoTest: any = await startJmeterWithShell(testCase);
 
         //let dataKubectl = finishTimerKubcetl(configurationType);
         console.log("Info Test:", infoTest);
@@ -85,7 +86,7 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
             maxMemoryValidators: metrics != undefined ? metrics.memory.maxDataValidators : "",
             maxCPUAPI: metrics != undefined ? metrics.cpu.maxDataApi : "",
             maxCPURoot: metrics != undefined ? metrics.cpu.maxDataRoot : "",
-            maxCPUValidators: metrics != undefined ? metrics.cpu.maxDataValidators : "", 
+            maxCPUValidators: metrics != undefined ? metrics.cpu.maxDataValidators : "",
         }
 
         console.log(data);
