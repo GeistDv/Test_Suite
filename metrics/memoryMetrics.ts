@@ -4,7 +4,14 @@ let queryString = 'container_memory_usage_bytes{namespace="santi", image="europe
 let metrics = new Metrics();
 metrics.execPrometheus(queryString);
 
+process.on("message", (msg) => {
+    if(msg.readData)
+    {
+        process.send != undefined ? process.send({data: metrics.results}) : null;
+    }
+})
+
 process.on("disconnect", () => {
-    metrics.saveJSONData(`memoryMetrics${process.env.caseTest}.json`);
+    //metrics.saveJSONData(`memoryMetrics${process.env.caseTest}.json`);
     metrics.clearMetrics();
 })
