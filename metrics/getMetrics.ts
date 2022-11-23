@@ -30,21 +30,64 @@ export function convertBytesToMebibytes(bytes: number) {
     return bytes / 1048576;
 }
 
-export function disconnectPrometheusProcess() {
+export async function getMetrics() {
     try {
+        //cpuPrometheus.disconnect();
+        //memoryPrometheus.disconnect();
 
-        cpuPrometheus.disconnect();
-        memoryPrometheus.disconnect();
-        
-        return true;
+        let dataCPU : any = await getMetricsCPU();
+        let dataMemory : any = await getMetricsMemory();
+
+        dataCPU = Prometheus.processJson(dataCPU);
+        dataMemory = Prometheus.processJson(dataMemory);
+
+        console.log("dataCPU", dataCPU);
+        console.log("dataMemory", dataMemory);
+
+        let metricsResult = {
+            cpu: {
+                dataTotalValidators: dataCPU.dataTotalValidators,
+                dataTotalApi: dataCPU.dataTotalApi,
+                dataTotalRoot: dataCPU.dataTotalRoot,
+                maxDataApi: dataCPU.maxDataApi,
+                maxDataValidators: dataCPU.maxDataValidators,
+                maxDataRoot: dataCPU.maxDataRoot
+            },
+            memory: {
+                dataTotalValidators: convertBytesToMebibytes(dataMemory.dataTotalValidators),
+                dataTotalApi: convertBytesToMebibytes(dataMemory.dataTotalApi),
+                dataTotalRoot: convertBytesToMebibytes(dataMemory.dataTotalRoot),
+                maxDataApi: convertBytesToMebibytes(dataMemory.maxDataApi),
+                maxDataValidators: convertBytesToMebibytes(dataMemory.maxDataValidators),
+                maxDataRoot: convertBytesToMebibytes(dataMemory.maxDataRoot)
+            },
+        }
+        return metricsResult;
     }
     catch (e) {
-        return false;
+        return null;
     }
 }
 
-export async function calculateMetrics() {
+async function getMetricsCPU() {
     return new Promise((resolve, reject) => {
+        cpuPrometheus.send({ readData: true });
+        cpuPrometheus.on("message", (msg: any) => {
+            resolve(msg.data);
+        });
+    })
+}
+
+async function getMetricsMemory() {
+    return new Promise((resolve, reject) => {
+        memoryPrometheus.send({ readData: true });
+        memoryPrometheus.on("message", (msg: any) => {
+            resolve(msg.data);
+        });
+    })
+}
+
+export function calculateMetrics() {
     const dataCPU = require(path.join(__dirname + `/../temp/cpuMetrics${numberCase}.json`));
     let resultsCPU = Prometheus.processJson(dataCPU);
 
@@ -69,9 +112,8 @@ export async function calculateMetrics() {
             maxDataValidators: convertBytesToMebibytes(resultsMemory.maxDataValidators),
             maxDataRoot: convertBytesToMebibytes(resultsMemory.maxDataRoot)
     }}
-    resolve(metricsResult)
-    })
-    
+
+    return metricsResult;
 }
 
 export function deleteJSONMetrics() {
