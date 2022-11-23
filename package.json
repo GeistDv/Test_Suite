@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@c4tplatform/caminojs": "^1.0.0",
+    "@c4tplatform/caminojs": "file:../caminojs",
     "@ethereumjs/tx": "^4.0.0",
     "@npmcli/config": "^4.2.2",
     "@openzeppelin/contracts": "^4.7.3",

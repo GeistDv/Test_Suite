@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import { BinTools, Buffer } from "avalanche";
+import { BinTools, Buffer } from "@c4tplatform/caminojs";
 import { logger } from "./logger";
 import axios from "axios";
 import { Constants } from "../constants";

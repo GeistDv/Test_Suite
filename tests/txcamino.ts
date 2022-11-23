@@ -16,46 +16,66 @@ import {
   UnixNow
 } from "@c4tplatform/caminojs/dist/utils"
 
+
 //process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-//const ip: string = "api.avax-test.network"
-const ip: string = "127.0.0.1"
-const port: number = 14144
-const protocol: string = "http"
+const ip: string = "santi.camino.network"
+const port: number = 443
+const protocol: string = "https"
 const networkID: number = 1002
-const xBlockchainID: string = "X"
-const avaxAssetID: string = "BUuypiq2wyuLMvyhzFXcPyxPMCgSp7eeDohhQRqTChoBjKziC"
+const privKey: string = "PrivateKey-2Tt165kZ67JD9A6rEZn3QrEYDpzBtF9mxcfYRZatT8gcoUDLVd";
+
+
+const asOf: BN = UnixNow()
+const threshold: number = 1
+const locktime: BN = new BN(0)
+const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send AVAX");
+
 const avalanche: Avalanche = new Avalanche(
   ip,
   port,
   protocol,
   networkID,
-  xBlockchainID
-)
-const xchain: AVMAPI = avalanche.XChain();
+);
 
-const xKeychain: KeyChain = xchain.keyChain()
+var xchain: AVMAPI;
+var xKeychain: KeyChain;
+var xAddresses: Buffer[];
+var xAddressStrings: string[];
+var avaxAssetID: string;
+var blockchainID: string;
+var fee: BN;
+var avaxAssetIDBuf: Buffer;
 
-const privKey: string = "PrivateKey-ewoqjP7PxY4yr3iLTpLisriqt94hdyDFNgchSxGGztUrTXtNN";
-xKeychain.importKey(privKey)
-const xAddressStrings: string[] = xchain.keyChain().getAddressStrings()
-const asOf: BN = UnixNow()
-const threshold: number = 1
-const locktime: BN = new BN(0)
-const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send AVAX");
-const fee: BN = xchain.getDefaultTxFee()
-console.log("fee : " , fee.toString());
+const InitAvalanche = async () => {
+  await avalanche.fetchNetworkSettings()
+  xchain = avalanche.XChain()
+  xKeychain= xchain.keyChain()
+  xKeychain.importKey(privKey)
+  xAddresses= xchain.keyChain().getAddresses()
+  xAddressStrings= xchain.keyChain().getAddressStrings()
+  avaxAssetID = avalanche.getNetwork().X.avaxAssetID
+  blockchainID = avalanche.getNetwork().X.blockchainID
+  fee= xchain.getDefaultTxFee()
+}
 
 const main = async (): Promise<any> => {
+  await InitAvalanche();
   const getBalanceResponse: GetBalanceResponse = await xchain.getBalance(
     xAddressStrings[0],
     avaxAssetID
   )
+  console.log("fee : " , fee);
+
+  let myAddresses = xchain.keyChain().getAddresses() 
   
   const balance: BN = new BN(getBalanceResponse.balance)
-  console.log(balance.toString());
+  console.log("balance",balance.toString());
 
-  const avmUTXOResponse: GetUTXOsResponse = await xchain.getUTXOs(xAddressStrings)
+  const avmUTXOResponse: GetUTXOsResponse = await xchain.getUTXOs([xAddressStrings[0]]);
+
+  let balanceUtxos = avmUTXOResponse.utxos.getBalance(myAddresses,avaxAssetID);
+  console.log("Balance UTXOS -> ",balanceUtxos);
 
   const utxoSet: UTXOSet = avmUTXOResponse.utxos
   const amount: BN = new BN(fee);
@@ -64,9 +84,9 @@ const main = async (): Promise<any> => {
     utxoSet,
     amount,
     avaxAssetID,
-    xAddressStrings,
-    xAddressStrings,
-    xAddressStrings,
+    [xAddressStrings[0]],
+    [xAddressStrings[0]],
+    [xAddressStrings[0]],
     memo,
     asOf,
     locktime,

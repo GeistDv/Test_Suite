@@ -14,7 +14,7 @@ import { getXKeyChain } from './configAvalanche';
 import XchainBuilder from "../builders/XchainBuilder";
 import XChainTestWallet from "./XChainTestWallet";
 import AvalancheXChain from "../types/AvalancheXChain";
-import { KeyChain } from "avalanche/dist/apis/avm"
+import { KeyChain } from "@c4tplatform/caminojs/dist/apis/avm"
 import ITransactionBuilder from "../builders/ItransactionBuilder";
 import xChainBuilder from "../builders/XchainBuilder";
 import testbuilderErc20 from '../builders/ERC20TXBuilder';
@@ -299,7 +299,7 @@ class Utils {
                     ],
                     "to": this.dataFlow.bech32_cchain_address,
                     "amount": balance,
-                    "assetID": "AVAX",
+                    "assetID": "CAM",
                     "changeAddr": this.dataFlow.bech32_xchain_address,
                     "username": Constants.KEYSTORE_USER,
                     "password": Constants.KEYSTORE_PASSWORD

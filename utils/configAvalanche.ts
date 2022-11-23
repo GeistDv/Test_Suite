@@ -1,5 +1,5 @@
-import { Avalanche,BN } from "avalanche/dist";
-import { AVMAPI, KeyChain } from "avalanche/dist/apis/avm";
+import { Avalanche,BN } from "@c4tplatform/caminojs/dist";
+import { AVMAPI, KeyChain } from "@c4tplatform/caminojs/dist/apis/avm";
 import AvalancheXChain from "../types/AvalancheXChain";
 
 export async function getXKeyChain(
@@ -19,12 +19,9 @@ export async function getXKeyChain(
         ip,
         port,
         protocol,
-        networkID,
-        xBlockchainID
+        networkID
     );
-
-    avalanche.setHRP("kopernikus");
-
+    await avalanche.fetchNetworkSettings();
     const xchain: AVMAPI = avalanche.XChain();
 
     //Fee Transactions

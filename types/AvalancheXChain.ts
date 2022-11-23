@@ -1,4 +1,4 @@
-import { AVMAPI, KeyChain } from "avalanche/dist/apis/avm";
+import { AVMAPI, KeyChain } from "@c4tplatform/caminojs/dist/apis/avm";
 
 //create type configuration
 type AvalancheXChain = {
