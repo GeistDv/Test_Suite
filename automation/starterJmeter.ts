@@ -10,7 +10,7 @@ import { ConfigurationType } from '../types/configurationtype';
 import dotenv from 'dotenv';
 import DataTests from '../DataTest';
 
-import { execPrometheus, disconnectPrometheusProcess, calculateMetrics, deleteJSONMetrics } from '../metrics/getMetrics';
+import { execPrometheus, getMetrics, calculateMetrics, deleteJSONMetrics } from '../metrics/getMetrics';
 
 dotenv.config();
 
@@ -39,7 +39,7 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
             startTimerVerifyKubectl();
         }*/
         let metrics: any = undefined;
-        let killedPrometheus = false;
+        let killedPrometheus = undefined;
 
         if (configurationType.enable_measurements) {
             execPrometheus(numberCase);
@@ -49,12 +49,7 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
 
         if(configurationType.enable_measurements)
         {
-            killedPrometheus = disconnectPrometheusProcess();
-            if (killedPrometheus == true) {
-                setTimeout(() => {
-                    metrics = calculateMetrics();
-                }, 5000);
-            }
+            metrics = await getMetrics();
         }
 
         //let dataKubectl = finishTimerKubcetl(configurationType);
@@ -101,7 +96,7 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
         }
         */
 
-        deleteJSONMetrics();
+        //deleteJSONMetrics();
 
     } catch (e) {
         console.log("Test JMeter Failed:", e);
