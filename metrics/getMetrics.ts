@@ -1,5 +1,5 @@
 import * as child from 'child_process';
-import path from 'path';
+import path, { resolve } from 'path';
 import Prometheus from '../utils/prometheus';
 import fs from 'fs';
 
@@ -42,7 +42,8 @@ export function disconnectPrometheusProcess() {
     }
 }
 
-export function calculateMetrics() {
+export async function calculateMetrics() {
+    return new Promise((resolve, reject) => {
     const dataCPU = require(path.join(__dirname + `/../temp/cpuMetrics${numberCase}.json`));
     let resultsCPU = Prometheus.processJson(dataCPU);
 
@@ -66,9 +67,10 @@ export function calculateMetrics() {
             maxDataApi: convertBytesToMebibytes(resultsMemory.maxDataApi),
             maxDataValidators: convertBytesToMebibytes(resultsMemory.maxDataValidators),
             maxDataRoot: convertBytesToMebibytes(resultsMemory.maxDataRoot)
-        },
-    }
-    return metricsResult;
+    }}
+    resolve(metricsResult)
+    })
+    
 }
 
 export function deleteJSONMetrics() {
