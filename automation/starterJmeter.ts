@@ -49,7 +49,7 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
 
         if(configurationType.enable_measurements)
         {
-            killedPrometheus =await  disconnectPrometheusProcess(numberCase);
+            killedPrometheus =disconnectPrometheusProcess();
             if (killedPrometheus == true) {
                 setTimeout(async () => {
                     metrics = await calculateMetrics();
