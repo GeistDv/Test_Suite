@@ -120,7 +120,7 @@ app.post("/start", async (req, res) => {
 
         }
         await initPrivateKeys(dataFlow, testCase);
-        await startTestsAndGatherMetrics(testCase, configType, networkName);
+        await startTestsAndGatherMetrics(testCase, configType, i);
     }
 
     console.log("Finished all tests");
@@ -155,7 +155,7 @@ app.post("/network-runner", async (req, res) => {
 
         await initPrivateKeys(dataFlow, testCase);
 
-        await startTestsAndGatherMetrics(testCase, configType, "");
+        await startTestsAndGatherMetrics(testCase, configType, i);
     }
 
     await networkRunner.killGnomeTerminal();
@@ -399,7 +399,7 @@ async function initNetwork(testCase: TestCase,
     }
 
     console.log(testCase.ValidatorNodes);
-    var processKubectl = child.exec("go run main.go k8s create " + networkname + " --validators " + testCase.ValidatorNodes + " --api-nodes " + testCase.ApiNodes + " --image europe-west3-docker.pkg.dev/pwk-c4t-dev/internal-camino-dev/camino-node:tiedemann-4ea9e741c9927e02621549d1d9c72a6b4ad616fa-1667782788", { cwd: pathGrungni });
+    var processKubectl = child.exec("go run main.go k8s create " + networkname + " --validators " + testCase.ValidatorNodes + " --api-nodes " + testCase.ApiNodes + " --image europe-west3-docker.pkg.dev/pwk-c4t-dev/internal-camino-dev/camino-node:tiedemann-64de0a0003bfab988da62850eef37ef01f82fdad-1668765791", { cwd: pathGrungni });
 
     console.log("Creating network with " + testCase.ValidatorNodes + " validators ...");
     var response = await promiseFromChildProcess(processKubectl);
