@@ -337,9 +337,13 @@ async function initPrivateKeys(dataflow: DataFlow, testCase: TestCase): Promise<
     //private keys create wallets and send funds in xchain 
     else {
         // initialize accounts
-        console.log("Generating accounts ... ");
-        await utils.generateAndFundWallets(testCase, txBuilder);
-        privateKeys = utils.privateKeys;
+        if(privateKeys.length<testCase.Threads)
+        {
+            console.log("Generating accounts ... ");
+            await utils.generateAndFundWallets(testCase, txBuilder);
+            privateKeys = utils.privateKeys;
+        }
+       
     }
 
 
