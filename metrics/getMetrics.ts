@@ -1,5 +1,5 @@
 import * as child from 'child_process';
-import path from 'path';
+import path, { resolve } from 'path';
 import Prometheus from '../utils/prometheus';
 import fs from 'fs';
 
@@ -111,8 +111,8 @@ export function calculateMetrics() {
             maxDataApi: convertBytesToMebibytes(resultsMemory.maxDataApi),
             maxDataValidators: convertBytesToMebibytes(resultsMemory.maxDataValidators),
             maxDataRoot: convertBytesToMebibytes(resultsMemory.maxDataRoot)
-        },
-    }
+    }}
+
     return metricsResult;
 }
 

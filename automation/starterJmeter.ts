@@ -96,7 +96,7 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
         }
         */
 
-        //deleteJSONMetrics();
+        // deleteJSONMetrics();
 
     } catch (e) {
         console.log("Test JMeter Failed:", e);
