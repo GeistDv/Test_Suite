@@ -2,6 +2,7 @@ import * as child from 'child_process';
 import path, { resolve } from 'path';
 import Prometheus from '../utils/prometheus';
 import fs from 'fs';
+import { findConfigFile } from 'typescript';
 
 let cpuPrometheus: any = undefined;
 let memoryPrometheus: any = undefined;
@@ -30,17 +31,29 @@ export function convertBytesToMebibytes(bytes: number) {
     return bytes / 1048576;
 }
 
-export function disconnectPrometheusProcess() {
-    try {
-
-        cpuPrometheus.disconnect();
-        memoryPrometheus.disconnect();
-        return true;
-    }
-    catch (e) {
-        return false;
-    }
+export async function disconnectPrometheusProcess(numberCase:number) : Promise<boolean> {
+    return new Promise((resolve, reject) => {
+        try
+        {
+            cpuPrometheus.disconnect();
+            memoryPrometheus.disconnect();
+    
+            var existFolder:boolean = false;
+            while (!existFolder){
+                if(fs.existsSync(path.join(__dirname + `/../temp/cpuMetrics${numberCase}.json`)) && fs.existsSync(path.join(__dirname + `/../temp/memoryMetrics${numberCase}.json`))){
+                    existFolder=true;
+                }
+            }
+            resolve(true);
+        }
+        catch(e)
+        {
+            resolve(false);
+        }
+    });
 }
+//path.join(__dirname + `/../temp/cpuMetrics${numberCase}.json`)
+//path.join(__dirname + `/../temp/memoryMetrics${numberCase}.json`)
 
 export async function calculateMetrics() {
     return new Promise((resolve, reject) => {

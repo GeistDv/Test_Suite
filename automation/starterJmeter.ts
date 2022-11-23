@@ -49,7 +49,7 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
 
         if(configurationType.enable_measurements)
         {
-            killedPrometheus = disconnectPrometheusProcess();
+            killedPrometheus =await  disconnectPrometheusProcess(numberCase);
             if (killedPrometheus == true) {
                 setTimeout(async () => {
                     metrics = await calculateMetrics();
@@ -101,7 +101,7 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
         }
         */
 
-        deleteJSONMetrics();
+        // deleteJSONMetrics();
 
     } catch (e) {
         console.log("Test JMeter Failed:", e);
