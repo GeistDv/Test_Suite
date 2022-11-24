@@ -6,7 +6,7 @@ type AvalancheXChain = {
     xchain: AVMAPI,
     avaxAssetID: string,
     addressStrings :string[],
-    xAddresses: Buffer[];
+    xAddresses: any[];
 }
 
 //export 
