@@ -10,7 +10,7 @@ import { ConfigurationType } from '../types/configurationtype';
 import dotenv from 'dotenv';
 import DataTests from '../DataTest';
 
-import { execPrometheus, getMetrics, calculateMetrics, deleteJSONMetrics, finishProcessPrometheus } from '../metrics/getMetrics';
+import { execPrometheus, getMetrics, finishProcessPrometheus } from '../metrics/getMetrics';
 
 dotenv.config();
 

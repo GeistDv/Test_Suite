@@ -85,7 +85,7 @@ app.post("/start", async (req, res) => {
 
     //read json file
     var jsonData: any = JSON.parse(fs.readFileSync(pathGrungni + "/" + networkName + ".json", "utf8"));
-    var privateKeyFirstStaker = jsonData.Stakers[0].PrivateKey;
+    var privateKeyFirstStaker = jsonData.Stakers[1].PrivateKey;
     //cast into configurationtype
     let configType: ConfigurationType = completeTestConfiguration as ConfigurationType;
     configType.private_key_with_funds = privateKeyFirstStaker;
