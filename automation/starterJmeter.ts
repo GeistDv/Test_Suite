@@ -11,7 +11,7 @@ import dotenv from 'dotenv';
 import DataTests from '../DataTest';
 import IMetricsProvider from '../interfaces/IMetricsProvider';
 
-import { execPrometheus, getMetrics, calculateMetrics, deleteJSONMetrics, finishProcessPrometheus } from '../metrics/getMetrics';
+import { execPrometheus, getMetrics, finishProcessPrometheus } from '../metrics/getMetrics';
 
 dotenv.config();
 

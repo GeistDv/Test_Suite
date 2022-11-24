@@ -87,7 +87,7 @@ app.post("/start", async (req, res) => {
 
     //read json file
     var jsonData: any = JSON.parse(fs.readFileSync(pathGrungni + "/" + networkName + ".json", "utf8"));
-    var privateKeyFirstStaker = jsonData.Stakers[0].PrivateKey;
+    var privateKeyFirstStaker = jsonData.Stakers[1].PrivateKey;
     //cast into configurationtype
     let configType: ConfigurationType = completeTestConfiguration as ConfigurationType;
     configType.private_key_with_funds = privateKeyFirstStaker;
@@ -183,17 +183,6 @@ app.post('/', async (req, res) => {
             sendTo.xChainAddress = sendTo.xChainAddress.replace("X-", `${configDataFlow.blockchainIDXChain}-`);
 
             let xWallet: XChainTestWallet = privateKey;
-
-            let isSpendableUtxos = false;
-            while (!isSpendableUtxos) {
-                let balance = await xWallet.avalancheXChain.xchain.getBalance(xWallet.xChainAddress, xWallet.avalancheXChain.avaxAssetID);
-                if (balance.utxoIDs.length <= 0) {
-                    isSpendableUtxos = false;
-                }
-                else {
-                    isSpendableUtxos = true;
-                }
-            }
 
             //Temporal Amount
             let ammountConversion = web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei');

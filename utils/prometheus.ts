@@ -42,9 +42,9 @@ class Prometheus {
             }
         }
         
-        let dataTotalValidators = Prometheus.sumMetricValues(dataValidators);
-        let dataTotalApi = Prometheus.sumMetricValues(dataApi);
-        let dataTotalRoot = Prometheus.sumMetricValues(dataRoot);
+        let dataTotalValidators = Prometheus.avgMetricValues(dataValidators);
+        let dataTotalApi = Prometheus.avgMetricValues(dataApi);
+        let dataTotalRoot = Prometheus.avgMetricValues(dataRoot);
         let maxDataValidators = Prometheus.getMaxMetricValue(dataValidators);
         let maxDataApi = Prometheus.getMaxMetricValue(dataApi);
         let maxDataRoot = Prometheus.getMaxMetricValue(dataRoot);
@@ -68,13 +68,13 @@ class Prometheus {
         return resultsData;
     }
 
-    public static sumMetricValues(values: string[])
+    public static avgMetricValues(values: string[])
     {
         let total = 0;
         for (let res of values) {
             total += parseFloat(res);
         }
-        return total;
+        return total / values.length;
     }
 
     public static getMaxMetricValue(values: number[]) {
