@@ -4,8 +4,9 @@ import { AVMAPI, KeyChain } from "@c4tplatform/caminojs/dist/apis/avm";
 type AvalancheXChain = {
     xKeyChain : KeyChain,
     xchain: AVMAPI,
-    avaxAssetID: string
-    addressStrings :string[]
+    avaxAssetID: string,
+    addressStrings :string[],
+    xAddresses: Buffer[];
 }
 
 //export 

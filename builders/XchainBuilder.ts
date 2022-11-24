@@ -86,7 +86,7 @@ class xChainBuilder implements ITransactionBuilder {
             console.log("Address From:", privateKey.xChainAddress);
             console.log("Address to:", sendTo.xChainAddress);
             console.log("Amount:", Web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei'));
-            console.log("avmUTXO",await avmUTXOResponse.utxos.getBalance())
+            console.log("avmUTXO",await avmUTXOResponse.utxos.getBalance(avalancheXChain.xAddresses,this.DataFlow.assetID))
             
             //Catch Low Balance
             if (balance.balance < (amountToSend + 1000000000)) {

@@ -27,12 +27,14 @@ export async function getXKeyChain(
     //Fee Transactions
     xchain.setTxFee(new BN(1000000));
     var addressStrings : string[];
+    var xAddresses: Buffer[];
 
     const xKeychain: KeyChain = xchain.keyChain();
 
     const privKey: string = privateKey;
     xKeychain.importKey(privKey)
     addressStrings =xKeychain.getAddressStrings()
+    xAddresses= xchain.keyChain().getAddresses()
     // console.log(addressStrings)
 
     const avaxAssetID: string = avaxAssetIDData;
@@ -41,7 +43,8 @@ export async function getXKeyChain(
         xchain : xchain,
         xKeyChain : xKeychain,
         avaxAssetID: avaxAssetID,
-        addressStrings: addressStrings
+        addressStrings: addressStrings,
+        xAddresses: xAddresses
     } 
 
     return avalancheXChain;
