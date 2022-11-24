@@ -94,10 +94,8 @@ class PrometeusProvider implements IMetricsProvider {
     private getAverage(values : string[]) {
         let total = 0;
         for (let res of values) {
-            console.log(res);
             total += parseFloat(res);
         }
-        console.log(total);
         return total / values.length;
     }
 
