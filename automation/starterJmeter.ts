@@ -10,7 +10,7 @@ import { ConfigurationType } from '../types/configurationtype';
 import dotenv from 'dotenv';
 import DataTests from '../DataTest';
 
-import { execPrometheus, getMetrics, calculateMetrics, deleteJSONMetrics } from '../metrics/getMetrics';
+import { execPrometheus, getMetrics, calculateMetrics, deleteJSONMetrics, finishProcessPrometheus } from '../metrics/getMetrics';
 
 dotenv.config();
 
@@ -96,7 +96,10 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
         }
         */
 
-        // deleteJSONMetrics();
+        if(configurationType.enable_measurements)
+        {
+            finishProcessPrometheus();
+        }
 
     } catch (e) {
         console.log("Test JMeter Failed:", e);

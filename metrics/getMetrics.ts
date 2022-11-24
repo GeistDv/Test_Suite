@@ -133,3 +133,11 @@ export function deleteJSONMetrics() {
         return false;
     }
 }
+
+export function finishProcessPrometheus()
+{
+    cpuPrometheus.disconnect();
+    memoryPrometheus.disconnect();
+    cpuPrometheus.kill();
+    memoryPrometheus.kill();
+}
