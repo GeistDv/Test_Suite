@@ -17,8 +17,8 @@ class PrometeusProvider implements IMetricsProvider {
 
         do 
         {
-            this.memoryData.push(await this.executeRequestPrometeus(Constants.PROMETEUS_CPU_QUERY));
-            this.cpuData.push(await this.executeRequestPrometeus(Constants.PROMETEUS_MEMORY_QUERY));
+            this.memoryData.push(await this.executeRequestPrometeus(Constants.PROMETEUS_MEMORY_QUERY));
+            this.cpuData.push(await this.executeRequestPrometeus(Constants.PROMETEUS_CPU_QUERY));
             //wait for 15 seconds
             await new Promise(resolve => setTimeout(resolve, 15000));
         }
@@ -88,7 +88,7 @@ class PrometeusProvider implements IMetricsProvider {
     }
 
     private convertBytesToMebibytes(bytes : number) {
-        return bytes;
+        return bytes / 1048576;
     }
 
     private getAverage(values : string[]) {
