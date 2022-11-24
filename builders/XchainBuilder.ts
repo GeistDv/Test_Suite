@@ -78,6 +78,7 @@ class xChainBuilder implements ITransactionBuilder {
             const locktime: BN = new BN(0);
             const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send CAM");
             const amount: BN = new BN(amountToSend);
+            let numFetched = avmUTXOResponse.numFetched;
 
             const balance = await privateKey.avalancheXChain.xchain.getBalance(privateKey.xChainAddress, privateKey.avalancheXChain.avaxAssetID);
 
@@ -86,7 +87,7 @@ class xChainBuilder implements ITransactionBuilder {
             console.log("Address From:", privateKey.xChainAddress);
             console.log("Address to:", sendTo.xChainAddress);
             console.log("Amount:", Web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei'));
-            console.log("avm response",avmUTXOResponse)
+            console.log("num fetched",numFetched)
             
             //Catch Low Balance
             if (balance.balance < (amountToSend + 1000000000)) {
