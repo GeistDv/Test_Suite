@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import ITransactionBuilder from './ItransactionBuilder';
+import ITransactionBuilder from '../interfaces/ItransactionBuilder';
 import { ConfigurationType } from '../types/configurationtype';
 import axios from 'axios';
 import { BinTools, Buffer } from "avalanche"

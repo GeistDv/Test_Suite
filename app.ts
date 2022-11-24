@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import express from "express";
-import ITransactionBuilder from "./builders/ItransactionBuilder";
+import ITransactionBuilder from "./interfaces/ItransactionBuilder";
 import { ConfigurationType, ConfigurationTypeForCompleteTest, SimpleConfigurationType } from "./types/configurationtype";
 import SimpleFunds from "./builders/SendXChainBuilder";
 import SimpleTXBuilder from "./builders/SimpleTXBuilder";
@@ -29,6 +29,8 @@ import XChainTestWallet from './utils/XChainTestWallet';
 import xChainBuilder from "./builders/XchainBuilder";
 import testbuilderErc20 from './builders/ERC20TXBuilder';
 import { test } from "shelljs";
+
+import PrometeusProvider from './metricproviders/PrometeusProvider';
 
 dotenv.config();
 // Needed for self signed certs.
@@ -69,7 +71,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
-app.get("/", (req, res) => {
+app.get("/", (req, res) => {    
     res.send("it is working!");
 });
 
@@ -117,10 +119,11 @@ app.post("/start", async (req, res) => {
             utils.xChainAvalanche = xChainAvalanche;
             utils.mainAccount = mainAccount;
             chainType = testCase.Chain;
-
         }
+
+        var metricProvider = new PrometeusProvider();
         await initPrivateKeys(dataFlow, testCase);
-        await startTestsAndGatherMetrics(testCase, configType, i);
+        await startTestsAndGatherMetrics(testCase, configType, i, metricProvider);
     }
 
     console.log("Finished all tests");
@@ -155,7 +158,7 @@ app.post("/network-runner", async (req, res) => {
 
         await initPrivateKeys(dataFlow, testCase);
 
-        await startTestsAndGatherMetrics(testCase, configType, i);
+        //await startTestsAndGatherMetrics(testCase, configType, i);
     }
 
     await networkRunner.killGnomeTerminal();
@@ -171,6 +174,7 @@ app.post('/', async (req, res) => {
     if (req.body.ID == privateKeys.length) {
         sendTo = privateKeys[0];
     }
+
     if (chainType == "X") {
         try {
 
@@ -296,7 +300,7 @@ async function initDataFlowAccount(configurationtype: ConfigurationType): Promis
 // function to initialize the app
 async function initPrivateKeys(dataflow: DataFlow, testCase: TestCase): Promise<Boolean> {
     if (testCase.Chain == "C") {
-        //evaluate if file exists
+        
         if (fs.existsSync(Constants.PRIVATE_KEYS_FILE)) {
             privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
             let account = web3.eth.accounts.privateKeyToAccount(privateKeys[0]);
