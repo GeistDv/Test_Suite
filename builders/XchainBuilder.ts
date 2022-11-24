@@ -86,8 +86,7 @@ class xChainBuilder implements ITransactionBuilder {
             console.log("Address From:", privateKey.xChainAddress);
             console.log("Address to:", sendTo.xChainAddress);
             console.log("Amount:", Web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei'));
-            console.log("avmUTXO",avmUTXOResponse.utxos)
-            console.log("utxoSet",typeof(utxoSet))
+            console.log("avmUTXO",avmUTXOResponse.avmUTXOResponse)
             
             //Catch Low Balance
             if (balance.balance < (amountToSend + 1000000000)) {
