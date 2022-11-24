@@ -386,7 +386,7 @@ class Utils {
                         promisesMint.push(await this.txBuilder.mint?.("0x" + this.dataFlow.hexPrivateKey, this.web3, account, nonce));
                         nonce++;
                     }
-                    promises.push(await this.sendFunds(account, nonce));
+                    promises.push(this.sendFunds(account, nonce));
                     nonce++;
                 }
 

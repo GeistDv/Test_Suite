@@ -19,7 +19,6 @@ class PrometeusProvider implements IMetricsProvider {
         {
             this.memoryData.push(await this.executeRequestPrometeus(Constants.PROMETEUS_CPU_QUERY));
             this.cpuData.push(await this.executeRequestPrometeus(Constants.PROMETEUS_MEMORY_QUERY));
-            console.log("querying data PMT...." + this.memoryData.length);
             //wait for 15 seconds
             await new Promise(resolve => setTimeout(resolve, 15000));
         }
@@ -80,6 +79,7 @@ class PrometeusProvider implements IMetricsProvider {
             };
 
             axios(request).then(function (response) {
+                console.log(response.data);
                 resolve(response.data);
             }).catch(function (error) {
                 console.log(error);
