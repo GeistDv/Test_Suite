@@ -112,6 +112,7 @@ class xChainBuilder implements ITransactionBuilder {
 
                 reject("Insufficient funds to complete this transaction");
             };
+            var tx: Tx;
             try{
                 const unsignedTx: UnsignedTx = await avalancheXChain.xchain.buildBaseTx(
                     utxoSet,
@@ -126,7 +127,7 @@ class xChainBuilder implements ITransactionBuilder {
                     threshold
                 );
     
-                var tx: Tx = unsignedTx.sign(avalancheXChain.xKeyChain);
+                tx = unsignedTx.sign(avalancheXChain.xKeyChain);
             }
             catch(e){
                 console.log("failed sign transaction");
