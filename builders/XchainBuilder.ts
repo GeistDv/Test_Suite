@@ -58,6 +58,18 @@ class xChainBuilder implements ITransactionBuilder {
         avalancheXChain: AvalancheXChain
     ): Promise<string> {
         return new Promise(async (resolve, reject) => {
+
+            let isSpendableUtxos = false;
+            while (!isSpendableUtxos) {
+                let balance = await avalancheXChain.xchain.getBalance(privateKey.xChainAddress, avalancheXChain.avaxAssetID);
+                if (balance.utxoIDs.length <= 0) {
+                    isSpendableUtxos = false;
+                }
+                else {
+                    isSpendableUtxos = true;
+                }
+            }
+
             const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs([privateKey.xChainAddress]);
 
             const utxoSet: UTXOSet = avmUTXOResponse.utxos;

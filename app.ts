@@ -180,17 +180,6 @@ app.post('/', async (req, res) => {
 
             let xWallet: XChainTestWallet = privateKey;
 
-            let isSpendableUtxos = false;
-            while (!isSpendableUtxos) {
-                let balance = await xWallet.avalancheXChain.xchain.getBalance(xWallet.xChainAddress, xWallet.avalancheXChain.avaxAssetID);
-                if (balance.utxoIDs.length <= 0) {
-                    isSpendableUtxos = false;
-                }
-                else {
-                    isSpendableUtxos = true;
-                }
-            }
-
             //Temporal Amount
             let ammountConversion = web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei');
             txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, ammountConversion, xWallet.avalancheXChain)
