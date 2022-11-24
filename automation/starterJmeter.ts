@@ -9,8 +9,9 @@ import TestCase from '../types/testcase';
 import { ConfigurationType } from '../types/configurationtype';
 import dotenv from 'dotenv';
 import DataTests from '../DataTest';
+import IMetricsProvider from '../interfaces/IMetricsProvider';
 
-import { execPrometheus, getMetrics, calculateMetrics, deleteJSONMetrics } from '../metrics/getMetrics';
+import { execPrometheus, getMetrics, finishProcessPrometheus } from '../metrics/getMetrics';
 
 dotenv.config();
 
@@ -21,8 +22,10 @@ app.use(express.urlencoded({ extended: true }));
 
 let blockNumberReference: number;
 
-
-export async function startTestsAndGatherMetrics(testCase: TestCase, configurationType: ConfigurationType, numberCase: number) {
+export async function startTestsAndGatherMetrics(testCase: TestCase, 
+    configurationType: ConfigurationType, 
+    numberCase: number,
+    metricProvider : IMetricsProvider) {
 
     try {
 
@@ -30,36 +33,26 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
         let referenceBlock: number = await web3.eth.getBlockNumber();
         blockNumberReference = referenceBlock + 1;
 
-        console.log("Block Number Reference :", blockNumberReference);
-
-        // Start Test JMeter
-        /*
-        if (configurationType.enable_measurements) {
-            initKubectlChecker(networkName);
-            startTimerVerifyKubectl();
-        }*/
         let metrics: any = undefined;
-        let killedPrometheus = undefined;
 
         if (configurationType.enable_measurements) {
-            execPrometheus(numberCase);
+            metricProvider.StartMeasurements();
         }
 
         let infoTest: any = await startJmeterWithShell(testCase);
 
-        if(configurationType.enable_measurements)
-        {
-            metrics = await getMetrics();
+        if(configurationType.enable_measurements){
+            metricProvider.FinishMeasurements();
+            metrics = await metricProvider.GetMetrics();
         }
 
         //let dataKubectl = finishTimerKubcetl(configurationType);
         console.log("Info Test:", infoTest);
 
-        let jsonStadistic = require(`../${infoTest.dirname
-            }/statistics.json`);
+        let jsonStadistic = require(`../${infoTest.dirname}/statistics.json`);
         let blockDataDetails = await Utils.getBlockDetails(web3, blockNumberReference);
         let transactionPerSecond: any = await getTransactionsPerSecond(infoTest);
-        // let spreadsheetId = '1bxCCl9PZqTqDXjIauamecW7rYiqbeAu43cxTuB1QU6g';
+
         let data = {
             meanResTime: jsonStadistic.Total.meanResTime, // Average Transaction Time (ms)
             maxResTime: jsonStadistic.Total.maxResTime, // Max Transaction Time (ms)
@@ -95,8 +88,6 @@ export async function startTestsAndGatherMetrics(testCase: TestCase, configurati
             restarMaxCPUAndMaxMemory();
         }
         */
-
-        // deleteJSONMetrics();
 
     } catch (e) {
         console.log("Test JMeter Failed:", e);

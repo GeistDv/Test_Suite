@@ -12,6 +12,5 @@ process.on("message", (msg) => {
 })
 
 process.on("disconnect", () => {
-    //metrics.saveJSONData(`memoryMetrics${process.env.caseTest}.json`);
     metrics.clearMetrics();
 })

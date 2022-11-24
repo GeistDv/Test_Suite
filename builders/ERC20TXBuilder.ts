@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import { Constants } from '../constants';
 import { ConfigurationType } from '../types/configurationtype';
 import DataFlow from '../types/dataflowtype';
-import ITransactionBuilder from './ItransactionBuilder';
+import ITransactionBuilder from '../interfaces/ItransactionBuilder';
 
 
 class testbuilderErc20 implements ITransactionBuilder {

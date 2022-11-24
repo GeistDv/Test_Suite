@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import { ConfigurationType } from '../types/configurationtype';
-import ITransactionBuilder from './ItransactionBuilder';
+import ITransactionBuilder from '../interfaces/ItransactionBuilder';
 import DataFlow from '../types/dataflowtype';
 import { Constants } from '../constants';
 
