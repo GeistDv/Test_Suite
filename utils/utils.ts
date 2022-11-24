@@ -15,7 +15,7 @@ import XchainBuilder from "../builders/XchainBuilder";
 import XChainTestWallet from "./XChainTestWallet";
 import AvalancheXChain from "../types/AvalancheXChain";
 import { KeyChain } from "@c4tplatform/caminojs/dist/apis/avm"
-import ITransactionBuilder from "../builders/ItransactionBuilder";
+import ITransactionBuilder from "../interfaces/ItransactionBuilder";
 import xChainBuilder from "../builders/XchainBuilder";
 import testbuilderErc20 from '../builders/ERC20TXBuilder';
 
@@ -386,7 +386,7 @@ class Utils {
                         promisesMint.push(await this.txBuilder.mint?.("0x" + this.dataFlow.hexPrivateKey, this.web3, account, nonce));
                         nonce++;
                     }
-                    promises.push(this.sendFunds(account, nonce));
+                    promises.push(await this.sendFunds(account, nonce));
                     nonce++;
                 }
 
@@ -529,8 +529,6 @@ class Utils {
         console.log("Sending funds to: ", sendTo.address, "nonce: ", nonce);
         let txData = {
             'nonce': nonce,
-            'maxFeePerGas': Constants.MAXFEEPERGAS,
-            'maxPriorityFeePerGas': Constants.MAXPRIORITYFEEPERGAS,
             'gas': Constants.GAS,
             'to': sendTo.address,
             'from': this.dataFlow.hex_cchain_address,

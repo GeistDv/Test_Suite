@@ -35,7 +35,6 @@ class DataTests {
 
             getRows.then((data) => {
                 let rows = data.data.values;
-                console.log(rows?.length)
                 let testCases: TestCase[] = [];
                 
                 //convert to normal for loop
@@ -49,7 +48,6 @@ class DataTests {
 
                     let row = rows[i];
 
-                    console.log(row);
                     if(row == undefined || row[29] == true || row.length == 0)  {
                         continue;
                     }
@@ -69,7 +67,6 @@ class DataTests {
                         Position: position + i,
                     }
 
-                    console.log(testCase);
                     testCases.push(testCase);
                 }
 
