@@ -1,4 +1,4 @@
-import { Avalanche, BN, Buffer } from "@c4tplatform/caminojs/dist"
+import { Avalanche, BN } from "@c4tplatform/caminojs/dist"
 import {
   AVMAPI,
   KeyChain,
