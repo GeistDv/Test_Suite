@@ -79,7 +79,7 @@ class PrometeusProvider implements IMetricsProvider {
             };
 
             axios(request).then(function (response) {
-                console.log(response.data);
+                console.log(JSON.stringify(response.data));
                 resolve(response.data);
             }).catch(function (error) {
                 console.log(error);
