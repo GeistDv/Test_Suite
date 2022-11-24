@@ -89,7 +89,7 @@ class PrometeusProvider implements IMetricsProvider {
     }
 
     private convertBytesToMebibytes(bytes : number) {
-        return bytes / 1048576;
+        return bytes;
     }
 
     private getAverage(values : string[]) {
@@ -117,7 +117,7 @@ class PrometeusProvider implements IMetricsProvider {
                         dataApi.push(resultValue);
                     } else if (resu.metric.pod.includes("validator")) {
                         dataValidators.push(resultValue);
-                    } else {
+                    } else if (resu.metric.pod.includes("root")) {
                         dataRoot.push(resultValue)
                     }
                 }
