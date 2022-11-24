@@ -211,6 +211,13 @@ app.post('/', async (req, res) => {
 
 });
 
+
+app.use((error : any, req : any, res : any, next : any) => {
+    console.log("Error Handling Middleware called");
+    console.log('Path: ', req.path);
+    console.error('Error: ', error);
+})
+
 app.post('/pingpong', async (req, res) => {
     amount++;
 
