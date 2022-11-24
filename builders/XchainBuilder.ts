@@ -58,23 +58,17 @@ class xChainBuilder implements ITransactionBuilder {
         avalancheXChain: AvalancheXChain
     ): Promise<string> {
         return new Promise(async (resolve, reject) => {
-            try{
-                let isSpendableUtxos = false;
-                while (!isSpendableUtxos) {
-                    let balance = await avalancheXChain.xchain.getBalance(privateKey.xChainAddress, avalancheXChain.avaxAssetID);
-                    if (balance.utxoIDs.length <= 0) {
-                        isSpendableUtxos = false;
-                    }
-                    else {
-                        isSpendableUtxos = true;
+            
+            let isSpendableUtxos = false;
+            while (!isSpendableUtxos) {
+                let balance = await avalancheXChain.xchain.getBalance(privateKey.xChainAddress, avalancheXChain.avaxAssetID);
+                if (balance.utxoIDs.length <= 0) {
+                    isSpendableUtxos = false;
                 }
+                else {
+                    isSpendableUtxos = true;
             }
-            }
-            catch(e)
-            {
-                console.log("failed uxtos spendable")
-                console.log(e)
-                errorLogger.error(e)
+             
             }
             
 
@@ -144,6 +138,7 @@ class xChainBuilder implements ITransactionBuilder {
                 console.log("failed sign transaction");
                 console.log(e);
                 errorLogger.error(e);
+                resolve("0")
             }
             
         });
