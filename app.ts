@@ -390,6 +390,10 @@ async function initNetwork(testCase: TestCase,
         console.log("Network already has the same number of validators and api nodes");
         return true
     }
+    if (testCase.Chain == "X"){
+        privateKeys = [];
+    }
+
 
     var processKubectl = child.exec("go run main.go k8s destroy " + networkname, { cwd: pathGrungni });
 
