@@ -90,7 +90,7 @@ class PrometeusProvider implements IMetricsProvider {
         return bytes / 1048576;
     }
 
-    private sumMetricValues(values : string[]) {
+    private getAverage(values : string[]) {
         let total = 0;
         for (let res of values) {
             total += parseFloat(res);
@@ -121,9 +121,9 @@ class PrometeusProvider implements IMetricsProvider {
                 }
             }
 
-            let dataTotalValidators = this.sumMetricValues(dataValidators);
-            let dataTotalApi = this.sumMetricValues(dataApi);
-            let dataTotalRoot = this.sumMetricValues(dataRoot);
+            let dataTotalValidators = this.getAverage(dataValidators);
+            let dataTotalApi = this.getAverage(dataApi);
+            let dataTotalRoot = this.getAverage(dataRoot);
             let maxDataValidators = this.getMaxMetricValue(dataValidators);
             let maxDataApi = this.getMaxMetricValue(dataApi);
             let maxDataRoot = this.getMaxMetricValue(dataRoot);
