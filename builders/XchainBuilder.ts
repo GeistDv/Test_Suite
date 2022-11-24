@@ -128,14 +128,6 @@ class xChainBuilder implements ITransactionBuilder {
                 );
     
                 tx = unsignedTx.sign(avalancheXChain.xKeyChain);
-            }
-            catch(e){
-                console.log("failed sign transaction");
-                console.log(e);
-                errorLogger.error(e);
-            }
-           
-            try{
                 const txid: string = await avalancheXChain.xchain.issueTx(tx);
                 let status: string = "";
 
@@ -146,10 +138,10 @@ class xChainBuilder implements ITransactionBuilder {
 
 
                 resolve(txid);
-                }
-            catch(e)
-            {
-                console.log("error issue Tx")
+                
+            }
+            catch(e){
+                console.log("failed sign transaction");
                 console.log(e);
                 errorLogger.error(e);
             }
