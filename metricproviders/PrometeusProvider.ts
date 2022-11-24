@@ -7,7 +7,6 @@ class PrometeusProvider implements IMetricsProvider {
     data : any = {};
     private memoryData : string[] = [];
     private cpuData : string[] = [];
-
     private activeTest = false;
 
     constructor() {}
@@ -15,13 +14,16 @@ class PrometeusProvider implements IMetricsProvider {
     public async StartMeasurements(): Promise < boolean > {
 
         this.activeTest = true;
-        while (this.activeTest) {
+
+        do 
+        {
             this.memoryData.push(await this.executeRequestPrometeus(Constants.PROMETEUS_CPU_QUERY));
             this.cpuData.push(await this.executeRequestPrometeus(Constants.PROMETEUS_MEMORY_QUERY));
             console.log("querying data PMT...." + this.memoryData.length);
             //wait for 15 seconds
             await new Promise(resolve => setTimeout(resolve, 15000));
         }
+        while (this.activeTest);
 
         return true;
     }

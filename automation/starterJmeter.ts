@@ -36,7 +36,7 @@ export async function startTestsAndGatherMetrics(testCase: TestCase,
         let metrics: any = undefined;
 
         if (configurationType.enable_measurements) {
-            metricProvider.StartMeasurements()
+            metricProvider.StartMeasurements();
         }
 
         let infoTest: any = await startJmeterWithShell(testCase);
@@ -52,8 +52,6 @@ export async function startTestsAndGatherMetrics(testCase: TestCase,
         let jsonStadistic = require(`../${infoTest.dirname}/statistics.json`);
         let blockDataDetails = await Utils.getBlockDetails(web3, blockNumberReference);
         let transactionPerSecond: any = await getTransactionsPerSecond(infoTest);
-
-        console.log(metrics);
 
         let data = {
             meanResTime: jsonStadistic.Total.meanResTime, // Average Transaction Time (ms)
