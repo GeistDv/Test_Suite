@@ -1,4 +1,4 @@
-import { Avalanche,BN } from "@c4tplatform/caminojs/dist";
+import { Avalanche,BN, Buffer} from "@c4tplatform/caminojs/dist";
 import { AVMAPI, KeyChain } from "@c4tplatform/caminojs/dist/apis/avm";
 import AvalancheXChain from "../types/AvalancheXChain";
 
@@ -34,7 +34,6 @@ export async function getXKeyChain(
     const privKey: string = privateKey;
     xKeychain.importKey(privKey)
     addressStrings =xKeychain.getAddressStrings()
-    xAddresses= xchain.keyChain().getAddresses()
     // console.log(addressStrings)
 
     const avaxAssetID: string = avaxAssetIDData;
@@ -43,8 +42,7 @@ export async function getXKeyChain(
         xchain : xchain,
         xKeyChain : xKeychain,
         avaxAssetID: avaxAssetID,
-        addressStrings: addressStrings,
-        xAddresses: xAddresses
+        addressStrings: addressStrings
     } 
 
     return avalancheXChain;
