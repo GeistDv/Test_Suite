@@ -135,16 +135,16 @@ class xChainBuilder implements ITransactionBuilder {
 
                 //Temporal Solution
                 let limitReadingProcessTx = 100;
-                while (status.toUpperCase() != "ACCEPTED" && status.toUpperCase() != "REJECTED") {
+                while (status.toUpperCase() != "ACCEPTED" && status.toUpperCase() != "REJECTED" && limitReadingProcessTx <= 100) {
                     status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
                     limitReadingProcessTx++;
 
-                    if(limitReadingProcessTx >= 100)
-                    {
-                        console.log("Transactiont never Accepted or Rejected");
-                        errorLogger.error("Transactiont never Accepted or Rejected");
-                        resolve("0");
-                    }
+                    // if(limitReadingProcessTx >= 100)
+                    // {
+                    //     console.log("Transactiont never Accepted or Rejected");
+                    //     errorLogger.error("Transactiont never Accepted or Rejected");
+                    //     resolve("0");
+                    // }
                 }
 
 
