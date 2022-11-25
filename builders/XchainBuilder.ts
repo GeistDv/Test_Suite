@@ -58,19 +58,27 @@ class xChainBuilder implements ITransactionBuilder {
         avalancheXChain: AvalancheXChain
     ): Promise<string> {
         return new Promise(async (resolve, reject) => {
-            
+
+            let limitReadingSpendableUtxos = 100;
             let isSpendableUtxos = false;
             while (!isSpendableUtxos) {
                 let balance = await avalancheXChain.xchain.getBalance(privateKey.xChainAddress, avalancheXChain.avaxAssetID);
                 if (balance.utxoIDs.length <= 0) {
                     isSpendableUtxos = false;
+                    limitReadingSpendableUtxos++;
+                    if(limitReadingSpendableUtxos >= 20)
+                    {
+                        console.log("Spendable Utxos Failed");
+                        errorLogger.error("Spendable Utxos Failed");
+                        isSpendableUtxos = true;
+                        resolve("0");
+                    }
                 }
                 else {
                     isSpendableUtxos = true;
+                }
             }
-             
-            }
-            
+
 
             const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs([privateKey.xChainAddress]);
 
@@ -89,8 +97,8 @@ class xChainBuilder implements ITransactionBuilder {
             console.log("Address From:", privateKey.xChainAddress);
             console.log("Address to:", sendTo.xChainAddress);
             console.log("Amount:", Web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei'));
-            console.log("num fetched",numFetched)
-            
+            console.log("num fetched", numFetched)
+
             //Catch Low Balance
             if (balance.balance < (amountToSend + 1000000000)) {
                 errorLogger.error({
@@ -107,7 +115,7 @@ class xChainBuilder implements ITransactionBuilder {
                 reject("Insufficient funds to complete this transaction");
             };
             var tx: Tx;
-            try{
+            try {
                 const unsignedTx: UnsignedTx = await avalancheXChain.xchain.buildBaseTx(
                     utxoSet,
                     amount,
@@ -120,27 +128,36 @@ class xChainBuilder implements ITransactionBuilder {
                     locktime,
                     threshold
                 );
-    
+
                 tx = unsignedTx.sign(avalancheXChain.xKeyChain);
                 const txid: string = await avalancheXChain.xchain.issueTx(tx);
                 let status: string = "";
 
                 //Temporal Solution
+                let limitReadingProcessTx = 100;
                 while (status.toUpperCase() != "ACCEPTED" && status.toUpperCase() != "REJECTED") {
                     status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
+                    limitReadingProcessTx++;
+
+                    if(limitReadingProcessTx >= 100)
+                    {
+                        console.log("Transactiont never Accepted or Rejected");
+                        errorLogger.error("Transactiont never Accepted or Rejected");
+                        resolve("0");
+                    }
                 }
 
 
                 resolve(txid);
-                
+
             }
-            catch(e){
+            catch (e) {
                 console.log("failed sign transaction");
                 console.log(e);
                 errorLogger.error(e);
                 resolve("0")
             }
-            
+
         });
     }
 
