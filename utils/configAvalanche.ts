@@ -1,4 +1,4 @@
-import { Avalanche,BN } from "@c4tplatform/caminojs/dist";
+import { Avalanche,BN, Buffer} from "@c4tplatform/caminojs/dist";
 import { AVMAPI, KeyChain } from "@c4tplatform/caminojs/dist/apis/avm";
 import AvalancheXChain from "../types/AvalancheXChain";
 
@@ -27,6 +27,7 @@ export async function getXKeyChain(
     //Fee Transactions
     xchain.setTxFee(new BN(1000000));
     var addressStrings : string[];
+    var xAddresses: Buffer[];
 
     const xKeychain: KeyChain = xchain.keyChain();
 

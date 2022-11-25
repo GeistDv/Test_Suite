@@ -58,7 +58,7 @@ class xChainBuilder implements ITransactionBuilder {
         avalancheXChain: AvalancheXChain
     ): Promise<string> {
         return new Promise(async (resolve, reject) => {
-
+            
             let isSpendableUtxos = false;
             while (!isSpendableUtxos) {
                 let balance = await avalancheXChain.xchain.getBalance(privateKey.xChainAddress, avalancheXChain.avaxAssetID);
@@ -67,8 +67,10 @@ class xChainBuilder implements ITransactionBuilder {
                 }
                 else {
                     isSpendableUtxos = true;
-                }
             }
+             
+            }
+            
 
             const avmUTXOResponse: GetUTXOsResponse = await avalancheXChain.xchain.getUTXOs([privateKey.xChainAddress]);
 
@@ -78,14 +80,16 @@ class xChainBuilder implements ITransactionBuilder {
             const locktime: BN = new BN(0);
             const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send CAM");
             const amount: BN = new BN(amountToSend);
+            let numFetched = avmUTXOResponse.numFetched;
 
             const balance = await privateKey.avalancheXChain.xchain.getBalance(privateKey.xChainAddress, privateKey.avalancheXChain.avaxAssetID);
 
             console.log("______________________________________________");
-            console.log("Balance:", balance);
+            console.log("Balance:", balance.balance);
             console.log("Address From:", privateKey.xChainAddress);
             console.log("Address to:", sendTo.xChainAddress);
             console.log("Amount:", Web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei'));
+            console.log("num fetched",numFetched)
             
             //Catch Low Balance
             if (balance.balance < (amountToSend + 1000000000)) {
@@ -102,32 +106,41 @@ class xChainBuilder implements ITransactionBuilder {
 
                 reject("Insufficient funds to complete this transaction");
             };
+            var tx: Tx;
+            try{
+                const unsignedTx: UnsignedTx = await avalancheXChain.xchain.buildBaseTx(
+                    utxoSet,
+                    amount,
+                    avalancheXChain.avaxAssetID,
+                    [sendTo.xChainAddress],
+                    [privateKey.xChainAddress],
+                    [privateKey.xChainAddress],
+                    memo,
+                    asOf,
+                    locktime,
+                    threshold
+                );
+    
+                tx = unsignedTx.sign(avalancheXChain.xKeyChain);
+                const txid: string = await avalancheXChain.xchain.issueTx(tx);
+                let status: string = "";
 
-            const unsignedTx: UnsignedTx = await avalancheXChain.xchain.buildBaseTx(
-                utxoSet,
-                amount,
-                avalancheXChain.avaxAssetID,
-                [sendTo.xChainAddress],
-                [privateKey.xChainAddress],
-                [privateKey.xChainAddress],
-                memo,
-                asOf,
-                locktime,
-                threshold
-            );
+                //Temporal Solution
+                while (status.toUpperCase() != "ACCEPTED" && status.toUpperCase() != "REJECTED") {
+                    status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
+                }
 
-            const tx: Tx = unsignedTx.sign(avalancheXChain.xKeyChain);
 
-            const txid: string = await avalancheXChain.xchain.issueTx(tx);
-            let status: string = "";
-
-            //Temporal Solution
-            while (status.toUpperCase() != "ACCEPTED" && status.toUpperCase() != "REJECTED") {
-                status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
+                resolve(txid);
+                
             }
-
-
-            resolve(txid);
+            catch(e){
+                console.log("failed sign transaction");
+                console.log(e);
+                errorLogger.error(e);
+                resolve("0")
+            }
+            
         });
     }
 
