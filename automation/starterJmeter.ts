@@ -1,7 +1,6 @@
 import * as child from 'child_process';
 import { getTransactionsPerSecond } from './getterTransactionPerSecond';
 import axios from 'axios';
-import { startTimerVerifyKubectl, finishTimerKubcetl, restarMaxCPUAndMaxMemory, initKubectlChecker } from './getterCPUAndMemory';
 import Web3 from 'web3';
 import Utils from '../utils/utils';
 import NetworkRunner from '../network-runner/NetworkRunner';
@@ -10,8 +9,6 @@ import { ConfigurationType } from '../types/configurationtype';
 import dotenv from 'dotenv';
 import DataTests from '../DataTest';
 import IMetricsProvider from '../interfaces/IMetricsProvider';
-
-import { execPrometheus, getMetrics, finishProcessPrometheus } from '../metrics/getMetrics';
 
 dotenv.config();
 

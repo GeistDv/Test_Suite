@@ -6,6 +6,7 @@ type SimpleConfigurationType =
     enable_measurements : boolean;
     enable_gdocs_insertion : boolean;
     sheet_name : string;
+    measurements_provider?: string
 }
 
 //create type configuration that includes SimpleConfigurationType

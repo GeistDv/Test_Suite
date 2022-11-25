@@ -17,8 +17,17 @@ class PrometeusProvider implements IMetricsProvider {
 
         do 
         {
-            this.memoryData.push(await this.executeRequestPrometeus(Constants.PROMETEUS_MEMORY_QUERY));
-            this.cpuData.push(await this.executeRequestPrometeus(Constants.PROMETEUS_CPU_QUERY));
+            let networkName = "";
+            if(process.env.networkName != undefined)
+            {
+                networkName = process.env.networkName;
+            }
+
+            let queryMemory = Constants.PROMETEUS_MEMORY_QUERY.replace("networkName", networkName);
+            let cpuData = Constants.PROMETEUS_CPU_QUERY.replace("networkName", networkName);
+
+            this.memoryData.push(await this.executeRequestPrometeus(queryMemory));
+            this.cpuData.push(await this.executeRequestPrometeus(cpuData));
             //wait for 15 seconds
             await new Promise(resolve => setTimeout(resolve, 15000));
         }
