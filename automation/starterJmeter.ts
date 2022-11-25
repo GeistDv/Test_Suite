@@ -42,7 +42,7 @@ export async function startTestsAndGatherMetrics(testCase: TestCase,
         let infoTest: any = await startJmeterWithShell(testCase);
 
         if(configurationType.enable_measurements){
-            metricProvider.FinishMeasurements();
+            await metricProvider.FinishMeasurements();
             metrics = await metricProvider.GetMetrics();
         }
 
