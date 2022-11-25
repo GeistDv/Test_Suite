@@ -123,7 +123,7 @@ app.post("/start", async (req, res) => {
 
         var metricProvider = new PrometeusProvider();
         await initPrivateKeys(dataFlow, testCase);
-        await startTestsAndGatherMetrics(testCase, configType, i, metricProvider);
+        startTestsAndGatherMetrics(testCase, configType, i, metricProvider);
     }
 
     console.log("Finished all tests");
