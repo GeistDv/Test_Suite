@@ -31,6 +31,7 @@ import testbuilderErc20 from './builders/ERC20TXBuilder';
 import { test } from "shelljs";
 
 import PrometeusProvider from './metricproviders/PrometeusProvider';
+import KubectlProvider from './metricproviders/KubectlProvider';
 
 dotenv.config();
 // Needed for self signed certs.
@@ -85,6 +86,9 @@ app.post("/start", async (req, res) => {
     var network = completeTestConfiguration.rpc.split("/")
     var networkName = (network[2].split("."))[0]
 
+    //save networkName in enviroment
+    process.env.networkName = networkName;
+
     //read json file
     var jsonData: any = JSON.parse(fs.readFileSync(pathGrungni + "/" + networkName + ".json", "utf8"));
     var privateKeyFirstStaker = jsonData.Stakers[1].PrivateKey;
@@ -121,7 +125,9 @@ app.post("/start", async (req, res) => {
             chainType = testCase.Chain;
         }
 
-        var metricProvider = new PrometeusProvider();
+        //var metricProvider = new PrometeusProvider();
+        var metricProvider = new KubectlProvider();
+
         await initPrivateKeys(dataFlow, testCase);
         await startTestsAndGatherMetrics(testCase, configType, i, metricProvider);
     }
