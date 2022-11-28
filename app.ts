@@ -209,7 +209,14 @@ app.post('/', async (req, res) => {
             let ammountConversion = web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei');
             txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, ammountConversion, xWallet.avalancheXChain)
                 .then(data => {
-                    res.send(data);
+                    if(data == "0")
+                    {
+                        res.status(500).send(data);
+                    }
+                    else
+                    {
+                        res.status(200).send(data);
+                    }
                 }).catch(err => {
                     errorLogger.error(err);
                     res.status(500).send(err);
