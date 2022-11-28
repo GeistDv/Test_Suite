@@ -30,7 +30,9 @@ import xChainBuilder from "./builders/XchainBuilder";
 import testbuilderErc20 from './builders/ERC20TXBuilder';
 import { test } from "shelljs";
 
+import IMetricsProvider from './interfaces/IMetricsProvider';
 import PrometeusProvider from './metricproviders/PrometeusProvider';
+import KubectlProvider from './metricproviders/KubectlProvider';
 
 dotenv.config();
 // Needed for self signed certs.
@@ -71,7 +73,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
-app.get("/", (req, res) => {    
+app.get("/", (req, res) => {
     res.send("it is working!");
 });
 
@@ -84,6 +86,9 @@ app.post("/start", async (req, res) => {
     //var networkName = completeTestConfiguration.rpc.split("/").pop();
     var network = completeTestConfiguration.rpc.split("/")
     var networkName = (network[2].split("."))[0]
+
+    //save networkName in enviroment
+    process.env.networkName = networkName;
 
     //read json file
     var jsonData: any = JSON.parse(fs.readFileSync(pathGrungni + "/" + networkName + ".json", "utf8"));
@@ -112,7 +117,7 @@ app.post("/start", async (req, res) => {
         var dataFlow = await initApp(configType);
 
         testCase.Chain == "X" ? await Utils.deleteUser(configType) : null;
-        
+
         if (testCase.Chain == "X") {
             let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, dataFlow.networkID, configType.private_key_with_funds, dataFlow.assetID, dataFlow.blockchainIDXChain);
             let mainAccount = new XChainTestWallet(dataFlow.bech32_xchain_address, configType.private_key_with_funds, xChainAvalanche);
@@ -121,7 +126,23 @@ app.post("/start", async (req, res) => {
             chainType = testCase.Chain;
         }
 
-        var metricProvider = new PrometeusProvider();
+        let metricProvider: IMetricsProvider;
+
+        switch (configType.measurements_provider) {
+            case "kubectl":
+                console.log("Using kubectl Measurement Provider");
+                metricProvider = new KubectlProvider();
+                break;
+            case "prometheus":
+                console.log("Using prometheus Measurement Provider");
+                metricProvider = new PrometeusProvider();
+                break;
+            default:
+                metricProvider = new KubectlProvider();
+                console.log("Measurements provider not specified, using kubectl provider");
+                break;
+        }
+
         await initPrivateKeys(dataFlow, testCase);
         await startTestsAndGatherMetrics(testCase, configType, i, metricProvider);
     }
@@ -143,9 +164,9 @@ app.post("/network-runner", async (req, res) => {
         let testCase = testCases[i];
 
         let configType = networkRunner.configuration;
-        
+
         testCase.Chain == "X" ? await Utils.deleteUser(configType) : "false";
-        
+
         let dataFlow = await initApp(networkRunner.configuration);
         if (testCase.Chain == "X") {
             let xChainAvalanche = await getXKeyChain(urlRpcDetails.hostname, parseInt(urlRpcDetails.port), protocolRPC, dataFlow.networkID, networkRunner.configuration.private_key_with_funds, dataFlow.assetID, dataFlow.blockchainIDXChain);
@@ -212,7 +233,7 @@ app.post('/', async (req, res) => {
 });
 
 
-app.use((error : any, req : any, res : any, next : any) => {
+app.use((error: any, req: any, res: any, next: any) => {
     console.log("Error Handling Middleware called");
     console.log('Path: ', req.path);
     console.error('Error: ', error);
@@ -307,7 +328,7 @@ async function initDataFlowAccount(configurationtype: ConfigurationType): Promis
 // function to initialize the app
 async function initPrivateKeys(dataflow: DataFlow, testCase: TestCase): Promise<Boolean> {
     if (testCase.Chain == "C") {
-        
+
         if (fs.existsSync(Constants.PRIVATE_KEYS_FILE)) {
             privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
             let account = web3.eth.accounts.privateKeyToAccount(privateKeys[0]);
@@ -337,13 +358,12 @@ async function initPrivateKeys(dataflow: DataFlow, testCase: TestCase): Promise<
     //private keys create wallets and send funds in xchain 
     else {
         // initialize accounts
-        if(privateKeys.length<testCase.Threads)
-        {
+        if (privateKeys.length < testCase.Threads) {
             console.log("Generating accounts ... ");
             await utils.generateAndFundWallets(testCase, txBuilder);
             privateKeys = utils.privateKeys;
         }
-       
+
     }
 
 
@@ -390,7 +410,7 @@ async function initNetwork(testCase: TestCase,
         console.log("Network already has the same number of validators and api nodes");
         return true
     }
-    if (testCase.Chain == "X"){
+    if (testCase.Chain == "X") {
         privateKeys = [];
     }
 

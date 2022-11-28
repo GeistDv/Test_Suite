@@ -1,13 +1,16 @@
 
-//create type configuration
+type MetricsData = {
+    dataTotalValidators: any,
+    dataTotalApi: any,
+    dataTotalRoot: any,
+    maxDataApi: any,
+    maxDataValidators: any,
+    maxDataRoot: any
+}
+
 type MetricsResults = {
-    cpu: {
-
-    },
-    memory:
-    {
-
-    }
+    cpu: MetricsData,
+    memory: MetricsData
 }
 
 //export 
