@@ -529,6 +529,8 @@ class Utils {
         console.log("Sending funds to: ", sendTo.address, "nonce: ", nonce);
         let txData = {
             'nonce': nonce,
+            'maxFeePerGas': Constants.MAXFEEPERGAS,
+            'maxPriorityFeePerGas': Constants.MAXPRIORITYFEEPERGAS,
             'gas': Constants.GAS,
             'to': sendTo.address,
             'from': this.dataFlow.hex_cchain_address,
