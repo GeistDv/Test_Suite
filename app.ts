@@ -91,18 +91,18 @@ app.post("/start", async (req, res) => {
     var network = completeTestConfiguration.rpc.split("/")
     var networkName = (network[2].split("."))[0]
 
+    //read the document.
+    let testCases = await DataTests.readDataTest(completeTestConfiguration.sheet_name);
+
     //save networkName in enviroment
     process.env.networkName = networkName;
 
     //read json file
     var jsonData: any = JSON.parse(fs.readFileSync(pathGrungni + "/" + networkName + ".json", "utf8"));
-    var privateKeyFirstStaker = jsonData.Stakers[getRandomInt(jsonData.Stakers.length)].PrivateKey;
+    var privateKeyFirstStaker = jsonData.Stakers[getRandomInt(testCases[0].ValidatorNodes)].PrivateKey;
     //cast into configurationtype
     let configType: ConfigurationType = completeTestConfiguration as ConfigurationType;
     configType.private_key_with_funds = privateKeyFirstStaker;
-
-    //read the document.
-    let testCases = await DataTests.readDataTest(completeTestConfiguration.sheet_name);
 
     //for each test case, execute the test.
     for (let i = 0; i < testCases.length; i++) {
