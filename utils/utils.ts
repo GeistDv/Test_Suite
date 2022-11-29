@@ -247,7 +247,7 @@ class Utils {
         var balance: number = await this.getBalance();
         await this.exportFunds((balance / 2).toString())
         //TODO : improve, check the export tx is completed.
-        await new Promise(r => setTimeout(r, 4000));
+        await new Promise(r => setTimeout(r, 10000));
         await this.importFunds();
     }
 
