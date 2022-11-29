@@ -7,7 +7,7 @@ import SimpleTXBuilder from "./builders/SimpleTXBuilder";
 import ERC1155TXBuilder from "./builders/ERC1155TXBuilder";
 import STRGTXBuilder from "./builders/STRGTXBuilder";
 import Utils from "./utils/utils";
-import bodyParser, { text } from "body-parser";
+import bodyParser, { json, text } from "body-parser";
 import fs from "fs";
 import SendXChainBuilder from "./builders/SendXChainBuilder";
 import DataFlow from "./types/dataflowtype";
@@ -77,6 +77,10 @@ app.get("/", (req, res) => {
     res.send("it is working!");
 });
 
+function getRandomInt(limit: number){
+    return Math.floor(Math.random() * limit+1)
+}
+
 //complete test reading from google sheets
 app.post("/start", async (req, res) => {
 
@@ -92,7 +96,7 @@ app.post("/start", async (req, res) => {
 
     //read json file
     var jsonData: any = JSON.parse(fs.readFileSync(pathGrungni + "/" + networkName + ".json", "utf8"));
-    var privateKeyFirstStaker = jsonData.Stakers[0].PrivateKey;
+    var privateKeyFirstStaker = jsonData.Stakers[getRandomInt(jsonData.Stakers.length)].PrivateKey;
     //cast into configurationtype
     let configType: ConfigurationType = completeTestConfiguration as ConfigurationType;
     configType.private_key_with_funds = privateKeyFirstStaker;
