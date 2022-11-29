@@ -372,7 +372,7 @@ class Utils {
     public async generateAndFundWallets(testCase: TestCase, xChainbuilder?: ITransactionBuilder) {
         if (testCase.Chain == "C") {
             let accounts = await this.generateAccounts(testCase);
-            var chunks = this.splitListIntoChunksOfLen(accounts, 50);
+            var chunks = this.splitListIntoChunksOfLen(accounts, 20);
             let nonce = await this.web3.eth.getTransactionCount(this.dataFlow.hex_cchain_address);
             for (let i = 0; i < chunks.length; i++) {
 
