@@ -3,7 +3,7 @@ export abstract class Constants {
     static readonly ACCOUNTPINGPONG : string = "";
     static readonly MAXFEEPERGAS : number = 50000000000;
     static readonly MAXPRIORITYFEEPERGAS : number = 1000000000;
-    static readonly GAS : number = 2000000;
+    static readonly GAS : number = 21000;
     static readonly NFTID : number = 7;
     static readonly NFTAMOUNT : number = 1000;
     static readonly INITIAL_FUNDS : string = "20";
