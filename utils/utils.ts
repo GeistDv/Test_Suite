@@ -534,7 +534,7 @@ class Utils {
             'gas': Constants.GAS,
             'to': sendTo.address,
             'from': this.dataFlow.hex_cchain_address,
-            'value': Web3.utils.toWei(Constants.INITIAL_FUNDS),
+            'value': Web3.utils.toWei('0'),
             'chainId': this.dataFlow.chainId
         }
 
