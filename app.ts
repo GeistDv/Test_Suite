@@ -351,8 +351,6 @@ async function initBuilder(configurationType: ConfigurationType, dataFlow: DataF
             urlRpcDetails = await getURLDetails(configurationType.rpc);
             protocolRPC = urlRpcDetails.protocol.replace(":", "");
             break;
-        case "erc1155tx": txBuilder = new ERC1155TXBuilder(configurationType, web3, dataFlow);
-            break;
         default:
             break;
     }
