@@ -248,10 +248,48 @@ class Utils {
         await this.exportFunds((balance / 2).toString())
         //TODO : improve, check the export tx is completed.
         await new Promise(r => setTimeout(r, 10000));
-        await this.importFunds();
+        var txId = await this.importFunds();
+        console.log('already import')
+        console.log('txId: ', txId)
+        var statusTx: String = '';
+        while(statusTx.toUpperCase() != "ACCEPTED" || statusTx.toUpperCase() == "REJECTED")
+        {
+        statusTx = await this.txStatus(txId);
+        }
     }
 
-    public async importFunds(): Promise<boolean> {
+    public async txStatus(txId: String):Promise<String>{
+        return new Promise(async (resolve, reject) =>{
+            var data = JSON.stringify({
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "avax.getAtomicTxStatus",
+                "params": {
+                  "txID": txId
+                }
+              });
+              
+              var config = {
+                method: 'post',
+                url: 'https://santi.camino.network/static/ext/bc/C/avax',
+                headers: { 
+                  'Content-Type': 'application/json'
+                },
+                data : data
+              };
+              
+              axios(config)
+              .then(function (response) {
+                console.log(JSON.stringify(response.data));
+                resolve(response.data.result.status)
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+        })
+    }
+
+    public async importFunds(): Promise<String> {
         return new Promise(async (resolve, reject) => {
             var data: string = JSON.stringify({
                 "method": "avax.import",
@@ -276,7 +314,7 @@ class Utils {
 
             axios(config)
                 .then(function (response) {
-                    resolve(true);
+                    resolve(response.data.result.txID);
                     console.log(JSON.stringify(response.data));
                 })
                 .catch(function (error) {
