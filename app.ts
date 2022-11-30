@@ -345,7 +345,7 @@ async function initPrivateKeys(dataflow: DataFlow, testCase: TestCase): Promise<
             privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
             let account = web3.eth.accounts.privateKeyToAccount(privateKeys[0]);
             balancePrivateKey = await web3.eth.getBalance(account.address);
-            if (balance == "0") {
+            if (balancePrivateKey == "0") {
                 //delete file privatekeys.csv
                 fs.unlinkSync(Constants.PRIVATE_KEYS_FILE);
             }
