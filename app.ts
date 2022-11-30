@@ -7,7 +7,7 @@ import SimpleTXBuilder from "./builders/SimpleTXBuilder";
 import ERC1155TXBuilder from "./builders/ERC1155TXBuilder";
 import STRGTXBuilder from "./builders/STRGTXBuilder";
 import Utils from "./utils/utils";
-import bodyParser, { text } from "body-parser";
+import bodyParser, { json, text } from "body-parser";
 import fs from "fs";
 import SendXChainBuilder from "./builders/SendXChainBuilder";
 import DataFlow from "./types/dataflowtype";
@@ -44,6 +44,7 @@ let privateKeys: any[] = [];
 let chainId: number = 0;
 let gasPrice: number;
 let balance: string;
+let balancePrivateKey: string;
 let blockNumber: number;
 
 let txBuilder: ITransactionBuilder;
@@ -77,6 +78,10 @@ app.get("/", (req, res) => {
     res.send("it is working!");
 });
 
+function getRandomInt(limit: number){
+    return Math.floor(Math.random() * limit+1)
+}
+
 //complete test reading from google sheets
 app.post("/start", async (req, res) => {
 
@@ -87,18 +92,18 @@ app.post("/start", async (req, res) => {
     var network = completeTestConfiguration.rpc.split("/")
     var networkName = (network[2].split("."))[0]
 
+    //read the document.
+    let testCases = await DataTests.readDataTest(completeTestConfiguration.sheet_name);
+
     //save networkName in enviroment
     process.env.networkName = networkName;
 
     //read json file
     var jsonData: any = JSON.parse(fs.readFileSync(pathGrungni + "/" + networkName + ".json", "utf8"));
-    var privateKeyFirstStaker = jsonData.Stakers[1].PrivateKey;
+    var privateKeyFirstStaker = jsonData.Stakers[getRandomInt(testCases[0].ValidatorNodes)].PrivateKey;
     //cast into configurationtype
     let configType: ConfigurationType = completeTestConfiguration as ConfigurationType;
     configType.private_key_with_funds = privateKeyFirstStaker;
-
-    //read the document.
-    let testCases = await DataTests.readDataTest(completeTestConfiguration.sheet_name);
 
     //for each test case, execute the test.
     for (let i = 0; i < testCases.length; i++) {
@@ -339,8 +344,8 @@ async function initPrivateKeys(dataflow: DataFlow, testCase: TestCase): Promise<
         if (fs.existsSync(Constants.PRIVATE_KEYS_FILE)) {
             privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
             let account = web3.eth.accounts.privateKeyToAccount(privateKeys[0]);
-            balance = await web3.eth.getBalance(account.address);
-            if (balance == "0") {
+            balancePrivateKey = await web3.eth.getBalance(account.address);
+            if (balancePrivateKey == "0") {
                 //delete file privatekeys.csv
                 fs.unlinkSync(Constants.PRIVATE_KEYS_FILE);
             }
