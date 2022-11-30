@@ -1,7 +1,6 @@
 
 import * as child from 'child_process';
 import { ConfigurationType } from "../types/configurationtype";
-import TestCase from "../types/testcase";
 import { promiseExitAndError, promiseFromChildProcess } from './VerifierPromisesChildProcess';
 import fs from 'fs';
 import path from 'path';

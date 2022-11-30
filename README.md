@@ -103,8 +103,8 @@ When the server is up and running, you can perform tests keeping in mind the fol
 
 - **Environment Variables: `file name: .env`**
 
-  - "GRUNGNI_PATH" - **REQUIRED - You must set it.** 
-     You must specify your local **Grungni** project path.
+  - "TESTNET_CREATOR_PATH" - **REQUIRED - You must set it.** 
+     You must specify your local **camino-k8s-testnet-creator** project path.
   - "SPREADSHEET_ID" - **REQUIRED - Already set by default.**
      You must specify the spreadsheet document id if you use your own document.
   - "GDOCS_KEY_FILE" - **REQUIRED - Already set by default.**

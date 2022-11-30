@@ -3,31 +3,21 @@ import ITransactionBuilder from '../interfaces/ItransactionBuilder';
 import { ConfigurationType } from '../types/configurationtype';
 import DataFlow from '../types/dataflowtype';
 import XChainTestWallet from '../utils/XChainTestWallet';
-import { errorLogger, logger } from "../utils/logger";
+import { errorLogger } from "../utils/logger";
 import { Constants } from '../constants';
-import axios from 'axios';
-import { Avalanche, BN, Buffer } from "@c4tplatform/caminojs/dist"
+import { BN, Buffer } from "@c4tplatform/caminojs/dist"
 import {
-    AVMAPI,
-    KeyChain,
     UTXOSet,
     UnsignedTx,
     Tx
 } from "@c4tplatform/caminojs/dist/apis/avm"
 import {
-    GetBalanceResponse,
     GetUTXOsResponse
 } from "@c4tplatform/caminojs/dist/apis/avm/interfaces"
-//import { Defaults } from "@c4tplatform/caminojs/dist/utils"
 import {
-    PrivateKeyPrefix,
-    DefaultLocalGenesisPrivateKey,
     UnixNow
 } from "@c4tplatform/caminojs/dist/utils";
 import AvalancheXChain from '../types/AvalancheXChain';
-
-
-//import { InitialStates, SECPTransferOutput } from "@c4tplatform/caminojs/dist/apis/avm"
 
 class xChainBuilder implements ITransactionBuilder {
 
@@ -88,19 +78,11 @@ class xChainBuilder implements ITransactionBuilder {
             const locktime: BN = new BN(0);
             const memo: Buffer = Buffer.from("AVM utility method buildBaseTx to send CAM");
             const amount: BN = new BN(amountToSend);
-            let numFetched = avmUTXOResponse.numFetched;
 
             const balance = await privateKey.avalancheXChain.xchain.getBalance(privateKey.xChainAddress, privateKey.avalancheXChain.avaxAssetID);
 
-            console.log("______________________________________________");
-            console.log("Balance:", balance.balance);
-            console.log("Address From:", privateKey.xChainAddress);
-            console.log("Address to:", sendTo.xChainAddress);
-            console.log("Amount:", Web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei'));
-            console.log("num fetched", numFetched)
-
             //Catch Low Balance
-            if (balance.balance < (amountToSend + 1000000000)) {
+            if (balance.balance < (amountToSend + Constants.FEE)) {
                 errorLogger.error({
                     addressFrom: privateKey.xChainAddress,
                     addressTo: sendTo.xChainAddress,
@@ -108,8 +90,8 @@ class xChainBuilder implements ITransactionBuilder {
                     privateKey: privateKey.privateKey,
                     message: "Insufficient funds to complete this transaction",
                     amount: (amountToSend),
-                    fee: 1000000000,
-                    amountAndFee: amountToSend + 1000000000
+                    fee: Constants.FEE,
+                    amountAndFee: amountToSend + Constants.FEE
                 });
 
                 reject("Insufficient funds to complete this transaction");
@@ -133,18 +115,11 @@ class xChainBuilder implements ITransactionBuilder {
                 const txid: string = await avalancheXChain.xchain.issueTx(tx);
                 let status: string = "";
 
-                //Temporal Solution
+                //Wait until tx is accepted or rejected
                 let limitReadingProcessTx = 100;
                 while (status.toUpperCase() != "ACCEPTED" && status.toUpperCase() != "REJECTED" && limitReadingProcessTx <= 100) {
                     status = await avalancheXChain.xchain.getTxStatus(txid);//Accepted
                     limitReadingProcessTx++;
-
-                    // if(limitReadingProcessTx >= 100)
-                    // {
-                    //     console.log("Transactiont never Accepted or Rejected");
-                    //     errorLogger.error("Transactiont never Accepted or Rejected");
-                    //     resolve("0");
-                    // }
                 }
 
 
