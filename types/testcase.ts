@@ -1,5 +1,3 @@
-import { StringLiteral } from "typescript";
-
 //create type configuration
 type TestCase = {
     StakingAmount : string;

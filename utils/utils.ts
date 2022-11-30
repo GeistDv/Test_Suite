@@ -1,22 +1,16 @@
 import Web3 from "web3";
-//import config from "../config.json";
-import fs, { constants, promises } from "fs";
+import fs from "fs";
 import { BinTools, Buffer } from "avalanche";
 import axios from "axios";
 import { ConfigurationType } from "../types/configurationtype";
 import DataFlow from "../types/dataflowtype";
 import { logger, errorLogger } from "./logger";
 import { Constants } from "../constants";
-import NetworkRunner from "../network-runner/NetworkRunner";
 import KubectlChecker from '../automation/KubectlChecker';
 import TestCase from "../types/testcase";
-import { getXKeyChain } from './configAvalanche';
-import XchainBuilder from "../builders/XchainBuilder";
 import XChainTestWallet from "./XChainTestWallet";
 import AvalancheXChain from "../types/AvalancheXChain";
-import { KeyChain } from "@c4tplatform/caminojs/dist/apis/avm"
 import ITransactionBuilder from "../interfaces/ItransactionBuilder";
-import xChainBuilder from "../builders/XchainBuilder";
 import testbuilderErc20 from '../builders/ERC20TXBuilder';
 
 class Utils {

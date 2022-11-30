@@ -1,15 +1,11 @@
 import Web3 from "web3";
 import express from "express";
 import ITransactionBuilder from "./interfaces/ItransactionBuilder";
-import { ConfigurationType, ConfigurationTypeForCompleteTest, SimpleConfigurationType } from "./types/configurationtype";
-import SimpleFunds from "./builders/SendXChainBuilder";
+import { ConfigurationType, ConfigurationTypeForCompleteTest} from "./types/configurationtype";
 import SimpleTXBuilder from "./builders/SimpleTXBuilder";
-import ERC1155TXBuilder from "./builders/ERC1155TXBuilder";
-import STRGTXBuilder from "./builders/STRGTXBuilder";
 import Utils from "./utils/utils";
-import bodyParser, { json, text } from "body-parser";
+import bodyParser from "body-parser";
 import fs from "fs";
-import SendXChainBuilder from "./builders/SendXChainBuilder";
 import DataFlow from "./types/dataflowtype";
 import * as child from 'child_process';
 import { logger, errorLogger } from "./utils/logger";
@@ -21,14 +17,11 @@ import dotenv from 'dotenv';
 
 import NetworkRunner from './network-runner/NetworkRunner';
 import TestCase from "./types/testcase";
-import XchainBuilder from './builders/XchainBuilder';
 import { getXKeyChain } from './utils/configAvalanche';
-import { basename } from "path";
 
 import XChainTestWallet from './utils/XChainTestWallet';
 import xChainBuilder from "./builders/XchainBuilder";
 import testbuilderErc20 from './builders/ERC20TXBuilder';
-import { test } from "shelljs";
 
 import IMetricsProvider from './interfaces/IMetricsProvider';
 import PrometeusProvider from './metricproviders/PrometeusProvider';
@@ -39,7 +32,7 @@ dotenv.config();
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 /*global variables*/
-var pathGrungni = process.env.GRUNGNI_PATH;
+var pathTestNetCreator = process.env.TESTNET_CREATOR_PATH;
 let privateKeys: any[] = [];
 let chainId: number = 0;
 let gasPrice: number;
@@ -49,16 +42,7 @@ let blockNumber: number;
 
 let txBuilder: ITransactionBuilder;
 let utils: Utils;
-let amount = 0;
 let contractAddress: string;
-let accountPKWithFundsCB58: string = "";
-let accountPKPingPongCb58: string = "";
-let Bech32AddressA: string;
-let Bech32AddressB: string;
-
-// this is used for pingpong test;
-let txBuilderB: ITransactionBuilder;
-
 let networkRunner: NetworkRunner;
 
 let web3: Web3;
@@ -88,7 +72,6 @@ app.post("/start", async (req, res) => {
     let completeTestConfiguration: ConfigurationTypeForCompleteTest = req.body;
 
     //extract last route from url
-    //var networkName = completeTestConfiguration.rpc.split("/").pop();
     var network = completeTestConfiguration.rpc.split("/")
     var networkName = (network[2].split("."))[0]
 
@@ -99,7 +82,7 @@ app.post("/start", async (req, res) => {
     process.env.networkName = networkName;
 
     //read json file
-    var jsonData: any = JSON.parse(fs.readFileSync(pathGrungni + "/" + networkName + ".json", "utf8"));
+    var jsonData: any = JSON.parse(fs.readFileSync(pathTestNetCreator + "/" + networkName + ".json", "utf8"));
     var privateKeyFirstStaker = jsonData.Stakers[getRandomInt(testCases[0].ValidatorNodes)].PrivateKey;
     //cast into configurationtype
     let configType: ConfigurationType = completeTestConfiguration as ConfigurationType;
@@ -118,7 +101,7 @@ app.post("/start", async (req, res) => {
         }
 
         console.log("Running case .. " + i);
-        await initNetwork(testCase, prevTestCase, networkName, configType);
+        await initNetwork(testCase, networkName, configType);
         var dataFlow = await initApp(configType);
 
         testCase.Chain == "X" ? await Utils.deleteUser(configType) : null;
@@ -184,14 +167,14 @@ app.post("/network-runner", async (req, res) => {
 
         await initPrivateKeys(dataFlow, testCase);
 
-        //await startTestsAndGatherMetrics(testCase, configType, i);
+        //await startTestsAndGatherMetrics(testCase, configType, i, metricProvider);
     }
 
     await networkRunner.killGnomeTerminal();
     return res.status(200).send("Network Runner executed");
 });
 
-// single endpoint to test (cloud)
+// endpoint used by jmeter to execute build and send transaction
 app.post('/', async (req, res) => {
 
     let privateKey = privateKeys[req.body.ID - 1];
@@ -209,8 +192,6 @@ app.post('/', async (req, res) => {
             sendTo.xChainAddress = sendTo.xChainAddress.replace("X-", `${configDataFlow.blockchainIDXChain}-`);
 
             let xWallet: XChainTestWallet = privateKey;
-
-            //Temporal Amount
             let ammountConversion = web3.utils.toWei(Constants.AMOUNT_TO_TRANSFER, 'gwei');
             txBuilder.buildAndSendTransaction(privateKey, contractAddress, sendTo, ammountConversion, xWallet.avalancheXChain)
                 .then(data => {
@@ -251,33 +232,6 @@ app.use((error: any, req: any, res: any, next: any) => {
     console.error('Error: ', error);
 })
 
-app.post('/pingpong', async (req, res) => {
-    amount++;
-
-    try {
-        var txIDA = await txBuilder.buildAndSendTransaction('', contractAddress, Bech32AddressB, amount.toString());
-
-        var accepted: boolean = false;
-        while (!accepted) {
-            var response = await utils.getTransactionDetails(txIDA, networkRunner.configuration);
-            accepted = response.data.result.status == "Accepted";
-        }
-
-        var txIDB = await txBuilderB.buildAndSendTransaction('', contractAddress, Bech32AddressA, amount.toString());
-
-        var accepted: boolean = false;
-        while (!accepted) {
-            var response = await utils.getTransactionDetails(txIDB, networkRunner.configuration);
-            accepted = response.data.result.status == "Accepted";
-        }
-
-        res.send({ 'txIDA': txIDA, 'txIDB': txIDB });
-    } catch (err) {
-        errorLogger.error(err);
-    }
-
-});
-
 app.listen(process.env.PORT, () => {
     logger.info(`Server running on port ${process.env.PORT}`);
     console.log(`Server running on port ${process.env.PORT}`);
@@ -285,7 +239,7 @@ app.listen(process.env.PORT, () => {
 
 async function initApp(configType: ConfigurationType): Promise<DataFlow> {
 
-    //TODO : validate grugni path.
+    //TODO : validate camino-k8s-testnet-creator path.
     web3 = new Web3(configType.rpc + '/ext/bc/C/rpc');
     gasPrice = parseInt(await web3.eth.getGasPrice());
     chainId = await web3.eth.getChainId();
@@ -388,7 +342,6 @@ async function initBuilder(configurationType: ConfigurationType, dataFlow: DataF
     // initialize transaction builder
     switch (configurationType.test_type) {
         case "transfer": txBuilder = new SimpleTXBuilder(configurationType, web3, dataFlow);
-            // mint
             break;
         case "erc20tx": txBuilder = new testbuilderErc20(configurationType, web3, dataFlow);
             break;
@@ -396,8 +349,6 @@ async function initBuilder(configurationType: ConfigurationType, dataFlow: DataF
             txBuilder = new xChainBuilder(configurationType, web3, dataFlow);
             urlRpcDetails = await getURLDetails(configurationType.rpc);
             protocolRPC = urlRpcDetails.protocol.replace(":", "");
-            break;
-        case "erc1155tx": txBuilder = new ERC1155TXBuilder(configurationType, web3, dataFlow);
             break;
         default:
             break;
@@ -414,7 +365,6 @@ async function getURLDetails(rpc: string) {
 }
 
 async function initNetwork(testCase: TestCase,
-    prevTestCase: TestCase,
     networkname: string | undefined,
     configType: ConfigurationType): Promise<Boolean> {
     //TODO: change or for and in validation 
@@ -427,7 +377,7 @@ async function initNetwork(testCase: TestCase,
     }
 
 
-    var processKubectl = child.exec("go run main.go k8s destroy " + networkname, { cwd: pathGrungni });
+    var processKubectl = child.exec("go run main.go k8s destroy " + networkname, { cwd: pathTestNetCreator });
 
     console.log("Destroying network ...");
     var response = await promiseFromChildProcess(processKubectl);
@@ -439,7 +389,7 @@ async function initNetwork(testCase: TestCase,
     }
 
     console.log(testCase.ValidatorNodes);
-    var processKubectl = child.exec("go run main.go k8s create " + networkname + " --validators " + testCase.ValidatorNodes + " --api-nodes " + testCase.ApiNodes + " --image europe-west3-docker.pkg.dev/pwk-c4t-dev/internal-camino-dev/camino-node:tiedemann-64de0a0003bfab988da62850eef37ef01f82fdad-1668765791", { cwd: pathGrungni });
+    var processKubectl = child.exec("go run main.go k8s create " + networkname + " --validators " + testCase.ValidatorNodes + " --api-nodes " + testCase.ApiNodes + " --image europe-west3-docker.pkg.dev/pwk-c4t-dev/internal-camino-dev/camino-node:tiedemann-64de0a0003bfab988da62850eef37ef01f82fdad-1668765791", { cwd: pathTestNetCreator });
 
     console.log("Creating network with " + testCase.ValidatorNodes + " validators ...");
     var response = await promiseFromChildProcess(processKubectl);

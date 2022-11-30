@@ -1,9 +1,7 @@
 import * as child from 'child_process';
 import { getTransactionsPerSecond } from './getterTransactionPerSecond';
-import axios from 'axios';
 import Web3 from 'web3';
 import Utils from '../utils/utils';
-import NetworkRunner from '../network-runner/NetworkRunner';
 import TestCase from '../types/testcase';
 import { ConfigurationType } from '../types/configurationtype';
 import dotenv from 'dotenv';
@@ -14,7 +12,6 @@ dotenv.config();
 
 const express = require('express');
 const app = express();
-const { google } = require('googleapis');
 app.use(express.urlencoded({ extended: true }));
 
 let blockNumberReference: number;
@@ -43,7 +40,6 @@ export async function startTestsAndGatherMetrics(testCase: TestCase,
             metrics = await metricProvider.GetMetrics();
         }
 
-        //let dataKubectl = finishTimerKubcetl(configurationType);
         console.log("Info Test:", infoTest);
 
         let jsonStadistic = require(`../${infoTest.dirname}/statistics.json`);
@@ -78,59 +74,10 @@ export async function startTestsAndGatherMetrics(testCase: TestCase,
         if (configurationType.enable_gdocs_insertion) {
             await DataTests.writeDataInGdocs(data, testCase.Position, configurationType.sheet_name);
         }
-
-        // Force Clean Kubectl
-        /*
-        if (configurationType.enable_measurements) {
-            restarMaxCPUAndMaxMemory();
-        }
-        */
-
     } catch (e) {
         console.log("Test JMeter Failed:", e);
     }
 }
-
-// async function writeDataInGdocs(data: any, position: number) {
-//     //TODO: Change hardcoded values to a configuration file
-//     const auth = new google.auth.GoogleAuth({
-//         keyFile: process.env.GDOCS_KEY_FILE,
-//         scopes: 'https://www.googleapis.com/auth/spreadsheets',
-//     });
-//     const sheet = google.sheets("v4")
-//     await sheet.spreadsheets.values.append({
-//       spreadsheetId: process.env.GDOCS_SPREADSHEET_ID,
-//       auth: auth,
-//       range: `Hoja6!I${position}:Y${position}`,
-//       valueInputOption: "RAW",
-//       requestBody: {
-//         values: [
-//             [
-//                 data.meanResTime,
-//                 data.maxResTime,
-//                 data.avgBlockTime,
-//                 data.maxBlockTime,
-//                 data.minBlockTime,
-//                 data.throughput,
-//                 data.maxTPS,
-//                 data.validatorsMemory,
-//                 data.validatorsCPU,
-//                 data.rootMemory,
-//                 data.rootCPU,
-//                 data.apiMemory,
-//                 data.apiCPU,
-//                 data.timeProcess,
-//                 data.errorPct
-//         ]
-//     ]
-//       }
-//     }).then((res: any) => {
-//         console.log(res.data)
-//         })
-//     .catch((err: any) => {
-//         console.log(err)
-//     })
-// }
 
 export async function startJmeterWithShell(testcase: TestCase) {
     return new Promise((resolve, reject) => {
@@ -172,7 +119,6 @@ async function promiseFromChildProcess(child: any) {
         });
 
         child.addListener("error", reject);
-        // child.addListener("exit", resolve);
     });
 }
 

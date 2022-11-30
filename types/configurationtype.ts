@@ -1,5 +1,3 @@
-import { StringLiteral } from "typescript";
-
 type SimpleConfigurationType =
 {
     test_type: string;
@@ -19,5 +17,4 @@ type ConfigurationType = ConfigurationTypeForCompleteTest & {
     private_key_with_funds : string;
 }
 
-//export 
 export { ConfigurationType, ConfigurationTypeForCompleteTest, SimpleConfigurationType };
