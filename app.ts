@@ -44,6 +44,7 @@ let privateKeys: any[] = [];
 let chainId: number = 0;
 let gasPrice: number;
 let balance: string;
+let balancePrivateKey: string;
 let blockNumber: number;
 
 let txBuilder: ITransactionBuilder;
@@ -343,7 +344,7 @@ async function initPrivateKeys(dataflow: DataFlow, testCase: TestCase): Promise<
         if (fs.existsSync(Constants.PRIVATE_KEYS_FILE)) {
             privateKeys = fs.readFileSync(Constants.PRIVATE_KEYS_FILE).toString().split("\n");
             let account = web3.eth.accounts.privateKeyToAccount(privateKeys[0]);
-            balance = await web3.eth.getBalance(account.address);
+            balancePrivateKey = await web3.eth.getBalance(account.address);
             if (balance == "0") {
                 //delete file privatekeys.csv
                 fs.unlinkSync(Constants.PRIVATE_KEYS_FILE);
