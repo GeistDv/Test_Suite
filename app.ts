@@ -3,7 +3,6 @@ import express from "express";
 import ITransactionBuilder from "./interfaces/ItransactionBuilder";
 import { ConfigurationType, ConfigurationTypeForCompleteTest} from "./types/configurationtype";
 import SimpleTXBuilder from "./builders/SimpleTXBuilder";
-import ERC1155TXBuilder from "./builders/ERC1155TXBuilder";
 import Utils from "./utils/utils";
 import bodyParser from "body-parser";
 import fs from "fs";
