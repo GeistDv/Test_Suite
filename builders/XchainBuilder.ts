@@ -127,8 +127,6 @@ class xChainBuilder implements ITransactionBuilder {
 
             }
             catch (e) {
-                console.log("failed sign transaction");
-                console.log(e);
                 errorLogger.error(e);
                 resolve("0")
             }
