@@ -249,7 +249,7 @@ class Utils {
         //TODO : improve, check the export tx is completed.
         await new Promise(r => setTimeout(r, 10000));
         var txId = await this.importFunds();
-        console.log('already import')
+        console.log('already export funds')
         console.log('txId: ', txId)
         var statusTx: String = '';
         while(statusTx.toUpperCase() != "ACCEPTED" || statusTx.toUpperCase() == "REJECTED")
