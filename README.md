@@ -86,7 +86,7 @@ When the server is up and running, you can perform tests keeping in mind the fol
      Specify if you want to activate the insertion of the test results in Google Spreadsheet.
   - "enable_measurements": "true" or "false"
      Specify if you want collect kubectl measurements data.
-  - "test_type": "transfer" or "transfer-xchain"
+  - "test_type": "transfer" or "transfer-xchain" or "erc20tx"
      Specify the test type (only transfer for now).
   - "rpc": "{rpc_url}"
      Specify the rpc url.
@@ -144,6 +144,23 @@ When the server is up and running, you can perform tests keeping in mind the fol
       "enable_gdocs_insertion" : true,
       "enable_measurements" : true,
       "test_type" : "transfer-xchain",
+      "rpc":"https://networkName.camino.network",
+      "rpc_keystore" : "https://networkName.camino.network/static",
+      "sheet_name": "SheetTest",
+      "measurements_provider": "prometheus"
+  }'
+  ```
+- #### Transfer Erc20tx
+
+  -cURL Sample:
+
+  ```curl
+  curl --location --request POST 'http://157.230.83.99:3000/start' \
+  --header 'Content-Type: application/json' \
+  --data-raw '{
+      "enable_gdocs_insertion" : true,
+      "enable_measurements" : true,
+      "test_type" : "erc20tx",
       "rpc":"https://networkName.camino.network",
       "rpc_keystore" : "https://networkName.camino.network/static",
       "sheet_name": "SheetTest",
