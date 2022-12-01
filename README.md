@@ -38,9 +38,9 @@ For example transactions in the C and X chain. We continue working to include mo
 
   [Download]: https://jmeter.apache.org/download_jmeter.cgi
 
-- Node 12.19.1
+- Node 14.17.6
 
-  [Download]: https://nodejs.org/ko/blog/release/v12.19.1/
+  [Download]: https://nodejs.org/ko/blog/release/v14.17.6/
 
   
 
@@ -86,8 +86,8 @@ When the server is up and running, you can perform tests keeping in mind the fol
      Specify if you want to activate the insertion of the test results in Google Spreadsheet.
   - "enable_measurements": "true" or "false"
      Specify if you want collect kubectl measurements data.
-  - "test_type": "transfer"
-     Specify the test type(only transfer for now).
+  - "test_type": "transfer" or "transfer-xchain" or "erc20tx"
+     Specify the test type (only transfer for now).
   - "rpc": "{rpc_url}"
      Specify the rpc url.
   - "rpc_keystore": "{rpc_url}/static"
@@ -95,6 +95,8 @@ When the server is up and running, you can perform tests keeping in mind the fol
   - "sheet_name": "{document_sheet_name}"
      Specify the name of the sheet from which the test data is to be read and where the test results are 
      to be written.
+  - "measurements_provider": "kubectl" or "prometheus"
+     Specify the metrics provider to use in tests to measure memory and cpu on validator and api nodes
 
 - **Spreadsheet Document:**  `https://docs.google.com/spreadsheets/d/1bxCCl9PZqTqDXjIauamecW7rYiqbeAu43cxTuB1QU6g/edi
   t#gid=15878760`
@@ -125,9 +127,44 @@ When the server is up and running, you can perform tests keeping in mind the fol
       "enable_gdocs_insertion" : true,
       "enable_measurements" : true,
       "test_type" : "transfer",
-      "rpc":"https://kopernikus.camino.foundation/santi",
-      "rpc_keystore" : "https://kopernikus.camino.foundation/santi/static",
-      "sheet_name": "SheetTest"
+      "rpc":"https://networkName.camino.network",
+      "rpc_keystore" : "https://networkName.camino.network/static",
+      "sheet_name": "SheetTest",
+      "measurements_provider": "prometheus"
+  }'
+  ```
+- #### Transfer Xchain
+
+  -cURL Sample:
+
+  ```curl
+  curl --location --request POST 'http://157.230.83.99:3000/start' \
+  --header 'Content-Type: application/json' \
+  --data-raw '{
+      "enable_gdocs_insertion" : true,
+      "enable_measurements" : true,
+      "test_type" : "transfer-xchain",
+      "rpc":"https://networkName.camino.network",
+      "rpc_keystore" : "https://networkName.camino.network/static",
+      "sheet_name": "SheetTest",
+      "measurements_provider": "prometheus"
+  }'
+  ```
+- #### Transfer Erc20tx
+
+  -cURL Sample:
+
+  ```curl
+  curl --location --request POST 'http://157.230.83.99:3000/start' \
+  --header 'Content-Type: application/json' \
+  --data-raw '{
+      "enable_gdocs_insertion" : true,
+      "enable_measurements" : true,
+      "test_type" : "erc20tx",
+      "rpc":"https://networkName.camino.network",
+      "rpc_keystore" : "https://networkName.camino.network/static",
+      "sheet_name": "SheetTest",
+      "measurements_provider": "prometheus"
   }'
   ```
 
