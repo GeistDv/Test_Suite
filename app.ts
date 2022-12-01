@@ -166,8 +166,9 @@ app.post("/network-runner", async (req, res) => {
         }
 
         await initPrivateKeys(dataFlow, testCase);
-
-        //await startTestsAndGatherMetrics(testCase, configType, i, metricProvider);
+        let metricProvider: IMetricsProvider;
+        metricProvider = new KubectlProvider();
+        await startTestsAndGatherMetrics(testCase, configType, i, metricProvider);
     }
 
     await networkRunner.killGnomeTerminal();
